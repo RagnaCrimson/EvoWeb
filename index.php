@@ -1,37 +1,3 @@
-<?php
-session_start();
-
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "datastore_db";
-
-$objConnect = new mysqli($server, $username, $password, $database);
-
-if ($objConnect->connect_error) {
-    die("Connection failed: " . $objConnect->connect_error);
-}
-
-require_once 'session.php'; // Include the session.php file
-
-check_login(); // Check if the user is logged in
-
-// Fetch the Name from the database based on the logged-in username
-$username = $_SESSION['username'];
-$sql = "SELECT Name FROM admin WHERE UserName='$username'";
-$result = $objConnect->query($sql);
-
-if ($result->num_rows > 0) {
-    // Fetch and store the Name in $_SESSION['name']
-    $row = $result->fetch_assoc();
-    $_SESSION['name'] = $row['Name'];
-} else {
-    echo "Name not found.";
-}
-
-$objConnect->close();
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,21 +6,24 @@ $objConnect->close();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <header>
-    <h4><?php echo $_SESSION['name']; ?></h4>
-    <div class="right">
-      <a href="index.php">เรียกดูข้อมูล</a>
-      <a href="insert.php">เพิ่มข้อมูล</a>
-    </div>
-  </header>
+<!-- ================= Header ===================== -->
+
+  <?php
+    include 'header.php';
+  ?>
+
   <div class="center">
     <h1>เพิ่มข้อมูล</h1>
   </div>
+
+  <!-- =============== Left side ================== -->
   <div class="container">
+
     <div class="left">
       <label for="name">ชื่อโรงเรียน </label>
       <input type="text" id="name">
@@ -85,9 +54,10 @@ $objConnect->close();
 
       <label for="CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
       <input type="text" id="CoordMail1">
-
     </div>
-
+    
+  <!-- ============== Right side ================= -->
+   
     <div class="right">
       <label for="CoordName2">ชื่อผู้ประสานงาน 2 :</label>
       <input type="text" id="CoordName1">

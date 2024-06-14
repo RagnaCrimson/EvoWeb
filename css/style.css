@@ -1,78 +1,196 @@
-/* color 
-    #555273    ม่วง
-    #65799b    ฟ้า
-    #b6d5e1    ฟ้าอ่อน
-    #e2eff1    ฟ้าอ่อน อมเขียว เกือบขาว
-*/
+/* color codes */
+/* #555273: Purple */
+/* #65799b: Blue */
+/* #b6d5e1: Light blue */
+/* #e2eff1: Light blue with hint of green, almost white */
 
+body { 
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  body { 
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-  }
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-  .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+.left {
+  width: 40%;
+  margin-right: 20px;
+}
 
-  .left {
-    width: 40%;
-    margin-right: 20px;
-  }
+.right {
+  width: 40%;
+}
 
-  .right {
-    width: 40%;
-  }
+label {
+  display: block;
+  margin-bottom: 5px;
+}
 
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
 
-  input[type="text"],
-  input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
 
-  th, td {
-    text-align: left;
-    padding: 8px;
-    border: 1px solid #ccc;
-  }
+.center {
+  text-align: center;
+}
 
-  .center {
-    text-align: center;
-  }
+/* 
+.header {
+  overflow: hidden;
+  background-color: #65799b;
+  padding: 20px 10px;
+}
 
-  header {
-    background-color: #65799b;
-    color: white;
-    padding: 10px;
-  }
+.header a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 18px; 
+  line-height: 25px;
+  border-radius: 4px;
+}
 
-  .header-right {
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.header a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.header a.active {
+  background-color: e2eff1;
+  color: white;
+}
+
+.header-right {
   float: right;
-  float: none;
-  }
+}
 
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .header-right {
+    float: none;
+  }
+} */
+
+
+nav {
+  &.primary-navigation {
+    margin: 0 auto;
+    display: block;
+    background-color: #65799b;
+    padding: 25px 0 10px 0;  
+    text-align: center;
+    font-size: 20px;
+
+    ul li {
+      list-style: none;
+      margin: 0 auto;
+      border-left: 2px solid #e2eff1;
+      display: inline-block;
+      padding: 0 30px;
+      position: relative;
+      text-decoration: none;
+      text-align: center;
+      font-family: arvo;
+    }
+
+    li a {
+      color: black;
+    }
+
+    li a:hover {
+      color: #e2eff1;
+    }
+
+    li:hover {
+      cursor: pointer;
+    }
+
+    ul li ul {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      padding-left: 0;
+      left: 0;
+      display: none;
+      background: #65799b;
+    }
+
+    ul li:hover > ul,
+    ul li ul:hover {
+      visibility: visible;
+      opacity: 1;
+      display: block;
+      min-width: 250px;
+      text-align: left;
+      padding-top: 20px;
+      box-shadow: 0px 3px 5px -1px #000000;
+    }
+
+    ul li ul li {
+      clear: both;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 20px;
+      border-style: none;
+    }
+
+    ul li ul li a:hover {
+      padding-left: 10px;
+      border-left: 2px solid #e2eff1;
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+a {
+
+    text-decoration: none;
+
+    &:hover {
+        color: #e2eff1;
+    }
+ 
+}
+
+ ul li ul li a { transition: all 0.5s ease; }
