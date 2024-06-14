@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/loginstyle.css">
+    <title>เปลี่ยนรหัสผ่าน</title>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="img/logo.png" alt="Logo">
+        </div>
+        <h1>เปลี่ยนรหัสผ่าน</h1>
+        <form id="changePasswordForm">
+            <input type="password" name="oldpassword" id="oldpassword" placeholder="รหัสผ่านเดิม" required>
+            <input type="password" name="newpassword" id="newpassword" placeholder="รหัสผ่านใหม่" required>
+            <input type="password" name="confirmnewpassword" id="confirmnewpassword" placeholder="ยืนยันรหัสผ่านใหม่" required>
+            <button type="button" class="button" onclick="changePassword()">เปลี่ยนรหัสผ่าน</button>
+        </form>
+        <div id="changepassworderror" style="color: red;"></div>
+        <a href="login.html" class="link">กลับไปหน้าเข้าสู่ระบบ</a>
+    </div>
+
+    <script src="js/changepassword.js"></script>
+</body>
+</html>

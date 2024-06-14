@@ -1,0 +1,78 @@
+/* color 
+    #555273    ม่วง
+    #65799b    ฟ้า
+    #b6d5e1    ฟ้าอ่อน
+    #e2eff1    ฟ้าอ่อน อมเขียว เกือบขาว
+*/
+
+
+  body { 
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .left {
+    width: 40%;
+    margin-right: 20px;
+  }
+
+  .right {
+    width: 40%;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  header {
+    background-color: #65799b;
+    color: white;
+    padding: 10px;
+  }
+
+  .header-right {
+  float: right;
+  float: none;
+  }
+
