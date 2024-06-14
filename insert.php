@@ -1,60 +1,43 @@
 <?php
-session_start();
+include 'connect.php';
 
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "datastore_db";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-$objConnect = new mysqli($server, $username, $password, $database);
+    $name = $_POST['V_Name'];
+    $province = $_POST['V_Province'];
+    $district = $_POST['V_District'];
+    $sub_district = $_POST['V_SubDistrict'];
+    $exec_name = $_POST['V_Exec_name'];
+    $exec_phone = $_POST['V_Exec_phone'];
+    $exec_mail = $_POST['V_Exec_mail'];
+    $coord_name1 = $_POST['V_Coord_name1'];
+    $coord_phone1 = $_POST['V_Coord_phone1'];
+    $coord_mail1 = $_POST['V_Coord_mail1'];
+    $coord_name2 = $_POST['V_Coord_name2'];
+    $coord_phone2 = $_POST['V_Coord_phone2'];
+    $coord_mail2 = $_POST['V_Coord_mail2'];
+    $sale = $_POST['V_Sale'];
+    $date = $_POST['V_Date'];
+    $electric_per_year = $_POST['V_Electric_per_year'];
+    $electric_per_month = $_POST['V_Electric_per_month'];
+    $comment = $_POST['V_comment'];
 
-if ($objConnect->connect_error) {
-    die("Connection failed: " . $objConnect->connect_error);
-}
+    $sql = "INSERT INTO datastore_db (V_Name, V_Province, V_Distric, V_SubDistic, V_ExecName, V_ExecPhone, V_ExecMail, 
+            V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, 
+            V_Eletric_per_year, V_Electric_per_month, V_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-require_once 'session.php';
+    $stmt = $objConnect->prepare($sql);
+    $stmt->bind_param("sssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
+            $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
+            $electric_per_year, $electric_per_month, $comment);
 
-check_login();
-
-$username = $_SESSION['username'];
-$sql = "SELECT Name FROM admin WHERE UserName='$username'";
-$result = $objConnect->query($sql);
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $_SESSION['name'] = $row['Name'];
-} else {
-    echo "Name not found.";
-}
-
-if (isset($_POST['submit'])) {
-    $name = $_POST['name'];
-    $province = $_POST['province'];
-    $district = $_POST['district'];
-    $sub_district = $_POST['sub_district'];
-    $exec_name = $_POST['exec_name'];
-    $exec_phone = $_POST['exec_phone'];
-    $exec_mail = $_POST['exec_mail'];
-    $coord_name1 = $_POST['coord_name1'];
-    $coord_phone1 = $_POST['coord_phone1'];
-    $coord_mail1 = $_POST['coord_mail1'];
-    $coord_name2 = $_POST['coord_name2'];
-    $coord_phone2 = $_POST['coord_phone2'];
-    $sale = $_POST['sale'];
-    $date = $_POST['date'];
-    $electric_year = $_POST['electric_year'];
-    $electric_month = $_POST['electric_month'];
-    $notes = $_POST['notes'];
-
-    $insert_sql = "INSERT INTO `view` (Name, Province, District, Sub_District, ExecName, ExecPhone, ExecMail, CoordName1, CoordPhon1, CoordMail1, CoordName2, CoordPhon2, Sale, Date, ElectricYear, ElectricMonth, Notes) 
-    VALUES ('$name', '$province', '$district', '$sub_district', '$exec_name', '$exec_phone', '$exec_mail', '$coord_name1', '$coord_phone1', '$coord_mail1', '$coord_name2', '$coord_phone2', '$sale', '$date', '$electric_year', '$electric_month', '$notes')";
-
-    if ($objConnect->query($insert_sql) === TRUE) {
-        echo "New record created successfully";
+    if ($stmt->execute()) {
+        echo "Data inserted successfully.";
     } else {
-        echo "Error: " . $insert_sql . "<br>" . $objConnect->error;
+        echo "Error: " . $sql . "<br>" . $stmt->error;
     }
-}
 
-$objConnect->close();
+    $stmt->close();
+    $objConnect->close();
+}
 ?>

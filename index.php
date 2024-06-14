@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ยังไม่มีชื่อ</title>
+  <title>Dashbord Admin</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
@@ -22,6 +22,7 @@
   </div>
 
   <!-- =============== Left side ================== -->
+  <form action="insert.php" method="POST">
   <div class="container">
 
     <div class="left">
@@ -80,10 +81,11 @@
       <label for="notes">หมายเหตุ:</label>
       <textarea id="notes"></textarea> <br>
 
-      <button type="button">เพิ่มข้อมูล</button>
+      <button type="submit">เพิ่มข้อมูล</button>
       <button type="button">ยกเลิก</button>
     </div>
   </div>
+  </form>
 
 </body>
 </html>

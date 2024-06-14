@@ -41,6 +41,7 @@ $objConnect->close();
     <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/logout.js"></script>
 </head>
 <body>
     <!-- <div class="header">
@@ -62,7 +63,7 @@ $objConnect->close();
                 <li><a href="#">ดูสถานะ</a></li>
             </ul>
             </li>
-            <li><a href="logout.php">ลงชื่ออก</a></li>
+            <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>
 </body>
