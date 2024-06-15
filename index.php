@@ -26,60 +26,63 @@
   <div class="container">
 
     <div class="left">
-      <label for="name">ชื่อโรงเรียน </label>
-      <input type="text" id="name">
+      <label for="V_Name">ชื่อหน่วยงาน :</label>
+      <input type="text" id="V_Name" name="V_Name"><br><br>
 
-      <label for="province">จังหวัด :</label>
-      <input type="text" id="province">
+      <label for="V_Province">จังหวัด :</label>
+      <input type="text" id="V_Province" name="V_Province"><br><br>
 
-      <label for="dicstic">อำเภอ :</label>
-      <input type="text" id="dicstic">
+      <label for="V_District">อำเภอ:</label>
+      <input type="text" id="V_District" name="V_District"><br><br>
 
-      <label for="Sub_Distric">ตำบล :</label>
-      <input type="text" id="Sub_Distric">
+      <label for="V_SubDistrict">ตำบล :</label>
+      <input type="text" id="V_SubDistrict" name="V_SubDistrict"><br><br>
 
-      <label for="ExecName">ชื่อผู้บริหาร :</label>
-      <input type="text" id="ExecName">
+      <label for="V_ExecName">ชื่อผู้บริหาร :</label>
+      <input type="text" id="V_ExecName" name="V_ExecName"><br><br>
 
-      <label for="ExecPhone">เบอร์โทร :</label>
-      <input type="text" id="ExecPhone">
+        <label for="V_ExecPhone">เบอร์ผู้บริหาร :</label>
+        <input type="text" id="V_ExecPhone" name="V_ExecPhone"><br><br>
 
-      <label for="ExecMail">อีเมล :</label>
-      <input type="text" id="ExecMail">
+        <label for="V_ExecMail">อีเมลผู้บริหาร:</label>
+        <input type="text" id="V_ExecMail" name="V_ExecMail"><br><br>
 
-      <label for="CoordName1">ชื่อผู้ประสานงาน 1 :</label>
-      <input type="text" id="CoordName1">
+        <label for="V_CoordName1">ชื่อผู้ประสานงาน 1:</label>
+        <input type="text" id="V_CoordName1" name="V_CoordName1"><br><br>
 
-      <label for="CoordPhon1">เบอร์โทรผู้ประสานงาน 1 :</label>
-      <input type="text" id="CoordPhone1">
+        <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1:</label>
+        <input type="text" id="V_CoordPhone1" name="V_CoordPhone1"><br><br>
 
-      <label for="CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
-      <input type="text" id="CoordMail1">
+        <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1:</label>
+        <input type="text" id="V_CoordMail1" name="V_CoordMail1"><br><br>
     </div>
     
   <!-- ============== Right side ================= -->
    
     <div class="right">
-      <label for="CoordName2">ชื่อผู้ประสานงาน 2 :</label>
-      <input type="text" id="CoordName1">
+        <label for="V_CoordName2">ชื่อผู้ประสานงาน 2:</label>
+        <input type="text" id="V_CoordName2" name="V_CoordName2"><br><br>
 
-      <label for="CoordPhon2">เบอร์โทรผู้ประสานงาน 2 :</label>
-      <input type="text" id="CoordPhone2">
+        <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2:</label>
+        <input type="text" id="V_CoordPhone2" name="V_CoordPhone2"><br><br>
 
-      <label for="Sale">ทีมฝ่ายขาย :</label>
-      <input type="text" id="Sale">
+        <label for="V_CoordMail2">อีเมลผู้ปนะสานงาน 2:</label>
+        <input type="text" id="V_CoordMail2" name="V_CoordMail2"><br><br>
 
-      <label for="Date">วันที่รับเอกสาร :</label>
-      <input type="text" id="date">
+        <label for="V_Sale">ทีมฝ่ายขาย :</label>
+        <input type="text" id="V_Sale" name="V_Sale"><br><br>
 
-      <label for="ElectricYear">ข้อมูลการใช้ไฟฟ้าต่อปี :</label>
-      <input type="text" id="ElectricYear">
-      
-      <label for="ElectricMonth">ข้อมูลการใช้ไฟฟ้าต่อเดือน :</label>
-      <input type="text" id="ElectricMonth">
-      
-      <label for="notes">หมายเหตุ:</label>
-      <textarea id="notes"></textarea> <br>
+        <label for="V_Date">วันที่ได้รับเอกสาร :</label>
+        <input type="text" id="V_Date" name="V_Date"><br><br>
+
+        <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
+        <input type="text" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>
+
+        <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
+        <input type="text" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
+
+        <label for="V_comment">หมายเหตุ :</label>
+        <input type="text" id="V_comment" name="V_comment"><br><br>
 
       <button type="submit">เพิ่มข้อมูล</button>
       <button type="button">ยกเลิก</button>

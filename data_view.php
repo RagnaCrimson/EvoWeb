@@ -21,7 +21,7 @@ $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header</title>
+    <title>Data view</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
@@ -73,15 +73,15 @@ $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
                             <td><?php echo $row["V_Province"]; ?></td>
                             <td><?php echo $row["V_District"]; ?></td>
                             <td><?php echo $row["V_SubDistrict"]; ?></td>
-                            <td><?php echo $row["V_Exec_name"]; ?></td>
-                            <td><?php echo $row["V_Exec_phone"]; ?></td>
-                            <td><?php echo $row["V_Exec_mail"]; ?></td>
-                            <td><?php echo $row["V_Coord_name1"]; ?></td>
-                            <td><?php echo $row["V_Coord_phone1"]; ?></td>
-                            <td><?php echo $row["V_Coord_mail1"]; ?></td>
-                            <td><?php echo $row["V_Coord_name2"]; ?></td>
-                            <td><?php echo $row["V_Coord_phone2"]; ?></td>
-                            <td><?php echo $row["V_Coord_mail2"]; ?></td>
+                            <td><?php echo $row["V_ExecName"]; ?></td>
+                            <td><?php echo $row["V_ExecPhone"]; ?></td>
+                            <td><?php echo $row["V_ExecMail"]; ?></td>
+                            <td><?php echo $row["V_CoordName1"]; ?></td>
+                            <td><?php echo $row["V_CoordPhone1"]; ?></td>
+                            <td><?php echo $row["V_CoordMail1"]; ?></td>
+                            <td><?php echo $row["V_CoordName2"]; ?></td>
+                            <td><?php echo $row["V_CoordPhone2"]; ?></td>
+                            <td><?php echo $row["V_CoordMail2"]; ?></td>
                             <td><?php echo $row["V_Sale"]; ?></td>
                             <td><?php echo $row["V_Date"]; ?></td>
                             <td><?php echo $row["V_Electric_per_year"]; ?></td>
