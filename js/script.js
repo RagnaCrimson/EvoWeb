@@ -24,3 +24,8 @@ function login() {
     var data = "username=" + username + "&password=" + password;
     xhr.send(data);
 }
+
+    // Function to show success message popup
+    function showSuccessPopup() {
+        alert('Data inserted successfully.');
+      }

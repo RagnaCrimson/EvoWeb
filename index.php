@@ -1,3 +1,73 @@
+<?php
+include 'connect.php'; 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $required_fields = ['V_Name', 'V_Province', 'V_District', 'V_SubDistrict', 'V_ExecName', 'V_ExecPhone', 'V_ExecMail', 'V_CoordName1', 'V_CoordPhone1', 'V_CoordMail1', 'V_CoordName2', 'V_CoordPhone2', 'V_CoordMail2', 'V_Sale', 'V_Date', 'V_Electric_per_year', 'V_Electric_per_month', 'V_comment', 'T_Status'];
+    $missing_fields = array_diff($required_fields, array_keys($_POST));
+
+    if (!empty($missing_fields)) {
+        die("Some POST variables are missing: " . implode(', ', $missing_fields));
+    }
+
+    $name = htmlspecialchars($_POST['V_Name']);
+    $province = htmlspecialchars($_POST['V_Province']);
+    $province = htmlspecialchars($_POST['V_Province']);
+    $district = htmlspecialchars($_POST['V_District']);
+    $sub_district = htmlspecialchars($_POST['V_SubDistrict']);
+    $exec_name = htmlspecialchars($_POST['V_ExecName']);
+    $exec_phone = htmlspecialchars($_POST['V_ExecPhone']);
+    $exec_mail = htmlspecialchars($_POST['V_ExecMail']);
+    $coord_name1 = htmlspecialchars($_POST['V_CoordName1']);
+    $coord_phone1 = htmlspecialchars($_POST['V_CoordPhone1']);
+    $coord_mail1 = htmlspecialchars($_POST['V_CoordMail1']);
+    $coord_name2 = htmlspecialchars($_POST['V_CoordName2']);
+    $coord_phone2 = htmlspecialchars($_POST['V_CoordPhone2']);
+    $coord_mail2 = htmlspecialchars($_POST['V_CoordMail2']);
+    $sale = htmlspecialchars($_POST['V_Sale']);
+    $date = htmlspecialchars($_POST['V_Date']);
+    $electric_per_year = htmlspecialchars($_POST['V_Electric_per_year']);
+    $electric_per_month = htmlspecialchars($_POST['V_Electric_per_month']);
+    $comment = htmlspecialchars($_POST['V_comment']);
+    $status = htmlspecialchars($_POST['T_Status']);
+
+    $sql_datastore_db = "INSERT INTO view (V_Name, V_Province, V_District, V_SubDistrict, V_ExecName, V_ExecPhone, V_ExecMail, 
+        V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, 
+        V_Electric_per_year, V_Electric_per_month, V_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt_datastore_db = $objConnect->prepare($sql_datastore_db);
+    if ($stmt_datastore_db === false) {
+        die("Error preparing statement for datastore_db: " . $objConnect->error);
+    }
+    $stmt_datastore_db->bind_param("ssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
+        $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
+        $electric_per_year, $electric_per_month, $comment);
+
+    if ($stmt_datastore_db->execute()) {
+        $last_id = $stmt_datastore_db->insert_id;
+
+        $sql_task = "INSERT INTO task (T_Status) VALUES (?)";
+        $stmt_task = $objConnect->prepare($sql_task);
+        if ($stmt_task === false) {
+            die("Error preparing statement for task: " . $objConnect->error);
+        }
+        $stmt_task->bind_param("s", $status);
+
+        if ($stmt_task->execute()) {
+            echo "<script>alert('Data inserted successfully.');</script>"; // Show a JavaScript alert
+        } else {
+            echo "Error: " . $sql_task . "<br>" . $stmt_task->error;
+        }
+
+        $stmt_task->close();
+    } else {
+        echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
+    }
+
+    $stmt_datastore_db->close();
+    $objConnect->close();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +79,7 @@
   <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="js/script.js"></script>
 </head>
 <body>
 <!-- ================= Header ===================== -->
@@ -23,15 +94,15 @@
 
   <!-- =============== Left side ================== -->
    <div class="container">
-    <form action="insert.php" method="POST">
+    <form action="index.php" method="POST" onsubmit="showSuccessPopup()">
     <div class="con">
 
       <div class="left">
         <label for="V_Name">ชื่อหน่วยงาน :</label>
-        <input type="text" id="V_Name" name="V_Name"><br><br>
+        <input type="text" id="V_Name" name="V_Name" require><br><br>
 
         <label for="V_Province">จังหวัด :</label>
-        <input type="text" id="V_Province" name="V_Province"><br><br>
+        <input type="text" id="V_Province" name="V_Province" require><br><br>
 
         <label for="V_District">อำเภอ:</label>
         <input type="text" id="V_District" name="V_District"><br><br>
@@ -100,6 +171,14 @@
     </div>
   </div>
   </form>
+
+  <?php
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+  }
+
+  ?>
 
 </body>
 </html>

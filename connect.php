@@ -1,10 +1,10 @@
 <?php
-$server = "localhost";
+$servername = "localhost";
 $username = "root";
 $password = "";
-$database = "datastore_db";
+$dbname = "datastore_db";
 
-$objConnect = new mysqli($server, $username, $password, $database);
+$objConnect = new mysqli($servername, $username, $password, $dbname);
 
 if ($objConnect->connect_error) {
     die("Connection failed: " . $objConnect->connect_error);
