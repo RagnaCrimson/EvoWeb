@@ -63,6 +63,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
     }
 
+    if (!empty($V_File)) {
+      $target_dir = "uploads/";
+      $target_file = $target_dir . basename($V_File);
+      if (!move_uploaded_file($_FILES['V_File']['tmp_name'], $target_file)) {
+          die("Error uploading file");
+      }
+  }
+
     $stmt_datastore_db->close();
     $objConnect->close();
 }
@@ -155,6 +163,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
           <label for="V_comment">หมายเหตุ :</label>
           <input type="text" id="V_comment" name="V_comment"><br><br>
+
+          <label for="V_File">ไฟล์:</label>
+          <input type="file" class="form-control" id="V_File" name="V_File"><br><br>
+
 
           <label for="T_Status">สถานะ :</label>
             <select id="T_Status" name="T_Status">

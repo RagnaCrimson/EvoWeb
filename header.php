@@ -58,9 +58,9 @@ $objConnect->close();
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
             <li><a href="#">รายการ &dtrif;</a>
             <ul class="dropdown">
-                <li><a href="data_view.php">ดูข้อมูล</a></li>
+                <li><a href="data_view.php">ดูข้อมูลทั้งหมด</a></li>
                 <li><a href="index.php">เพิ่มข้อมูล</a></li>
-                <li><a href="#">ดูสถานะ</a></li>
+                <li><a href="status_view.php">ดูสถานะ</a></li>
             </ul>
             </li>
             <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>

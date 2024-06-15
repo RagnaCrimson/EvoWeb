@@ -36,45 +36,70 @@ if (!$resultdatastore_db) {
 <body>
     <?php include 'header.php'; ?>
 
-    <div class="container">
-        <h1 class="text-center" style="margin-top: 5px; margin-bottom: 50px;">ข้อมูลการใช้ไฟฟ้าของหน่วยงาน</h1>
-        <div class="row">
-            <?php
-            if ($resultdatastore_db->num_rows > 0) {
-                while($row = $resultdatastore_db->fetch_assoc()) {
-                    ?>
-                    <div class="col-md-4">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title"><b><?php echo htmlspecialchars($row["V_Name"]); ?></b></h5>
-                                <p class="card-text"><strong>จังหวัด:</strong><b> <?php echo htmlspecialchars($row["V_Province"]); ?></b></p>
-                                <p class="card-text"><strong>อำเภอ:</strong><b> <?php echo htmlspecialchars($row["V_District"]); ?></b></p>
-                                <p class="card-text"><strong>ตำบล:</strong><b> <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้บริหาร:</strong><b> <?php echo htmlspecialchars($row["V_ExecName"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทร:</strong><b> <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail:</strong><b> <?php echo htmlspecialchars($row["V_ExecMail"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordName1"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทรผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail ผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordName2"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทรผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail ผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></b></p>
-                                <p class="card-text"><strong>ทีมฝ่ายขาย:</strong><b> <?php echo htmlspecialchars($row["V_Sale"]); ?></b></p>
-                                <p class="card-text"><strong>วันที่รับเอกสาร:</strong><b> <?php echo htmlspecialchars($row["V_Date"]); ?></b></p>
-                                <p class="card-text"><strong>การใช้ไฟ/ปี:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></b></p>
-                                <p class="card-text"><strong>การใช้ไฟ/เดือน:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></b></p>
-                                <p class="card-text"><strong>หมายเหตุ:</strong><b> <?php echo htmlspecialchars($row["V_comment"]); ?></b></p>
-                                <p class="card-text"><strong>File PDF:</strong><b> <?php echo htmlspecialchars($row["V_File"]); ?></b></p>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
+        <div id="View" class="tabcontent">
+            <div style="margin-top: 50px; margin-bottom: 50px;"><h1>รายการข้อมูลการทั้งหมด</h1></div>
+            <table id="data" class="table table-striped">
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>ชื่อหน่วยงาน</th>
+                    <th>จังหวัด</th>
+                    <th>อำเภอ</th>
+                    <th>ตำบล</th>
+                    <th>ชื่อผู้บริหาร</th>
+                    <th>เบอร์โทร</th>
+                    <th>E-mail</th>
+                    <th>ชื่อผู้ประสานงาน 1</th>
+                    <th>เบอร์โทรผู้ประสานงาน 1</th>
+                    <th>E-mail ผู้ประสานงาน 1</th>
+                    <th>ชื่อผู้ประสานงาน 2</th>
+                    <th>เบอร์โทรผู้ประสานงาน 2</th>
+                    <th>E-mail ผู้ประสานงาน 2</th>
+                    <th>ทีมฝ่ายขาย</th>
+                    <th>วันที่รับเอกสาร</th>
+                    <th>การใช้ไฟ/ปี</th>
+                    <th>การใช้ไฟ/เดือน</th>
+                    <th>หมายเหตุ</th>
+                    <th>File</th>
+                    <th>Actions</th>
+                </tr>
+                <?php
+                if ($resultdatastore_db->num_rows > 0) {
+                    $sequence = 1; // Initialize sequence number
+                    while($row = $resultdatastore_db->fetch_assoc()) {
+                        ?>
+                        <tr>
+                            <td><?php echo $sequence++; ?></td>
+                            <td><?php echo $row["V_Name"]; ?></td>
+                            <td><?php echo $row["V_Province"]; ?></td>
+                            <td><?php echo $row["V_District"]; ?></td>
+                            <td><?php echo $row["V_SubDistrict"]; ?></td>
+                            <td><?php echo $row["V_ExecName"]; ?></td>
+                            <td><?php echo $row["V_ExecPhone"]; ?></td>
+                            <td><?php echo $row["V_ExecMail"]; ?></td>
+                            <td><?php echo $row["V_CoordName1"]; ?></td>
+                            <td><?php echo $row["V_CoordPhone1"]; ?></td>
+                            <td><?php echo $row["V_CoordMail1"]; ?></td>
+                            <td><?php echo $row["V_CoordName2"]; ?></td>
+                            <td><?php echo $row["V_CoordPhone2"]; ?></td>
+                            <td><?php echo $row["V_CoordMail2"]; ?></td>
+                            <td><?php echo $row["V_Sale"]; ?></td>
+                            <td><?php echo $row["V_Date"]; ?></td>
+                            <td><?php echo $row["V_Electric_per_year"]; ?></td>
+                            <td><?php echo $row["V_Electric_per_month"]; ?></td>
+                            <td><?php echo $row["V_comment"]; ?></td>
+                            <td><?php echo $row["V_File"]; ?></td>
+                            <td>
+                                <a href="edit.php?id=<?php echo $row['V_Name']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                } else {
+                    echo "<tr><td colspan='17'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
-            } else {
-                echo "<div class='col-12'><p class='text-center'>ไม่มีข้อมูลรายการ</p></div>";
-            }
-            ?>
+                ?>
+            </table>
         </div>
-    </div>
+
 </body>
 </html>
