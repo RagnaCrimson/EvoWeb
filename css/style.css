@@ -10,7 +10,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.container {
+.con {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,56 +63,6 @@ th, td {
 .center {
   text-align: center;
 }
-
-/* 
-.header {
-  overflow: hidden;
-  background-color: #65799b;
-  padding: 20px 10px;
-}
-
-.header a {
-  float: left;
-  color: black;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px; 
-  line-height: 25px;
-  border-radius: 4px;
-}
-
-.header a.logo {
-  font-size: 25px;
-  font-weight: bold;
-}
-
-.header a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.header a.active {
-  background-color: e2eff1;
-  color: white;
-}
-
-.header-right {
-  float: right;
-}
-
-@media screen and (max-width: 500px) {
-  .header a {
-    float: none;
-    display: block;
-    text-align: left;
-  }
-  
-  .header-right {
-    float: none;
-  }
-} */
-
 
 nav {
   &.primary-navigation {
@@ -225,3 +175,50 @@ a {
   }
 
   /* end table */
+
+
+/* ======================= card data view ======================== */
+
+
+.container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.card-text {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.card-text strong {
+  color: #555;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* =========================== */
