@@ -85,6 +85,15 @@
           <label for="V_comment">หมายเหตุ :</label>
           <input type="text" id="V_comment" name="V_comment"><br><br>
 
+          <label for="T_Status">สถานะ :</label>
+            <select id="T_Status" name="T_Status">
+              <option value="">-- เลือกสถานะ --</option>
+              <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
+              <option value="ตอบรับ">ตอบรับ</option>
+              <option value="ส่งมอบงาน">ส่งมอบงาน</option>
+              <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+            </select><br><br>
+
         <button type="submit">เพิ่มข้อมูล</button>
         <button type="button">ยกเลิก</button>
       </div>

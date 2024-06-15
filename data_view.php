@@ -12,8 +12,15 @@ if ($objConnect->connect_error) {
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-$strSQL_datastore_db = "SELECT * FROM view";
+$strSQL_datastore_db = "SELECT v.*, t.T_Status 
+                        FROM view v 
+                        LEFT JOIN task t ON v.common_field = t.common_field";
+
 $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
+
+if (!$resultdatastore_db) {
+    die("Query failed: " . $objConnect->error);
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +66,7 @@ $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
                                 <p class="card-text"><strong>การใช้ไฟ/ปี:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></b></p>
                                 <p class="card-text"><strong>การใช้ไฟ/เดือน:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></b></p>
                                 <p class="card-text"><strong>หมายเหตุ:</strong><b> <?php echo htmlspecialchars($row["V_comment"]); ?></b></p>
+                                <p class="card-text"><strong>Task Status:</strong><b> <?php echo isset($row["T_Status"]) ? htmlspecialchars($row["T_Status"]) : 'N/A'; ?></b></p>
                             </div>
                         </div>
                     </div>
