@@ -58,8 +58,8 @@ $objConnect->close();
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
             <li><a href="#">รายการ &dtrif;</a>
             <ul class="dropdown">
-                <li><a href="#">ดูข้อมูล</a></li>
-                <li><a href="#">เพิ่มข้อมูล</a></li>
+                <li><a href="data_view.php">ดูข้อมูล</a></li>
+                <li><a href="index.php">เพิ่มข้อมูล</a></li>
                 <li><a href="#">ดูสถานะ</a></li>
             </ul>
             </li>
