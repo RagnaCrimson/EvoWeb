@@ -41,7 +41,7 @@ if (!$resultdatastore_db) {
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>หมายเหตุ</th>
-                    <th>File</th>
+                    <th>File PDF</th>
                     <th>สถานะ</th>
                 </tr>
                 <?php while ($row = $resultdatastore_db->fetch_assoc()): ?>

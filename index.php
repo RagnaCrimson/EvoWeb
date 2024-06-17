@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
     }
 
-    // File upload logic
+
     if (isset($_FILES["V_File"]) && $_FILES["V_File"]["error"] == 0) {
         $target_dir = "uploads/";
         $target_file = $target_dir . basename($_FILES["V_File"]["name"]);
@@ -94,6 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="js/script.js"></script>
 </head>
 <body>
@@ -171,9 +172,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <label for="V_comment">หมายเหตุ :</label>
           <input type="text" id="V_comment" name="V_comment"><br><br>
 
-          <label for="file" class="form-label">Select file</label>
-          <input type="file" class="form-control" name="file" id="file" required><br><br>
-
+          <form action="upload.php" method="POST" enctype="multipart/form-data">
+            <label for="file" class="form-label">Select file</label>
+            <input type="file" class="form-control" name="file" id="file" required><br><br>
+          </form>
 
           <label for="T_Status">สถานะ :</label>
             <select id="T_Status" name="T_Status">
@@ -184,8 +186,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <option value="ไม่ผ่าน">ไม่ผ่าน</option>
             </select><br><br>
 
-        <button type="submit">เพิ่มข้อมูล</button>
-        <button type="button">ยกเลิก</button>
+        <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
+        <button type="button" class="btn btn-primary">ยกเลิก</button>
       </div>
     </div>
   </div>
