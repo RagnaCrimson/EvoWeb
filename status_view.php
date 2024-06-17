@@ -4,9 +4,10 @@ include 'connect.php';
 mysqli_query($objConnect, "SET NAMES utf8");
 
 $strSQL_datastore_db = "
-    SELECT view.*, task.T_Status 
+    SELECT view.*, task.T_Status, files.filename 
     FROM view 
-    LEFT JOIN task ON view.V_ID = task.T_ID";
+    LEFT JOIN task ON view.V_ID = task.T_ID
+    LEFT JOIN files ON view.V_ID = files.id";
 $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
 
 if (!$resultdatastore_db) {
@@ -45,17 +46,31 @@ if (!$resultdatastore_db) {
                 </tr>
                 <?php while ($row = $resultdatastore_db->fetch_assoc()): ?>
                     <tr>     
-                        <td><?php echo $row["V_Name"]; ?></td>
-                        <td><?php echo $row["V_Province"]; ?></td>
-                        <td><?php echo $row["V_ExecName"]; ?></td>
-                        <td><?php echo $row["V_Electric_per_year"]; ?></td>
-                        <td><?php echo $row["V_Electric_per_month"]; ?></td>
-                        <td><?php echo $row["V_comment"]; ?></td>
-                        <td><?php echo $row["V_File"]; ?></td>
-                        <td><?php echo $row["T_Status"]; ?></td>
+                        <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
+                        <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
+                        <td><?php echo htmlspecialchars($row["V_ExecName"]); ?></td>
+                        <td><?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></td>
+                        <td><?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></td>
+                        <td><?php echo htmlspecialchars($row["V_comment"]); ?></td>
+                        <td>
+                            <?php if (!empty($row["filename"])): ?>
+                                <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
+                            <?php else: ?>
+                                No file
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
                     </tr>
                 <?php endwhile; ?>
             </table>
+
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Select file</label>
+                    <input type="file" class="form-control" name="file" id="file" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload file</button>
+            </form>
         </div>
     </div>
 </body>

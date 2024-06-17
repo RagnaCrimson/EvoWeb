@@ -63,18 +63,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
     }
 
-    if (!empty($V_File)) {
-      $target_dir = "uploads/";
-      $target_file = $target_dir . basename($V_File);
-      if (!move_uploaded_file($_FILES['V_File']['tmp_name'], $target_file)) {
-          die("Error uploading file");
-      }
-  }
+    // File upload logic
+    if (isset($_FILES["V_File"]) && $_FILES["V_File"]["error"] == 0) {
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($_FILES["V_File"]["name"]);
+        if (move_uploaded_file($_FILES["V_File"]["tmp_name"], $target_file)) {
+            echo "File uploaded successfully.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
 
     $stmt_datastore_db->close();
     $objConnect->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -87,6 +91,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
   <script src="js/script.js"></script>
 </head>
 <body>
@@ -164,8 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <label for="V_comment">หมายเหตุ :</label>
           <input type="text" id="V_comment" name="V_comment"><br><br>
 
-          <label for="V_File">ไฟล์:</label>
-          <input type="file" class="form-control" id="V_File" name="V_File"><br><br>
+          <label for="file" class="form-label">Select file</label>
+          <input type="file" class="form-control" name="file" id="file" required><br><br>
 
 
           <label for="T_Status">สถานะ :</label>
