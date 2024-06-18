@@ -56,6 +56,7 @@ $objConnect->close();
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
+            <li><a href="dashboard.php">Dashboard</a>
             <li><a href="#">รายการ &dtrif;</a>
             <ul class="dropdown">
                 <li><a href="data_view.php">ดูข้อมูลทั้งหมด</a></li>
