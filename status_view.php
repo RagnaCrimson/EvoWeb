@@ -40,7 +40,7 @@ if (!$resultdatastore_db) {
                     <th>ชื่อผู้บริหาร</th>
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
-                    <th>หมายเหตุ</th>
+                    <!-- <th>หมายเหตุ</th> -->
                     <th>File PDF</th>
                     <th>สถานะ</th>
                 </tr>
@@ -51,7 +51,7 @@ if (!$resultdatastore_db) {
                         <td><?php echo htmlspecialchars($row["V_ExecName"]); ?></td>
                         <td><?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></td>
                         <td><?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></td>
-                        <td><?php echo htmlspecialchars($row["V_comment"]); ?></td>
+                        <!-- <td><?php echo htmlspecialchars($row["V_comment"]); ?></td> -->
                         <td>
                             <?php if (!empty($row["filename"])): ?>
                                 <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>

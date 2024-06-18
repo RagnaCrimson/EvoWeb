@@ -171,11 +171,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
           <label for="V_comment">หมายเหตุ :</label>
           <input type="text" id="V_comment" name="V_comment"><br><br>
-
+<!-- 
           <form action="upload.php" method="POST" enctype="multipart/form-data">
             <label for="file" class="form-label">Select file</label>
             <input type="file" class="form-control" name="file" id="file" required><br><br>
-          </form>
+          </form> -->
 
           <label for="T_Status">สถานะ :</label>
             <select id="T_Status" name="T_Status">

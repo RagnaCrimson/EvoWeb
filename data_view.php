@@ -59,7 +59,6 @@ if (!$resultdatastore_db) {
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>หมายเหตุ</th>
-                    <th>File</th>
                     <th>Actions</th>
                 </tr>
                 <?php
@@ -87,7 +86,6 @@ if (!$resultdatastore_db) {
                             <td><?php echo $row["V_Electric_per_year"]; ?></td>
                             <td><?php echo $row["V_Electric_per_month"]; ?></td>
                             <td><?php echo $row["V_comment"]; ?></td>
-                            <td><?php echo $row["V_File"]; ?></td>
                             <td>
                                 <a href="edit.php?id=<?php echo $row['V_Name']; ?>" class="btn btn-warning btn-sm">Edit</a>
                             </td>

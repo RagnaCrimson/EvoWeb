@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $allowed_types = array("pdf");
         if (!in_array($file_type, $allowed_types)) {
-            echo "Sorry, only JPG, JPEG, PNG, GIF, and PDF files are allowed.";
+            echo "Sorry, only PDF files are allowed.";
         } else {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
                 $filename = $_FILES["file"]["name"];
