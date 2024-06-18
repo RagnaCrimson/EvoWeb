@@ -35,6 +35,7 @@ if (!$resultdatastore_db) {
             <div style="margin-bottom: 50px;"><h1>รายการติดตามสถานะ</h1></div>
             <table id="data" class="table table-striped">
                 <tr>
+                    <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
                     <th>ชื่อผู้บริหาร</th>
@@ -44,8 +45,12 @@ if (!$resultdatastore_db) {
                     <th>File PDF</th>
                     <th>สถานะ</th>
                 </tr>
-                <?php while ($row = $resultdatastore_db->fetch_assoc()): ?>
+                <?php  if ($resultdatastore_db->num_rows > 0) {
+                    $sequence = 1; // Initialize sequence number
+                    while($row = $resultdatastore_db->fetch_assoc()) {
+                        ?>
                     <tr>     
+                        <td><?php echo $sequence++; ?></td>
                         <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                         <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
                         <td><?php echo htmlspecialchars($row["V_ExecName"]); ?></td>
@@ -61,7 +66,12 @@ if (!$resultdatastore_db) {
                         </td>
                         <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
                     </tr>
-                <?php endwhile; ?>
+                    <?php
+                    }
+                } else {
+                    echo "<tr><td colspan='17'>ไม่มีข้อมูลรายการ</td></tr>";
+                }
+                ?>
             </table>
 
             <form action="upload.php" method="POST" enctype="multipart/form-data">
