@@ -23,8 +23,6 @@ if (!$resultdatastore_db) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashbord Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -35,6 +33,14 @@ if (!$resultdatastore_db) {
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;"><h1>รายการติดตามสถานะ</h1></div>
             <table id="data" class="table table-striped">
+
+            <nav class="navbar navbar-light bg-light">
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </nav>
+
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
@@ -75,14 +81,16 @@ if (!$resultdatastore_db) {
                 ?>
             </table>
 
-            <form action="upload.php" method="POST" enctype="multipart/form-data">
+            <!-- <form action="upload.php" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="file" class="form-label">Select file</label>
                     <input type="file" class="form-control" name="file" id="file" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Upload file</button>
-            </form>
+            </form> -->
+            
         </div>
     </div>
+    <?php include 'back.html'; ?>
 </body>
 </html>

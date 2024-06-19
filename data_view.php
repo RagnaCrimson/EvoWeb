@@ -12,22 +12,17 @@ if ($objConnect->connect_error) {
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-// Get the current page number from the URL, default is 1
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$rows_per_page = 20; // Number of rows to display per page
+$rows_per_page = 20;
 
-// Calculate the offset for the SQL LIMIT clause
 $offset = ($page - 1) * $rows_per_page;
 
-// Get the total number of rows in the table
 $result_total = $objConnect->query("SELECT COUNT(*) AS total FROM view");
 $row_total = $result_total->fetch_assoc();
 $total_rows = $row_total['total'];
 
-// Calculate total pages
 $total_pages = ceil($total_rows / $rows_per_page);
 
-// Fetch the data for the current page
 $strSQL_datastore_db = "SELECT * FROM view LIMIT $offset, $rows_per_page";
 $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
 
@@ -44,8 +39,6 @@ if (!$resultdatastore_db) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashbord Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -136,6 +129,6 @@ if (!$resultdatastore_db) {
                 </ul>
             </nav>
         </div>
-
+        <?php include 'back.html'; ?>
 </body>
 </html>

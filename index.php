@@ -132,29 +132,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <label for="V_ExecPhone">เบอร์ผู้บริหาร :</label>
           <input type="text" id="V_ExecPhone" name="V_ExecPhone"><br><br>
 
-          <label for="V_ExecMail">อีเมลผู้บริหาร:</label>
+          <label for="V_ExecMail">อีเมลผู้บริหาร :</label>
           <input type="text" id="V_ExecMail" name="V_ExecMail"><br><br>
 
-          <label for="V_CoordName1">ชื่อผู้ประสานงาน 1:</label>
+          <label for="V_CoordName1">ชื่อผู้ประสานงาน 1 :</label>
           <input type="text" id="V_CoordName1" name="V_CoordName1"><br><br>
 
-          <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1:</label>
+          <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1 :</label>
           <input type="text" id="V_CoordPhone1" name="V_CoordPhone1"><br><br>
 
-          <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1:</label>
+          <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
           <input type="text" id="V_CoordMail1" name="V_CoordMail1"><br><br>
       </div>
       
     <!-- ============== Right side ================= -->
     
       <div class="right">
-          <label for="V_CoordName2">ชื่อผู้ประสานงาน 2:</label>
+          <label for="V_CoordName2">ชื่อผู้ประสานงาน 2 :</label>
           <input type="text" id="V_CoordName2" name="V_CoordName2"><br><br>
 
-          <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2:</label>
+          <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2 :</label>
           <input type="text" id="V_CoordPhone2" name="V_CoordPhone2"><br><br>
 
-          <label for="V_CoordMail2">อีเมลผู้ปนะสานงาน 2:</label>
+          <label for="V_CoordMail2">อีเมลผู้ปนะสานงาน 2 :</label>
           <input type="text" id="V_CoordMail2" name="V_CoordMail2"><br><br>
 
           <label for="V_Sale">ทีมฝ่ายขาย :</label>
@@ -192,9 +192,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </div>
   </form>
-
+  
+  <?php include 'back.html'; ?>
   <?php
-
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   }
