@@ -4,10 +4,10 @@ include 'connect.php';
 // Fetch data for the dashboard
 // Sample data retrieval
 // Replace these with your actual queries
-$new_wins = 230; // Fetch the actual value from your database
-$trial_win_rate = 9.86; // Fetch the actual value from your database
-$new_mrr = 25690; // Fetch the actual value from your database
-$page_views = [55, 30, 15]; // Fetch the actual values from your database
+$new_wins = 100000000; // Fetch the actual value from your database
+$trial_win_rate = 10000; // Fetch the actual value from your database
+$new_mrr = 2000000; // Fetch the actual value from your database
+$page_views = [165, 14, 6]; // Fetch the actual values from your database
 ?>
 
 <!DOCTYPE html>
@@ -58,29 +58,31 @@ $page_views = [55, 30, 15]; // Fetch the actual values from your database
 <body>
     <?php include 'header.php'; ?>
 
-    <div class="dashboard">
-        <div class="card">
-            <h2>New Wins</h2>
-            <p><?php echo $new_wins; ?></p>
-        </div>
-        <div class="card">
-            <h2>Trial Win Rate</h2>
-            <p><?php echo $trial_win_rate; ?>%</p>
-        </div>
-        <div class="card">
-            <h2>New MRR</h2>
-            <p>$<?php echo number_format($new_mrr); ?></p>
-        </div>
-        <div class="card">
-            <h2>Page Views</h2>
-            <p><?php echo array_sum($page_views); ?></p>
-        </div>
-        <div class="chart-container">
-            <canvas id="pie-chart" class="pie-chart"></canvas>
-        </div>
-        <div class="chart-container">
-            <canvas id="bar-chart" class="bar-chart"></canvas>
-        </div>
+    <div class="container">
+      <div class="dashboard">
+          <div class="card">
+              <h2>จำนวนไฟฟ้ากิโลวัต Kw</h2>
+              <p><?php echo $new_wins; ?></p>
+          </div>
+          <div class="card">
+              <h2>ค่าใช้ไฟฟ้าต่อปี</h2>
+              <p><?php echo number_format($trial_win_rate); ?> บาท</p>
+          </div>
+          <div class="card">
+              <h2>ค่าใช้ไฟฟ้าต่อเดือน</h2>
+              <p><?php echo number_format($new_mrr); ?> บาท</p>
+          </div>
+          <div class="card">
+              <h2>Kจำนวนหน่วยงานที่เข้าร่วม</h2>
+              <p><?php echo array_sum($page_views); ?></p>
+          </div>
+          <div class="chart-container">
+              <canvas id="pie-chart" class="pie-chart"></canvas>
+          </div>
+          <div class="chart-container">
+              <canvas id="bar-chart" class="bar-chart"></canvas>
+          </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -89,7 +91,7 @@ $page_views = [55, 30, 15]; // Fetch the actual values from your database
         const pieChart = new Chart(ctxPie, {
             type: 'pie',
             data: {
-                labels: ['Organic Search', 'Referral', 'Direct'],
+                labels: ['ส่งการไฟฟ้า', 'ตอบรับ', 'ไม่ผ่าน'],
                 datasets: [{
                     label: 'Page Views',
                     data: [<?php echo implode(', ', $page_views); ?>],
@@ -105,10 +107,10 @@ $page_views = [55, 30, 15]; // Fetch the actual values from your database
         const barChart = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: ['New Wins', 'Trial Win Rate', 'New MRR'],
+                labels: ['ไม่ผ่าน', 'ตอบรับ', 'นำส่งการไฟฟ้า'],
                 datasets: [{
                     label: 'Values',
-                    data: [<?php echo $new_wins; ?>, <?php echo $trial_win_rate; ?>, <?php echo $new_mrr; ?>],
+                    data: [<?php echo $trial_win_rate; ?>, <?php echo $new_mrr; ?>],
                     backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe']
                 }]
             },

@@ -12,7 +12,23 @@ if ($objConnect->connect_error) {
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-$strSQL_datastore_db = "SELECT * FROM view";
+// Get the current page number from the URL, default is 1
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$rows_per_page = 20; // Number of rows to display per page
+
+// Calculate the offset for the SQL LIMIT clause
+$offset = ($page - 1) * $rows_per_page;
+
+// Get the total number of rows in the table
+$result_total = $objConnect->query("SELECT COUNT(*) AS total FROM view");
+$row_total = $result_total->fetch_assoc();
+$total_rows = $row_total['total'];
+
+// Calculate total pages
+$total_pages = ceil($total_rows / $rows_per_page);
+
+// Fetch the data for the current page
+$strSQL_datastore_db = "SELECT * FROM view LIMIT $offset, $rows_per_page";
 $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
 
 if (!$resultdatastore_db) {
@@ -63,7 +79,7 @@ if (!$resultdatastore_db) {
                 </tr>
                 <?php
                 if ($resultdatastore_db->num_rows > 0) {
-                    $sequence = 1; // Initialize sequence number
+                    $sequence = $offset + 1; // Initialize sequence number for the current page
                     while($row = $resultdatastore_db->fetch_assoc()) {
                         ?>
                         <tr>
@@ -93,10 +109,32 @@ if (!$resultdatastore_db) {
                         <?php
                     }
                 } else {
-                    echo "<tr><td colspan='17'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='20'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
             </table>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <?php if ($page > 1): ?>
+                        <li>
+                            <a href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="<?php if ($i == $page) echo 'active'; ?>"><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                    <?php endfor; ?>
+                    <?php if ($page < $total_pages): ?>
+                        <li>
+                            <a href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
 
 </body>
