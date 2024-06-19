@@ -3,6 +3,7 @@ include 'connect.php';
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
+// Query to get the data for the table
 $strSQL_datastore_db = "
     SELECT view.*, task.T_Status, files.filename 
     FROM view 
@@ -13,8 +14,18 @@ $resultdatastore_db = $objConnect->query($strSQL_datastore_db);
 if (!$resultdatastore_db) {
     die("Query failed: " . $objConnect->error);
 }
-?>
 
+// Query to calculate the sum of V_Electric_per_year
+$strSQL_sum = "SELECT SUM(V_Electric_per_year) AS total_electric_per_year FROM view";
+$result_sum = $objConnect->query($strSQL_sum);
+
+if (!$result_sum) {
+    die("Query failed: " . $objConnect->error);
+}
+
+$row_sum = $result_sum->fetch_assoc();
+$total_electric_per_year = $row_sum['total_electric_per_year'];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,9 +87,14 @@ if (!$resultdatastore_db) {
                     <?php
                     }
                 } else {
-                    echo "<tr><td colspan='17'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='8'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
+                <tr>
+                    <td colspan="4"><strong>Total</strong></td>
+                    <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
+                    <td colspan="3"></td>
+                </tr>
             </table>
 
             <!-- <form action="upload.php" method="POST" enctype="multipart/form-data">

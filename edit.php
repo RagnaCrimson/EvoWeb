@@ -29,11 +29,48 @@ if(isset($_GET['id'])) {
 }
 
 if(isset($_POST['submit'])) {
-    // Update the record with the edited data
-    $newData = $_POST['data']; // Assuming you have form fields named accordingly
-    $strSQL_update = "UPDATE view SET ... WHERE V_Name = '$id'";
-    // Execute the update query
+    $newData = $_POST['data']; 
+
+    $vName = $objConnect->real_escape_string($newData['V_Name']);
+    $vProvince = $objConnect->real_escape_string($newData['V_Province']);
+    $vDistrict = $objConnect->real_escape_string($newData['V_District']);
+    $vSubDistrict = $objConnect->real_escape_string($newData['V_SubDistrict']);
+    $vExecName = $objConnect->real_escape_string($newData['V_ExecName']);
+    $vExecPhone = $objConnect->real_escape_string($newData['V_ExecPhone']);
+    $vExecMail = $objConnect->real_escape_string($newData['V_ExecMail']);
+    $vCoordName1 = $objConnect->real_escape_string($newData['V_CoordName1']);
+    $vCoordPhone1 = $objConnect->real_escape_string($newData['V_CoordPhone1']);
+    $vCoordMail1 = $objConnect->real_escape_string($newData['V_CoordMail1']);
+    $vCoordName2 = $objConnect->real_escape_string($newData['V_CoordName2']);
+    $vCoordPhone2 = $objConnect->real_escape_string($newData['V_CoordPhone2']);
+    $vCoordMail2 = $objConnect->real_escape_string($newData['V_CoordMail2']);
+    $vSale = $objConnect->real_escape_string($newData['V_Sale']);
+    $vDate = $objConnect->real_escape_string($newData['V_Date']);
+    $vElectricPerYear = $objConnect->real_escape_string($newData['V_Electric_per_year']);
+    $vElectricPerMonth = $objConnect->real_escape_string($newData['V_Electric_per_month']);
+    $vComment = $objConnect->real_escape_string($newData['V_comment']);
     
+    $strSQL_update = "UPDATE view SET 
+                      V_Name = '$vName',
+                      V_Province = '$vProvince',
+                      V_District = '$vDistrict',
+                      V_SubDistrict = '$vSubDistrict',
+                      V_ExecName = '$vExecName',
+                      V_ExecPhone = '$vExecPhone',
+                      V_ExecMail = '$vExecMail',
+                      V_CoordName1 = '$vCoordName1',
+                      V_CoordPhone1 = '$vCoordPhone1',
+                      V_CoordMail1 = '$vCoordMail1',
+                      V_CoordName2 = '$vCoordName2',
+                      V_CoordPhone2 = '$vCoordPhone2',
+                      V_CoordMail2 = '$vCoordMail2',
+                      V_Sale = '$vSale',
+                      V_Date = '$vDate',
+                      V_Electric_per_year = '$vElectricPerYear',
+                      V_Electric_per_month = '$vElectricPerMonth',
+                      V_comment = '$vComment'
+                      WHERE V_Name = '$id'";
+
     if ($objConnect->query($strSQL_update) === TRUE) {
         echo "Record updated successfully";
     } else {
@@ -108,8 +145,8 @@ if(isset($_POST['submit'])) {
                 <input type="text" class="form-control" id="CoordPhone2" name="data[V_CoordPhone2]" value="<?php echo $row_edit['V_CoordPhone2']; ?>">
             </div>
             <div class="form-group">
-                <label for="CoordMail1">อีเมลผู้ประสานงาน 2 :</label>
-                <input type="text" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo $row_edit['V_CoordMail1']; ?>">
+                <label for="CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
+                <input type="text" class="form-control" id="CoordMail2" name="data[V_CoordMail2]" value="<?php echo $row_edit['V_CoordMail2']; ?>">
             </div>
             <div class="form-group">
                 <label for="sale">ทีมฝ่ายขาย :</label>
@@ -121,11 +158,11 @@ if(isset($_POST['submit'])) {
             </div>
             <div class="form-group">
                 <label for="Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-                <input type="text" class="form-control" id="Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo $row_edit['V_Electric_per_year']; ?>">
+                <input type="number" step="any" class="form-control" id="Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo $row_edit['V_Electric_per_year']; ?>">
             </div>
             <div class="form-group">
                 <label for="Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-                <input type="text" class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
+                <input type="number" step="any" class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
             </div>
             <div class="form-group">
                 <label for="comment">หมายเหตุ :</label>
