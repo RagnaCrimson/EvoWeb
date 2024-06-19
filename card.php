@@ -1,17 +1,13 @@
-<!-- just in case for change my mind -->
-
 <?php
-include 'connect.php';
+include 'connect.php'; 
 
-mysqli_query($objConnect, "SET NAMES utf8");
-
-$strSQL_datastore_db = "SELECT * FROM view";
-$resultdatastore_db = $objConnect->query($strSQL_datastore_db);
-
-if (!$resultdatastore_db) {
-    die("Query failed: " . $objConnect->error);
-}
-
+// Fetch data for the dashboard
+// Sample data retrieval
+// Replace these with your actual queries
+$new_wins = 230; // Fetch the actual value from your database
+$trial_win_rate = 9.86; // Fetch the actual value from your database
+$new_mrr = 25690; // Fetch the actual value from your database
+$page_views = [55, 30, 15]; // Fetch the actual values from your database
 ?>
 
 <!DOCTYPE html>
@@ -19,55 +15,112 @@ if (!$resultdatastore_db) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data View</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Executive Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .card h2 {
+            margin: 0 0 10px;
+        }
+        .card p {
+            font-size: 24px;
+            margin: 0;
+        }
+        .chart-container {
+            grid-column: span 2;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pie-chart, .bar-chart {
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
     <?php include 'header.php'; ?>
 
-    <div class="container">
-        <h1 class="text-center" style="margin-top: 5px; margin-bottom: 50px;">ข้อมูลสถานะ การติดตาม</h1>
-        <div class="row">
-            <?php
-            if ($resultdatastore_db->num_rows > 0) {
-                while($row = $resultdatastore_db->fetch_assoc()) {
-                    ?>
-                    <div class="col-md-4">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title"><b><?php echo htmlspecialchars($row["V_Name"]); ?></b></h5>
-                                <p class="card-text"><strong>จังหวัด:</strong><b> <?php echo htmlspecialchars($row["V_Province"]); ?></b></p>
-                                <p class="card-text"><strong>อำเภอ:</strong><b> <?php echo htmlspecialchars($row["V_District"]); ?></b></p>
-                                <p class="card-text"><strong>ตำบล:</strong><b> <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้บริหาร:</strong><b> <?php echo htmlspecialchars($row["V_ExecName"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทร:</strong><b> <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail:</strong><b> <?php echo htmlspecialchars($row["V_ExecMail"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordName1"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทรผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail ผู้ประสานงาน 1:</strong><b> <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></b></p>
-                                <p class="card-text"><strong>ชื่อผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordName2"]); ?></b></p>
-                                <p class="card-text"><strong>เบอร์โทรผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></b></p>
-                                <p class="card-text"><strong>E-mail ผู้ประสานงาน 2:</strong><b> <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></b></p>
-                                <p class="card-text"><strong>ทีมฝ่ายขาย:</strong><b> <?php echo htmlspecialchars($row["V_Sale"]); ?></b></p>
-                                <p class="card-text"><strong>วันที่รับเอกสาร:</strong><b> <?php echo htmlspecialchars($row["V_Date"]); ?></b></p>
-                                <p class="card-text"><strong>การใช้ไฟ/ปี:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></b></p>
-                                <p class="card-text"><strong>การใช้ไฟ/เดือน:</strong><b> <?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></b></p>
-                                <p class="card-text"><strong>หมายเหตุ:</strong><b> <?php echo htmlspecialchars($row["V_comment"]); ?></b></p>
-                                <p class="card-text"><strong>File PDF:</strong><b> <?php echo htmlspecialchars($row["V_File"]); ?></b></p>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
-            } else {
-                echo "<div class='col-12'><p class='text-center'>ไม่มีข้อมูลรายการ</p></div>";
-            }
-            ?>
+    <div class="dashboard">
+        <div class="card">
+            <h2>New Wins</h2>
+            <p><?php echo $new_wins; ?></p>
+        </div>
+        <div class="card">
+            <h2>Trial Win Rate</h2>
+            <p><?php echo $trial_win_rate; ?>%</p>
+        </div>
+        <div class="card">
+            <h2>New MRR</h2>
+            <p>$<?php echo number_format($new_mrr); ?></p>
+        </div>
+        <div class="card">
+            <h2>Page Views</h2>
+            <p><?php echo array_sum($page_views); ?></p>
+        </div>
+        <div class="chart-container">
+            <canvas id="pie-chart" class="pie-chart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="bar-chart" class="bar-chart"></canvas>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxPie = document.getElementById('pie-chart').getContext('2d');
+        const pieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Organic Search', 'Referral', 'Direct'],
+                datasets: [{
+                    label: 'Page Views',
+                    data: [<?php echo implode(', ', $page_views); ?>],
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        const ctxBar = document.getElementById('bar-chart').getContext('2d');
+        const barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['New Wins', 'Trial Win Rate', 'New MRR'],
+                datasets: [{
+                    label: 'Values',
+                    data: [<?php echo $new_wins; ?>, <?php echo $trial_win_rate; ?>, <?php echo $new_mrr; ?>],
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
