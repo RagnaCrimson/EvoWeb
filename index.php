@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_task->bind_param("s", $status);
 
         if ($stmt_task->execute()) {
-            echo "<script>alert('Data inserted successfully.');</script>"; // Show a JavaScript alert
+            echo "<script>alert('Data inserted successfully.');</script>";
         } else {
             echo "Error: " . $sql_task . "<br>" . $stmt_task->error;
         }
@@ -63,33 +63,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
     }
 
-
-    if (isset($_FILES["V_File"]) && $_FILES["V_File"]["error"] == 0) {
-        $target_dir = "uploads/";
-        $target_file = $target_dir . basename($_FILES["V_File"]["name"]);
-        if (move_uploaded_file($_FILES["V_File"]["tmp_name"], $target_file)) {
-            echo "File uploaded successfully.";
-        } else {
-            echo "Sorry, there was an error uploading your file.";
-        }
-    }
-
     $stmt_datastore_db->close();
     $objConnect->close();
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashbord Admin</title>
+  <title>Dashboard Admin</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/card_style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
@@ -97,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="js/script.js"></script>
 </head>
+
 <body class="bgcolor">
     <?php include 'header.php'; ?>
 
@@ -106,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <div class="container">
         <form action="index.php" method="POST" onsubmit="showSuccessPopup()">
-      <div class="con">
+      <div class="card-body">
 
         <div class="left">
           <label for="V_Name">ชื่อหน่วยงาน :</label>

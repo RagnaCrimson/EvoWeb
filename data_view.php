@@ -34,10 +34,10 @@ try {
     $total_pages = ceil($total_rows / $rows_per_page);
 
     if ($search) {
-        $stmt_data = $objConnect->prepare("SELECT * FROM view WHERE V_Name LIKE CONCAT('%', ?, '%') OR V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.id WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
         $stmt_data->bind_param("ssii", $search, $search, $offset, $rows_per_page);
     } else {
-        $stmt_data = $objConnect->prepare("SELECT * FROM view LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.id LIMIT ?, ?");
         $stmt_data->bind_param("ii", $offset, $rows_per_page);
     }
 
@@ -107,6 +107,11 @@ try {
                                 <p>การใช้ไฟ/ปี : <b><?php echo number_format($row["V_Electric_per_year"], 2); ?></b></p>
                                 <p>การใช้ไฟ/เดือน : <b><?php echo number_format($row["V_Electric_per_month"], 2); ?></b></p>
                                 <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
+                                <?php if (!empty($row["filename"])): ?>
+                                    <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" class="btn btn-info btn-sm" target="_blank">Download File</a>
+                                <?php else: ?>
+                                    <p>No file uploaded</p>
+                                <?php endif; ?>
                                 <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-sm">Edit</a>
                             </div>
                         </div>
