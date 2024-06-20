@@ -4,32 +4,35 @@ $username = "root";
 $password = "";
 $database = "datastore_db";
 
-$objConnect = new mysqli($server, $username, $password, $database);
+try {
+    $objConnect = new mysqli($server, $username, $password, $database);
 
-if ($objConnect->connect_error) {
-    die("Connection failed: " . $objConnect->connect_error);
+    if ($objConnect->connect_error) {
+        throw new Exception("Connection failed: " . $objConnect->connect_error);
+    }
+
+    $objConnect->set_charset("utf8");
+
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $rows_per_page = 20;
+    $offset = ($page - 1) * $rows_per_page;
+
+    $stmt_total = $objConnect->prepare("SELECT COUNT(*) AS total FROM view");
+    $stmt_total->execute();
+    $result_total = $stmt_total->get_result();
+    $row_total = $result_total->fetch_assoc();
+    $total_rows = $row_total['total'];
+
+    $total_pages = ceil($total_rows / $rows_per_page);
+
+    $stmt_data = $objConnect->prepare("SELECT * FROM view LIMIT ?, ?");
+    $stmt_data->bind_param("ii", $offset, $rows_per_page);
+    $stmt_data->execute();
+    $resultdatastore_db = $stmt_data->get_result();
+
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
 }
-
-mysqli_query($objConnect, "SET NAMES utf8");
-
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$rows_per_page = 20;
-
-$offset = ($page - 1) * $rows_per_page;
-
-$result_total = $objConnect->query("SELECT COUNT(*) AS total FROM view");
-$row_total = $result_total->fetch_assoc();
-$total_rows = $row_total['total'];
-
-$total_pages = ceil($total_rows / $rows_per_page);
-
-$strSQL_datastore_db = "SELECT * FROM view LIMIT $offset, $rows_per_page";
-$resultdatastore_db = $objConnect->query($strSQL_datastore_db);
-
-if (!$resultdatastore_db) {
-    die("Query failed: " . $objConnect->error);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -37,75 +40,60 @@ if (!$resultdatastore_db) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashbord Admin</title>
+    <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/card_style.css">
 </head>
 <body>
     <?php include 'header.php'; ?>
 
-        <div id="View" class="tabcontent">
-            <div style="margin-top: 50px; margin-bottom: 50px;"><h1>รายการข้อมูลการทั้งหมด</h1></div>
-            <table id="data" class="table table-striped">
-                <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อหน่วยงาน</th>
-                    <th>จังหวัด</th>
-                    <th>อำเภอ</th>
-                    <th>ตำบล</th>
-                    <th>ชื่อผู้บริหาร</th>
-                    <th>เบอร์โทร</th>
-                    <th>E-mail</th>
-                    <th>ชื่อผู้ประสานงาน 1</th>
-                    <th>เบอร์โทรผู้ประสานงาน 1</th>
-                    <th>E-mail ผู้ประสานงาน 1</th>
-                    <th>ชื่อผู้ประสานงาน 2</th>
-                    <th>เบอร์โทรผู้ประสานงาน 2</th>
-                    <th>E-mail ผู้ประสานงาน 2</th>
-                    <th>ทีมฝ่ายขาย</th>
-                    <th>วันที่รับเอกสาร</th>
-                    <th>การใช้ไฟ/ปี</th>
-                    <th>การใช้ไฟ/เดือน</th>
-                    <th>หมายเหตุ</th>
-                    <th>Actions</th>
-                </tr>
-                <?php
-                if ($resultdatastore_db->num_rows > 0) {
-                    $sequence = $offset + 1; // Initialize sequence number for the current page
-                    while($row = $resultdatastore_db->fetch_assoc()) {
-                        ?>
-                        <tr>
-                            <td><?php echo $sequence++; ?></td>
-                            <td><?php echo $row["V_Name"]; ?></td>
-                            <td><?php echo $row["V_Province"]; ?></td>
-                            <td><?php echo $row["V_District"]; ?></td>
-                            <td><?php echo $row["V_SubDistrict"]; ?></td>
-                            <td><?php echo $row["V_ExecName"]; ?></td>
-                            <td><?php echo $row["V_ExecPhone"]; ?></td>
-                            <td><?php echo $row["V_ExecMail"]; ?></td>
-                            <td><?php echo $row["V_CoordName1"]; ?></td>
-                            <td><?php echo $row["V_CoordPhone1"]; ?></td>
-                            <td><?php echo $row["V_CoordMail1"]; ?></td>
-                            <td><?php echo $row["V_CoordName2"]; ?></td>
-                            <td><?php echo $row["V_CoordPhone2"]; ?></td>
-                            <td><?php echo $row["V_CoordMail2"]; ?></td>
-                            <td><?php echo $row["V_Sale"]; ?></td>
-                            <td><?php echo $row["V_Date"]; ?></td>
-                            <td><?php echo $row["V_Electric_per_year"]; ?></td>
-                            <td><?php echo $row["V_Electric_per_month"]; ?></td>
-                            <td><?php echo $row["V_comment"]; ?></td>
-                            <td>
-                                <a href="edit.php?id=<?php echo $row['V_Name']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                            </td>
-                        </tr>
-                        <?php
-                    }
-                } else {
-                    echo "<tr><td colspan='20'>ไม่มีข้อมูลรายการ</td></tr>";
+    <div id="View" class="tabcontent">
+        <div style="margin-top: 50px; margin-bottom: 50px;">
+            <h1>รายการข้อมูลการทั้งหมด</h1>
+        </div>
+        <div class="card-container">
+            <?php
+            if ($resultdatastore_db->num_rows > 0) {
+                $sequence = $offset + 1;
+                while($row = $resultdatastore_db->fetch_assoc()) {
+                    ?>
+                    <div class="card">
+                        <div class="card-header">
+                            <?php echo htmlspecialchars($row["V_Name"]); ?>
+                        </div>
+                        <div class="card-body">
+                            <div class="left">
+                                <p><b>ลำดับ : <?php echo $sequence++; ?></b></p>
+                                <p>จังหวัด : <?php echo htmlspecialchars($row["V_Province"]); ?></p>
+                                <p>อำเภอ : <?php echo htmlspecialchars($row["V_District"]); ?></p>
+                                <p>ตำบล : <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></p><br>
+                                <p>ชื่อผู้บริหาร : <?php echo htmlspecialchars($row["V_ExecName"]); ?></p>
+                                <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></p>
+                                <p>Email : <?php echo htmlspecialchars($row["V_ExecMail"]); ?></p><br>
+                                <p>ทีมฝ่ายขาย : <?php echo htmlspecialchars($row["V_Sale"]); ?></p>
+                                <p>วันที่รับเอกสาร : <?php echo htmlspecialchars($row["V_Date"]); ?></p>
+                            </div>
+                            <div class="right">
+                                <p>ชื่อผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordName1"]); ?></p>
+                                <p>เบอร์โทรผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></p>
+                                <p>Email ผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></p><br>
+                                <p>ชื่อผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordName2"]); ?></p>
+                                <p>เบอร์โทรผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
+                                <p>Email ผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
+                                <p>การใช้ไฟ/ปี : <?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></p>
+                                <p>การใช้ไฟ/เดือน : <?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></p>
+                                <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
+                                <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
                 }
-                ?>
-            </table>
+            } else {
+                echo "<p>ไม่มีข้อมูลรายการ</p>";
+            }
+            ?>
 
             <nav aria-label="Page navigation">
                 <ul class="pagination">
@@ -129,6 +117,7 @@ if (!$resultdatastore_db) {
                 </ul>
             </nav>
         </div>
-        <?php include 'back.html'; ?>
+    </div>
+    <?php include 'back.html'; ?>
 </body>
 </html>

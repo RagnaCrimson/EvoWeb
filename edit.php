@@ -162,7 +162,7 @@ if(isset($_POST['submit'])) {
             </div>
             <div class="form-group">
                 <label for="Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-                <input type="number" step="any" class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
+                <input type="number" step="any"  class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
             </div>
             <div class="form-group">
                 <label for="comment">หมายเหตุ :</label>
