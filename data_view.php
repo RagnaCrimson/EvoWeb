@@ -17,7 +17,15 @@ try {
     $rows_per_page = 20;
     $offset = ($page - 1) * $rows_per_page;
 
-    $stmt_total = $objConnect->prepare("SELECT COUNT(*) AS total FROM view");
+    $search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
+
+    if ($search) {
+        $stmt_total = $objConnect->prepare("SELECT COUNT(*) AS total FROM view WHERE V_Name LIKE CONCAT('%', ?, '%') OR V_Province LIKE CONCAT('%', ?, '%')");
+        $stmt_total->bind_param("ss", $search, $search);
+    } else {
+        $stmt_total = $objConnect->prepare("SELECT COUNT(*) AS total FROM view");
+    }
+
     $stmt_total->execute();
     $result_total = $stmt_total->get_result();
     $row_total = $result_total->fetch_assoc();
@@ -25,8 +33,14 @@ try {
 
     $total_pages = ceil($total_rows / $rows_per_page);
 
-    $stmt_data = $objConnect->prepare("SELECT * FROM view LIMIT ?, ?");
-    $stmt_data->bind_param("ii", $offset, $rows_per_page);
+    if ($search) {
+        $stmt_data = $objConnect->prepare("SELECT * FROM view WHERE V_Name LIKE CONCAT('%', ?, '%') OR V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
+        $stmt_data->bind_param("ssii", $search, $search, $offset, $rows_per_page);
+    } else {
+        $stmt_data = $objConnect->prepare("SELECT * FROM view LIMIT ?, ?");
+        $stmt_data->bind_param("ii", $offset, $rows_per_page);
+    }
+
     $stmt_data->execute();
     $resultdatastore_db = $stmt_data->get_result();
 
@@ -45,13 +59,23 @@ try {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/card_style.css">
 </head>
-<body>
+<body class="bgcolor">
     <?php include 'header.php'; ?>
-
+    
     <div id="View" class="tabcontent">
-        <div style="margin-top: 50px; margin-bottom: 50px;">
+        <div style="margin-top: 50px; margin-bottom: 30px;">
             <h1>รายการข้อมูลการทั้งหมด</h1>
         </div>
+
+        <div class="container">
+            <nav class="navbar navbar-light bg-light" style="text-align: center;">
+                <form class="form-inline" method="GET" action="">
+                    <input type="text" style="text-align: center;" name="search" placeholder="พิพม์เพื่อค้นหา" value="<?php echo htmlspecialchars($search); ?>">
+                    <button type="submit">ค้นหา</button>
+                </form>
+            </nav>
+        </div>
+
         <div class="card-container">
             <?php
             if ($resultdatastore_db->num_rows > 0) {
@@ -60,35 +84,35 @@ try {
                     ?>
                     <div class="card">
                         <div class="card-header">
-                            <?php echo htmlspecialchars($row["V_Name"]); ?>
+                            <p><b>ลำดับ : <?php echo $sequence; ?></b></p><?php echo htmlspecialchars($row["V_Name"]); ?>
                         </div>
                         <div class="card-body">
                             <div class="left">
-                                <p><b>ลำดับ : <?php echo $sequence++; ?></b></p>
                                 <p>จังหวัด : <?php echo htmlspecialchars($row["V_Province"]); ?></p>
                                 <p>อำเภอ : <?php echo htmlspecialchars($row["V_District"]); ?></p>
                                 <p>ตำบล : <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></p><br>
-                                <p>ชื่อผู้บริหาร : <?php echo htmlspecialchars($row["V_ExecName"]); ?></p>
+                                <p><b>ชื่อผู้บริหาร : </b><?php echo htmlspecialchars($row["V_ExecName"]); ?></p>
                                 <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></p>
                                 <p>Email : <?php echo htmlspecialchars($row["V_ExecMail"]); ?></p><br>
                                 <p>ทีมฝ่ายขาย : <?php echo htmlspecialchars($row["V_Sale"]); ?></p>
                                 <p>วันที่รับเอกสาร : <?php echo htmlspecialchars($row["V_Date"]); ?></p>
                             </div>
                             <div class="right">
-                                <p>ชื่อผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordName1"]); ?></p>
-                                <p>เบอร์โทรผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></p>
-                                <p>Email ผู้ประสานงาน 1 : <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></p><br>
-                                <p>ชื่อผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordName2"]); ?></p>
-                                <p>เบอร์โทรผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
-                                <p>Email ผู้ประสานงาน 2 : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
-                                <p>การใช้ไฟ/ปี : <?php echo htmlspecialchars($row["V_Electric_per_year"]); ?></p>
-                                <p>การใช้ไฟ/เดือน : <?php echo htmlspecialchars($row["V_Electric_per_month"]); ?></p>
+                                <p>ชื่อผู้ประสานงาน : <?php echo htmlspecialchars($row["V_CoordName1"]); ?></p>
+                                <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></p>
+                                <p>Email : <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></p><br>
+                                <p>ชื่อผู้ประสานงาน : <?php echo htmlspecialchars($row["V_CoordName2"]); ?></p>
+                                <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
+                                <p>Email : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
+                                <p>การใช้ไฟ/ปี : <b><?php echo number_format($row["V_Electric_per_year"], 2); ?></b></p>
+                                <p>การใช้ไฟ/เดือน : <b><?php echo number_format($row["V_Electric_per_month"], 2); ?></b></p>
                                 <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
                                 <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-sm">Edit</a>
                             </div>
                         </div>
                     </div>
                     <?php
+                    $sequence++;
                 }
             } else {
                 echo "<p>ไม่มีข้อมูลรายการ</p>";
@@ -99,17 +123,17 @@ try {
                 <ul class="pagination">
                     <?php if ($page > 1): ?>
                         <li>
-                            <a href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                            <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                     <?php endif; ?>
                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <li class="<?php if ($i == $page) echo 'active'; ?>"><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                        <li class="<?php if ($i == $page) echo 'active'; ?>"><a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a></li>
                     <?php endfor; ?>
                     <?php if ($page < $total_pages): ?>
                         <li>
-                            <a href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                            <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

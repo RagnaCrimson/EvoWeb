@@ -86,13 +86,16 @@ if(isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Data</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/card_style.css">
 </head>
-<body>
+<body class="bgcolor">
     <?php include 'header.php'; ?>
     <div class="container">
-        <h2>Edit Data</h2>
+        <h2 class="center">Edit Data</h2>
         <form method="post">
 
+        
+    <div class="card-body">
         <div class="left">
             <div class="form-group">
                 <label for="name">ชื่อหน่วยงาน :</label>
@@ -124,7 +127,7 @@ if(isset($_POST['submit'])) {
             </div>
             <div class="form-group">
                 <label for="CoordName1">ชื่อผู้ประสานงาน 1 :</label>
-                <input type="text" class="form-control" id="CoordName1" name="data[V_CoordName1]" value="<?php echo $row_edit['V_CoordName1']; ?>">
+                <input type="text" class="form-control" id="CoordName1" name="data[V_CoordName1]" value="<?php echo $row_edit['V_CoordName1']; ?>">                
             </div>
             <div class="form-group">
                 <label for="CoordPhone1">เบอร์โทรผู้ประสานงาน 1 :</label>
@@ -134,6 +137,7 @@ if(isset($_POST['submit'])) {
                 <label for="CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
                 <input type="text" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo $row_edit['V_CoordMail1']; ?>">
             </div>
+        </div>
 
         <div class="right">
             <div class="form-group">
@@ -167,13 +171,17 @@ if(isset($_POST['submit'])) {
             <div class="form-group">
                 <label for="comment">หมายเหตุ :</label>
                 <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo $row_edit['V_comment']; ?>">
-            </div>
+            </div>            
         </div>
+        
+        </form>
+            <?php include 'back.html'; ?>
 
+        </div>
+        <div class="center">
             <button type="submit" name="submit" class="btn btn-primary">Update</button>
             <a href="data_view.php" class="btn btn-default">Back</a>
-        </form>
-        <?php include 'back.html'; ?>
+        </div>
     </div>
 </body>
 </html>

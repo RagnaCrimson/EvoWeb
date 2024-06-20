@@ -25,9 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql = "INSERT INTO files (filename) VALUES ('$filename')";
 
                 if ($conn->query($sql) === TRUE) {
-                    echo "The file " . basename($_FILES["file"]["name"]) . " has been uploaded and the information has been stored in the database.";
+                    echo "The file " . basename($_FILES["file"]["name"]) . " uploaded successfully";
                 } else {
-                    echo "Sorry, there was an error uploading your file and storing information in the database: " . $conn->error;
+                    echo "Sorry, there was an error uploading your file " . $conn->error;
                 }
 
                 $conn->close();
@@ -40,4 +40,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-

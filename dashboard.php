@@ -1,13 +1,31 @@
 <?php
 include 'connect.php'; 
 
-// Fetch data for the dashboard
-// Sample data retrieval
-// Replace these with your actual queries
-$new_wins = 100000000; // Fetch the actual value from your database
-$trial_win_rate = 10000000; // Fetch the actual value from your database
-$new_mrr = 2000000; // Fetch the actual value from your database
-$page_views = [165, 14, 6]; // Fetch the actual values from your database
+// display SUM electric_per_year
+$strSQL_sum_year = "SELECT SUM(V_Electric_per_year) AS total_electric_per_year FROM view";
+$result_sum_year = $objConnect->query($strSQL_sum_year);
+
+if (!$result_sum_year) {
+    die("Query failed: " . $objConnect->error);
+}
+
+$row_sum_year = $result_sum_year->fetch_assoc();
+$total_electric_per_year = $row_sum_year['total_electric_per_year'];
+
+// display SUM electric_per_month
+$strSQL_sum_month = "SELECT SUM(V_Electric_per_month) AS total_electric_per_month FROM view";
+$result_sum_month = $objConnect->query($strSQL_sum_month);
+
+if (!$result_sum_month) {
+    die("Query failed: " . $objConnect->error);
+}
+
+$row_sum_month = $result_sum_month->fetch_assoc();
+$total_electric_per_month = $row_sum_month['total_electric_per_month'];
+
+// Sample data for the dashboard
+$new_wins = 100000000; 
+$page_views = [165, 21, 6]; 
 ?>
 
 <!DOCTYPE html>
@@ -56,22 +74,22 @@ $page_views = [165, 14, 6]; // Fetch the actual values from your database
         }
     </style>
 </head>
-<body>
+<body class="bgcolor">
     <?php include 'header.php'; ?>
 
     <div class="container">
       <div class="dashboard">
           <div class="card">
-              <h2>จำนวนไฟฟ้ากิโลวัต Kw</h2>
+              <h2>รวมจำนวนไฟฟ้ากิโลวัต Kw</h2>
               <p><?php echo number_format($new_wins); ?></p>
           </div>
           <div class="card">
-              <h2>ค่าใช้ไฟฟ้าต่อปี</h2>
-              <p><?php echo number_format($trial_win_rate); ?> บาท</p>
+              <h2>รวมค่าใช้ไฟฟ้าต่อปี</h2>
+              <p><?php echo number_format($total_electric_per_year); ?> บาท</p>
           </div>
           <div class="card">
-              <h2>ค่าใช้ไฟฟ้าต่อเดือน</h2>
-              <p><?php echo number_format($new_mrr); ?> บาท</p>
+              <h2>รวมค่าใช้ไฟฟ้าต่อเดือน</h2>
+              <p><?php echo number_format($total_electric_per_month); ?> บาท</p>
           </div>
           <div class="card">
               <h2>จำนวนหน่วยงานที่เข้าร่วม</h2>
@@ -110,8 +128,8 @@ $page_views = [165, 14, 6]; // Fetch the actual values from your database
                 labels: ['ต่อเดือน', 'ต่อปี'],
                 datasets: [{
                     label: 'อัตราการใช้ไฟ',
-                    data: [<?php echo $trial_win_rate; ?>, <?php echo $new_mrr; ?>],
-                    backgroundColor: ['#FF5733', '#36a2eb', '#FF5733']
+                    data: [<?php echo $total_electric_per_month; ?>, <?php echo $total_electric_per_year; ?>],
+                    backgroundColor: ['#FF5733', '#36a2eb']
                 }]
             },
             options: {
