@@ -23,7 +23,9 @@ if (!$result_sum_month) {
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
-// Sample data for the dashboard
+$total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
+
+
 $new_wins = 100000000; 
 $page_views = [165, 21, 6]; 
 ?>
@@ -34,45 +36,9 @@ $page_views = [165, 21, 6];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-        }
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            padding: 20px;
-        }
-        .card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .card h2 {
-            margin: 0 0 10px;
-        }
-        .card p {
-            font-size: 24px;
-            margin: 0;
-        }
-        .chart-container {
-            grid-column: span 2;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .pie-chart, .bar-chart {
-            height: 400px;
-        }
-    </style>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>

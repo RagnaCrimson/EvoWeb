@@ -128,10 +128,15 @@ $_SESSION['total_electric_per_month'] = $total_electric_per_month;
                 }
                 ?>
                 <tr>
-                    <td colspan="4"><strong>Total</strong></td>
+                    <td colspan="4"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
                         <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
                         <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
                     <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td colspan="7"><strong>Total Rows</strong></td>
+                    <td ><strong><?php echo $total_rows; ?></strong></td>
+                    <?php $_SESSION['total_rows'] = $total_rows; ?>
                 </tr>
             </table>
         </div>
