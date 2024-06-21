@@ -1,7 +1,16 @@
 <?php
-include 'connect.php';
+$server = "localhost";
+$username = "root";
+$password = "";
+$database = "datastore_db";
 
-$id = '';
+$objConnect = new mysqli($server, $username, $password, $database);
+
+if ($objConnect->connect_error) {
+    die("Connection failed: " . $objConnect->connect_error);
+}
+
+mysqli_query($objConnect, "SET NAMES utf8");
 
 if(isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -19,35 +28,21 @@ if(isset($_GET['id'])) {
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-    $newData = $_POST['data'];
+if (isset($_POST['submit'])) {
+    $newData = $_POST['data']; 
+
     $vComment = $objConnect->real_escape_string($newData['V_comment']);
 
-    $strSQL_update_view = "UPDATE view SET 
-                      V_comment = '$vComment'
-                      WHERE V_Name = '$id'";
+    $stmt = $objConnect->prepare("UPDATE view SET V_comment = ? WHERE V_Name = ?");
+    $stmt->bind_param("ss", $vComment, $id);
 
-    if ($objConnect->query($strSQL_update_view) === TRUE) {
-        echo "Record in view table updated successfully<br>";
+    if ($stmt->execute()) {
+        echo "Record updated successfully";
     } else {
-        echo "Error updating record in view table: " . $objConnect->error . "<br>";
+        echo "Error updating record: " . $stmt->error;
     }
 
-    $statusArray = isset($newData['T_Status']) ? $newData['T_Status'] : array();
-
-    foreach ($statusArray as $status) {
-        $status = $objConnect->real_escape_string($status);
-
-        $strSQL_update_task = "UPDATE task SET 
-                          T_status = '$status'
-                          WHERE T_Status = '$id'";
-
-        if ($objConnect->query($strSQL_update_task) === TRUE) {
-            echo "Record in task updated successfully for status: $status<br>";
-        } else {
-            echo "Error updating record in task for status: $status - " . $objConnect->error . "<br>";
-        }
-    }
+    $stmt->close();
 }
 ?>
 
@@ -73,28 +68,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                     </div>
                     <div class="form-group">
                         <label for="comment">หมายเหตุ :</label>
-                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo htmlspecialchars($row_edit['V_comment']); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label>สถานะ :</label><br>
-                        <input type="radio" id="status1" name="data[T_Status][]" value="นำส่งการไฟฟ้า">
-                        <label for="status1">นำส่งการไฟฟ้า</label><br>
-                        <input type="radio" id="status2" name="data[T_Status][]" value="ตอบรับ">
-                        <label for="status2">ตอบรับ</label><br>
-                        <input type="radio" id="status3" name="data[T_Status][]" value="ส่งมอบงาน">
-                        <label for="status3">ส่งมอบงาน</label><br>
-                        <input type="radio" id="status4" name="data[T_Status][]" value="ไม่ผ่าน">
-                        <label for="status4">ไม่ผ่าน</label><br>
-                    </div>   
+                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo $row_edit['V_comment']; ?>">
+                    </div>            
                 </div>
             </div>
             <div class="center">
                 <button type="submit" name="submit" class="btn btn-primary">Update</button>
-                <a href="status_view.php" class="btn btn-default">Back</a>
+                <a href="data_view.php" class="btn btn-default">Back</a>
             </div>
         </form>
-        <?php include 'back.html'; ?>
+
+            <?php include 'back.html'; ?>
     </div>
 </body>
 </html>
-

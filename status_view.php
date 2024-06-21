@@ -119,7 +119,7 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
-                            <td><a href="edit_status.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">Edit</a></td>
+                            <td><a href="edit_status.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-info btn-lg">Update</a></td>
                         </tr>
                         <?php
                     }

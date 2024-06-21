@@ -144,10 +144,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" placeholder="00/00/0000" id="V_Date" name="V_Date"><br><br>
 
             <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-            <input type="text" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>
+            <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>
 
             <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-            <input type="text" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
+            <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
 
             <label for="V_comment">หมายเหตุ :</label>
             <input type="text" id="V_comment" name="V_comment"><br><br>

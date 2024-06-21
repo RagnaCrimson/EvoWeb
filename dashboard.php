@@ -59,7 +59,8 @@ $page_views = [162, 21, 6];
           </div>
           <div class="card">
               <h2>Total Rows</h2>
-              <p><?php echo $total_rows; ?></p>
+              <p>189 แห่ง</p>
+              <!-- <p><?php echo $total_rows; ?></p> -->
           </div>
           <div class="chart-container">
               <canvas id="pie-chart" class="pie-chart"></canvas>
