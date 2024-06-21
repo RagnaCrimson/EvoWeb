@@ -38,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     foreach ($statusArray as $status) {
         $status = $objConnect->real_escape_string($status);
 
-        $strSQL_update_other = "UPDATE task SET 
-                          status = '$status'
-                          WHERE V_Name = '$id'";
+        $strSQL_update_task = "UPDATE task SET 
+                          T_status = '$status'
+                          WHERE T_Status = '$id'";
 
-        if ($objConnect->query($strSQL_update_other) === TRUE) {
+        if ($objConnect->query($strSQL_update_task) === TRUE) {
             echo "Record in task updated successfully for status: $status<br>";
         } else {
             echo "Error updating record in task for status: $status - " . $objConnect->error . "<br>";
@@ -50,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -72,20 +71,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                         <label for="name">ชื่อหน่วยงาน :</label>
                         <p class="form-control-static"><?php echo htmlspecialchars($row_edit['V_Name']); ?></p>
                     </div>
-                    <!-- Other form fields -->
                     <div class="form-group">
                         <label for="comment">หมายเหตุ :</label>
                         <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo htmlspecialchars($row_edit['V_comment']); ?>">
                     </div>
                     <div class="form-group">
                         <label>สถานะ :</label><br>
-                        <input type="checkbox" id="status1" name="data[T_Status][]" value="นำส่งการไฟฟ้า">
+                        <input type="radio" id="status1" name="data[T_Status][]" value="นำส่งการไฟฟ้า">
                         <label for="status1">นำส่งการไฟฟ้า</label><br>
-                        <input type="checkbox" id="status2" name="data[T_Status][]" value="ตอบรับ">
+                        <input type="radio" id="status2" name="data[T_Status][]" value="ตอบรับ">
                         <label for="status2">ตอบรับ</label><br>
-                        <input type="checkbox" id="status3" name="data[T_Status][]" value="ส่งมอบงาน">
+                        <input type="radio" id="status3" name="data[T_Status][]" value="ส่งมอบงาน">
                         <label for="status3">ส่งมอบงาน</label><br>
-                        <input type="checkbox" id="status4" name="data[T_Status][]" value="ไม่ผ่าน">
+                        <input type="radio" id="status4" name="data[T_Status][]" value="ไม่ผ่าน">
                         <label for="status4">ไม่ผ่าน</label><br>
                     </div>   
                 </div>
