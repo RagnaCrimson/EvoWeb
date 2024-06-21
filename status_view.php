@@ -11,7 +11,9 @@ if ($search) {
         FROM view 
         LEFT JOIN task ON view.V_ID = task.T_ID
         LEFT JOIN files ON view.V_ID = files.id
-        WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') OR task.T_Status LIKE CONCAT('%', ?, '%')";
+        WHERE view.V_Name LIKE CONCAT('%', ?, '%') 
+        OR view.V_Province LIKE CONCAT('%', ?, '%') 
+        OR task.T_Status LIKE CONCAT('%', ?, '%')";
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
     $stmt_datastore_db->bind_param("sss", $search, $search, $search);
 } else {
@@ -40,8 +42,6 @@ if (!$result_sum) {
 
 $row_sum = $result_sum->fetch_assoc();
 $total_electric_per_year = $row_sum['total_electric_per_year'];
-$_SESSION['total_electric_per_year'] = $total_electric_per_year;
-// ==========
 
 // SUM per month
 $strSQL_sum_month = "SELECT SUM(V_Electric_per_month) AS total_electric_per_month FROM view";
@@ -51,8 +51,6 @@ if (!$result_sum_month) {
 }
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
-$_SESSION['total_electric_per_month'] = $total_electric_per_month;
-// ==========
 
 ?>
 
@@ -97,6 +95,7 @@ $_SESSION['total_electric_per_month'] = $total_electric_per_month;
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
                     <th>สถานะ</th>
+                    <th>แก้ไข</th>
                 </tr>
                 <?php  
                 $total_rows = 0; 
@@ -120,6 +119,7 @@ $_SESSION['total_electric_per_month'] = $total_electric_per_month;
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
+                            <td><a href="edit_status.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">Edit</a></td>
                         </tr>
                         <?php
                     }
@@ -129,14 +129,13 @@ $_SESSION['total_electric_per_month'] = $total_electric_per_month;
                 ?>
                 <tr>
                     <td colspan="4"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
-                        <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
-                        <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
+                    <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
+                    <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
                     <td colspan="3"></td>
                 </tr>
                 <tr>
                     <td colspan="7"><strong>Total Rows</strong></td>
-                    <td ><strong><?php echo $total_rows; ?></strong></td>
-                    <?php $_SESSION['total_rows'] = $total_rows; ?>
+                    <td><strong><?php echo $total_rows; ?></strong></td>
                 </tr>
             </table>
         </div>

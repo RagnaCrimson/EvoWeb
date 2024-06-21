@@ -108,11 +108,11 @@ try {
                                 <p>การใช้ไฟ/เดือน : <b><?php echo number_format($row["V_Electric_per_month"], 2); ?></b></p>
                                 <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
                                 <?php if (!empty($row["filename"])): ?>
-                                    <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" class="btn btn-info btn-sm" target="_blank">Download File</a>
+                                    <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" class="btn btn-info btn-lg" target="_blank">PDF File</a>
                                 <?php else: ?>
                                     <p>No file uploaded</p>
                                 <?php endif; ?>
-                                <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">Edit</a>
                             </div>
                         </div>
                     </div>

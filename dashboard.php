@@ -25,10 +25,10 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
-
 $new_wins = 100000000; 
-$page_views = [165, 21, 6]; 
+$page_views = [162, 21, 6]; 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,8 +58,8 @@ $page_views = [165, 21, 6];
               <p><?php echo number_format($total_electric_per_month); ?> บาท</p>
           </div>
           <div class="card">
-              <h2>จำนวนหน่วยงานที่เข้าร่วม</h2>
-              <p><?php echo array_sum($page_views); ?></p>
+              <h2>Total Rows</h2>
+              <p><?php echo $total_rows; ?></p>
           </div>
           <div class="chart-container">
               <canvas id="pie-chart" class="pie-chart"></canvas>
