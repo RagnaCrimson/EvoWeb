@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $name = htmlspecialchars($_POST['V_Name']);
     $province = htmlspecialchars($_POST['V_Province']);
-    $province = htmlspecialchars($_POST['V_Province']);
     $district = htmlspecialchars($_POST['V_District']);
     $sub_district = htmlspecialchars($_POST['V_SubDistrict']);
     $exec_name = htmlspecialchars($_POST['V_ExecName']);
@@ -100,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="text" id="V_Name" name="V_Name" required><br><br>
 
           <label for="V_Province">จังหวัด :</label>
-          <input type="text" plid="V_Province" name="V_Province" required><br><br>
+          <input type="text" id="V_Province" name="V_Province" required><br><br>
 
           <label for="V_District">อำเภอ:</label>
           <input type="text" id="V_District" name="V_District"><br><br>
@@ -149,6 +148,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
             <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
 
+            <label for="V_Peak_year">ค่าใช้ไฟฟ้าต่อปี :</label>
+            <input type="number" step="any" placeholder="000.00" id="V_Peak_year" name="V_Peak_year"><br><br>
+
+            <label for="V_Peak_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
+            <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month"><br><br>
+
             <label for="V_comment">หมายเหตุ :</label>
             <input type="text" id="V_comment" name="V_comment"><br><br>
 
@@ -169,11 +174,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </div>
     </form>
-  <?php include 'back.html'; 
-
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  }
-  ?>
-
+  <?php include 'back.html'; ?>
 </body>
 </html>

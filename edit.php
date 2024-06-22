@@ -48,6 +48,8 @@ if(isset($_POST['submit'])) {
     $vDate = $objConnect->real_escape_string($newData['V_Date']);
     $vElectricPerYear = $objConnect->real_escape_string($newData['V_Electric_per_year']);
     $vElectricPerMonth = $objConnect->real_escape_string($newData['V_Electric_per_month']);
+    $vPeakYear = $objConnect->real_escape_string($newData['V_Peak_year']);
+    $vPeakMonth = $objConnect->real_escape_string($newData['V_Peak_month']);
     $vComment = $objConnect->real_escape_string($newData['V_comment']);
     
     $strSQL_update = "UPDATE view SET 
@@ -68,14 +70,21 @@ if(isset($_POST['submit'])) {
                       V_Date = '$vDate',
                       V_Electric_per_year = '$vElectricPerYear',
                       V_Electric_per_month = '$vElectricPerMonth',
+                      V_Peak_year = '$vPeakYear',
+                      V_Peak_month = '$vPeakMonth',
                       V_comment = '$vComment'
                       WHERE V_Name = '$id'";
 
     if ($objConnect->query($strSQL_update) === TRUE) {
-        echo "Record updated successfully";
+        echo '<script>
+            alert("Record updated successfully.");
+            window.location.href = "data_view.php"; // Redirect to data_view.php
+        </script>';
+        exit; // Stop further execution
     } else {
         echo "Error updating record: " . $objConnect->error;
     }
+    
 }
 ?>
 
@@ -165,6 +174,14 @@ if(isset($_POST['submit'])) {
                     <div class="form-group">
                         <label for="Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
                         <input type="number" step="any"  class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="Peak_year">กิโลวัตต์ทั้งปี :</label>
+                        <input type="number" step="any"  class="form-control" id="Peak_year" name="data[V_Peak_year]" value="<?php echo $row_edit['V_Peak_year']; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="Peak_month">กิโลวัตต์ทั้งเดือน :</label>
+                        <input type="number" step="any"  class="form-control" id="Peak_month" name="data[V_Peak_month]" value="<?php echo $row_edit['V_Peak_month']; ?>">
                     </div>
                     <div class="form-group">
                         <label for="comment">หมายเหตุ :</label>

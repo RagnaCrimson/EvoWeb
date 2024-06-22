@@ -90,6 +90,8 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
+                    <th>ค่าไฟ/ปี</th>
+                    <th>ค่าไฟ/เดือน</th>
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
@@ -110,6 +112,8 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
                             <td><?php echo number_format($row["V_Electric_per_year"], 2); ?></td>
                             <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
+                            <td><?php echo number_format($row["V_Peak_year"], 2); ?></td>
+                            <td><?php echo number_format($row["V_Peak_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
                                     <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>

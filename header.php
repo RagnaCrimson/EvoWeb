@@ -55,7 +55,13 @@ $objConnect->close();
                     <li><a href="status_view.php">ดูสถานะ</a></li>
                 </ul>
             </li>
-            <li><a href="report.php">รายงาน</a></li>
+            <li><a href="#">Report &dtrif;</a>
+                <ul class="dropdown">
+                    <li><a href="#">ตามวัน</a></li>
+                    <li><a href="#">ตามสถานะ</a></li>
+                    <li><a href="#">บริษัทผู้รับเหมา</a></li>
+                </ul>
+            </li>
             <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>
