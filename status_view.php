@@ -90,10 +90,10 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
-                    <th>ชื่อผู้บริหาร</th>
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
+                    <th>หมายเหตุ</th>
                     <th>สถานะ</th>
                     <th>แก้ไข</th>
                 </tr>
@@ -108,7 +108,6 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                             <td><?php echo $sequence++; ?></td>
                             <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
-                            <td><?php echo htmlspecialchars($row["V_ExecName"]); ?></td>
                             <td><?php echo number_format($row["V_Electric_per_year"], 2); ?></td>
                             <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
                             <td>
@@ -118,8 +117,9 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                                     No file
                                 <?php endif; ?>
                             </td>
+                            <td><?php echo htmlspecialchars($row["V_comment"]); ?></td>
                             <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
-                            <td><a href="edit_status.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-info btn-lg">Update</a></td>
+                            <td><a href="edit_status.php?view_id=<?php echo urlencode($row['V_ID']); ?>" class="btn btn-info btn-lg">Update</a></td>
                         </tr>
                         <?php
                     }

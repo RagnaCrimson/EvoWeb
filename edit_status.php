@@ -1,52 +1,40 @@
 <?php
-$server = "localhost";
+$servername = "localhost";
 $username = "root";
 $password = "";
-$database = "datastore_db";
+$dbname = "datastore_db";
 
-$objConnect = new mysqli($server, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($objConnect->connect_error) {
-    die("Connection failed: " . $objConnect->connect_error);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-mysqli_query($objConnect, "SET NAMES utf8");
+$view_id = isset($_GET['view_id']) ? intval($_GET['view_id']) : 0;
 
-if(isset($_GET['id'])) {
-    $id = $_GET['id'];
-    
-    $strSQL_edit = "SELECT view.*, task.T_Status FROM view
-                    LEFT JOIN task ON view.V_Name = task.T_ID
-                    WHERE view.V_Name = '$id'";
-    $result_edit = $objConnect->query($strSQL_edit);
-    
-    if (!$result_edit) {
-        die("Query failed: " . $objConnect->error);
-    }
-    
-    $row_edit = $result_edit->fetch_assoc();
-} else {
-    echo "No ID specified.";
-    exit;
+if ($view_id < 2) {
+    die("Invalid ID provided.");
 }
 
-if(isset($_POST['submit'])) {
-    $newData = $_POST['data']; 
+$sql_view = "SELECT V_Name, V_comment FROM view WHERE V_ID = $view_id";
+$result_view = $conn->query($sql_view);
 
-    $vComment = $objConnect->real_escape_string($newData['V_comment']);
-    $tStatus = $objConnect->real_escape_string($newData['T_Status']);
-    
-    $strSQL_update = "UPDATE view
-                      LEFT JOIN task ON view.V_Name = task.T_ID
-                      SET view.V_comment = '$vComment', task.T_Status = '$tStatus'
-                      WHERE view.V_Name = '$id'";
-
-    if ($objConnect->query($strSQL_update) === TRUE) {
-        echo "Record updated successfully";
-    } else {
-        echo "Error updating record: " . $objConnect->error;
-    }
+if ($result_view->num_rows == 0) {
+    die("No record found in view table for ID $view_id");
 }
+
+$view = $result_view->fetch_assoc();
+
+$sql_task = "SELECT T_Status FROM task WHERE T_ID = $view_id";
+$result_task = $conn->query($sql_task);
+
+if ($result_task->num_rows == 0) {
+    die("No record found in task table for ID $view_id");
+}
+
+$task = $result_task->fetch_assoc();
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -54,43 +42,53 @@ if(isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data</title>
+    <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/card_style.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
+
     <div class="container">
-        <h2 class="center">Edit Data</h2>
-        <form method="post">      
+        <div><h1>อัพเดตสถานะ</h1></div>
+        <form method="post" action="update_data.php">
             <div class="card-body">
-                <div class="left">
-                    <div class="form-group">
-                        <label for="name">ชื่อหน่วยงาน :</label>
-                        <p class="form-control-static"><?php echo htmlspecialchars($row_edit['V_Name']); ?></p>
-                    </div>
-                    <div class="form-group">
-                        <label for="comment">หมายเหตุ :</label>
-                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo $row_edit['V_comment']; ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="T_Status">สถานะ :</label>
-                        <select id="T_Status" name="data[T_Status]" class="form-control" required>
-                            <option value="">-- เลือกสถานะ --</option>
-                            <option value="นำส่งการไฟฟ้า" <?php if ($row_edit['T_Status'] === 'นำส่งการไฟฟ้า') echo 'selected'; ?>>นำส่งการไฟฟ้า</option>
-                            <option value="ตอบรับ" <?php if ($row_edit['T_Status'] === 'ตอบรับ') echo 'selected'; ?>>ตอบรับ</option>
-                            <option value="ส่งมอบงาน" <?php if ($row_edit['T_Status'] === 'ส่งมอบงาน') echo 'selected'; ?>>ส่งมอบงาน</option>
-                            <option value="ไม่ผ่าน" <?php if ($row_edit['T_Status'] === 'ไม่ผ่าน') echo 'selected'; ?>>ไม่ผ่าน</option>
-                        </select>
-                    </div>            
-                </div>
-            </div>
-            <div class="center">
-                <button type="submit" name="submit" class="btn btn-primary">Update</button>
-                <a href="data_view.php" class="btn btn-default">Back</a>
+            <input type="hidden" name="view_id" value="<?php echo $view_id; ?>">
+            <p>
+                <label for="V_Name">ชื่อหน่วยงาน:</label>
+                <input type="text" id="V_Name" name="V_Name" value="<?php echo htmlspecialchars($view['V_Name']); ?>" disabled>
+            </p>
+            <p>
+                <label for="V_comment">หมายเหตุ :</label>
+                <input type="text" class="form-control" id="V_comment" name="V_comment"  value="<?php echo htmlspecialchars($view['V_comment']); ?>">
+            </p>
+            <p>
+                <label for="T_Status">สถานะ :</label>
+                <input type="text" id="T_Status" name="T_Status" value="<?php echo htmlspecialchars($task['T_Status']); ?>">
+            </p>
+            <p>
+                <input type="submit" class="btn btn-info btn-lg" value="Update">
+            </p>      
             </div>
         </form>
-        <?php include 'back.html'; ?>
-    </div>
 </body>
 </html>
+
+
+                <div class="form-group">
+                        <label for="comment">หมายเหตุ :</label>
+                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo htmlspecialchars($row_edit['V_comment']); ?>">
+                    </div>
+
+
+                <div class="form-group">
+                    <label for="T_Status">สถานะ :</label>
+                    <select id="T_Status" name="data[T_Status]" class="form-control" required>
+                        <option value="">-- เลือกสถานะ --</option>
+                        <option value="นำส่งการไฟฟ้า" <?php if ($task['T_Status'] === 'นำส่งการไฟฟ้า') echo 'selected'; ?>>นำส่งการไฟฟ้า</option>
+                        <option value="ตอบรับ" <?php if ($task['T_Status'] === 'ตอบรับ') echo 'selected'; ?>>ตอบรับ</option>
+                        <option value="ส่งมอบงาน" <?php if ($task['T_Status'] === 'ส่งมอบงาน') echo 'selected'; ?>>ส่งมอบงาน</option>
+                        <option value="ไม่ผ่าน" <?php if ($task['T_Status'] === 'ไม่ผ่าน') echo 'selected'; ?>>ไม่ผ่าน</option>
+                    </select>
+                </div>
