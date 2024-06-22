@@ -104,8 +104,8 @@ try {
                                 <p>ชื่อผู้ประสานงาน : <?php echo htmlspecialchars($row["V_CoordName2"]); ?></p>
                                 <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
                                 <p>Email : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
-                                <p>การใช้ไฟ/ปี : <b><?php echo number_format($row["V_Electric_per_year"], 2); ?></b></p>
-                                <p>การใช้ไฟ/เดือน : <b><?php echo number_format($row["V_Electric_per_month"], 2); ?></b></p>
+                                <p>การใช้ไฟ/ปี : <b><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?></b></p>
+                                <p>การใช้ไฟ/เดือน : <b><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></b></p>
                                 <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
                                 <?php if (!empty($row["filename"])): ?>
                                     <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" class="btn btn-info btn-lg" target="_blank">PDF File</a>

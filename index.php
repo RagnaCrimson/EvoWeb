@@ -153,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" id="V_comment" name="V_comment"><br><br>
 
             <label for="T_Status">สถานะ :</label>
-              <select id="T_Status" name="T_Status" required>
+              <select id="T_Status" name="T_Status" class="form-control" required>
                 <option value="">-- เลือกสถานะ --</option>
                 <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
                 <option value="ตอบรับ">ตอบรับ</option>
@@ -161,8 +161,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="ไม่ผ่าน">ไม่ผ่าน</option>
               </select><br><br>
 
-          <button type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
-          <button type="button" class="btn btn-primary">ยกเลิก</button>
+            <div class="center">
+              <button type="submit" class="btn btn-primary btn-lg">เพิ่มข้อมูล</button>
+              <button type="button" class="btn btn-primary btn-lg">ยกเลิก</button>
+            </div>
         </div>
       </div>
     </div>

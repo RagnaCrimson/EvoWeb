@@ -44,26 +44,18 @@ $objConnect->close();
     <script src="js/logout.js"></script>
 </head>
 <body>
-    <!-- <div class="header">
-        <a class="logo"><?php echo $_SESSION['name']; ?></a>
-        <div class="header-right">
-            <a href="#">ดูข้อมูล</a>
-            <a href="#">เพิ่มข้อมูล</a>
-            <a href="#">สถานะข้อมูล</a>
-        </div>
-    </div> -->
-
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
             <li><a href="dashboard.php">Dashboard</a>
             <li><a href="#">รายการ &dtrif;</a>
-            <ul class="dropdown">
-                <li><a href="data_view.php">ดูข้อมูลทั้งหมด</a></li>
-                <li><a href="index.php">เพิ่มข้อมูล</a></li>
-                <li><a href="status_view.php">ดูสถานะ</a></li>
-            </ul>
+                <ul class="dropdown">
+                    <li><a href="data_view.php">ดูข้อมูลทั้งหมด</a></li>
+                    <li><a href="index.php">เพิ่มข้อมูล</a></li>
+                    <li><a href="status_view.php">ดูสถานะ</a></li>
+                </ul>
             </li>
+            <li><a href="report.php">รายงาน</a></li>
             <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>

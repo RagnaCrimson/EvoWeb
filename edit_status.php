@@ -65,30 +65,18 @@ $conn->close();
             </p>
             <p>
                 <label for="T_Status">สถานะ :</label>
-                <input type="text" id="T_Status" name="T_Status" value="<?php echo htmlspecialchars($task['T_Status']); ?>">
-            </p>
-            <p>
-                <input type="submit" class="btn btn-info btn-lg" value="Update">
-            </p>      
-            </div>
-        </form>
-</body>
-</html>
-
-
-                <div class="form-group">
-                        <label for="comment">หมายเหตุ :</label>
-                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo htmlspecialchars($row_edit['V_comment']); ?>">
-                    </div>
-
-
-                <div class="form-group">
-                    <label for="T_Status">สถานะ :</label>
-                    <select id="T_Status" name="data[T_Status]" class="form-control" required>
+                    <select id="T_Status" name="T_Status" class="form-control" required>
                         <option value="">-- เลือกสถานะ --</option>
                         <option value="นำส่งการไฟฟ้า" <?php if ($task['T_Status'] === 'นำส่งการไฟฟ้า') echo 'selected'; ?>>นำส่งการไฟฟ้า</option>
                         <option value="ตอบรับ" <?php if ($task['T_Status'] === 'ตอบรับ') echo 'selected'; ?>>ตอบรับ</option>
                         <option value="ส่งมอบงาน" <?php if ($task['T_Status'] === 'ส่งมอบงาน') echo 'selected'; ?>>ส่งมอบงาน</option>
                         <option value="ไม่ผ่าน" <?php if ($task['T_Status'] === 'ไม่ผ่าน') echo 'selected'; ?>>ไม่ผ่าน</option>
                     </select>
-                </div>
+            </p>
+                <div class="center">
+                    <input type="submit" class="btn btn-info btn-lg" value="Update">
+                </div>   
+            </div>
+        </form>
+</body>
+</html>
