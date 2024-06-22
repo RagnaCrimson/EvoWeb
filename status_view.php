@@ -5,6 +5,10 @@ mysqli_query($objConnect, "SET NAMES utf8");
 
 $search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
 
+$rows_per_page = 20;
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$offset = ($page - 1) * $rows_per_page;
+
 if ($search) {
     $strSQL_datastore_db = "
         SELECT view.*, task.T_Status, files.filename 
@@ -51,6 +55,24 @@ if (!$result_sum_month) {
 }
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
+
+// SUM peak year
+$strSQL_sum_peak_year = "SELECT SUM(V_Peak_year) AS total_peak_per_year FROM view";
+$result_sum_peak_year = $objConnect->query($strSQL_sum_peak_year);
+if (!$result_sum_peak_year) {
+    die("Query failed: " . $objConnect->error);
+}
+$row_sum_peak_year = $result_sum_peak_year->fetch_assoc();
+$total_peak_per_year = $row_sum_peak_year['total_peak_per_year'];
+
+// SUM peak month
+$strSQL_sum_peak_month = "SELECT SUM(V_Peak_month) AS total_peak_per_month FROM view";
+$result_sum_peak_month = $objConnect->query($strSQL_sum_peak_month);
+if (!$result_sum_peak_month) {
+    die("Query failed: " . $objConnect->error);
+}
+$row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
+$total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
 
 ?>
 
@@ -110,10 +132,10 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                             <td><?php echo $sequence++; ?></td>
                             <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
-                            <td><?php echo number_format($row["V_Electric_per_year"], 2); ?></td>
-                            <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
-                            <td><?php echo number_format($row["V_Peak_year"], 2); ?></td>
-                            <td><?php echo number_format($row["V_Peak_month"], 2); ?></td>
+                            <td><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?></td>
+                            <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
+                            <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
+                            <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
                                     <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
@@ -128,20 +150,32 @@ $total_electric_per_month = $row_sum_month['total_electric_per_month'];
                         <?php
                     }
                 } else {
-                    echo "<tr><td colspan='8'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='11'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
                 <tr>
-                    <td colspan="4"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
+                    <td colspan="3"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
                     <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
                     <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
-                    <td colspan="3"></td>
+                    <td><strong><?php echo number_format($total_peak_per_year); ?></strong></td>
+                    <td><strong><?php echo number_format($total_peak_per_month); ?></strong></td>
+                    <td colspan="4"></td>
                 </tr>
                 <tr>
                     <td colspan="7"><strong>Total Rows</strong></td>
                     <td><strong><?php echo $total_rows; ?></strong></td>
                 </tr>
             </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <?php 
+                    $total_pages = ceil($total_rows / $rows_per_page);
+                    for ($i = 1; $i <= $total_pages; $i++) {
+                        echo "<li class='page-item " . ($i === $page ? 'active' : '') . "'><a class='page-link' href='?page=$i&search=" . urlencode($search) . "'>$i</a></li>";
+                    }
+                    ?>
+                </ul>
+            </nav>
         </div>
     </div>
     <?php include 'back.html'; ?>

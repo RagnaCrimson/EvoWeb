@@ -23,6 +23,29 @@ if (!$result_sum_month) {
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
+// display SUM peak year
+$strSQL_sum_peak_year = "SELECT SUM(V_Peak_year) AS total_peak_per_year FROM view";
+$result_sum_peak_year = $objConnect->query($strSQL_sum_peak_year);
+
+if (!$result_sum_peak_year) {
+    die("Query failed: " . $objConnect->error);
+}
+
+$row_sum_peak_year = $result_sum_peak_year->fetch_assoc();
+$total_peak_per_year = $row_sum_peak_year['total_peak_per_year'];
+
+// display SUM peak month
+$strSQL_sum_peak_month = "SELECT SUM(V_Peak_month) AS total_peak_per_month FROM view";
+$result_sum_peak_month = $objConnect->query($strSQL_sum_peak_month);
+
+if (!$result_sum_peak_month) {
+    die("Query failed: " . $objConnect->error);
+}
+
+$row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
+$total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
+
+
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
 $new_wins = 100000000; 
@@ -47,7 +70,7 @@ $page_views = [162, 21, 6];
       <div class="dashboard">
           <div class="card">
               <h2>รวมจำนวนไฟฟ้ากิโลวัต Kw</h2>
-              <p><?php echo number_format($new_wins); ?></p>
+              <p><?php echo number_format($total_peak_per_year); ?></p>
           </div>
           <div class="card">
               <h2>รวมค่าใช้ไฟฟ้าต่อปี</h2>
@@ -58,9 +81,8 @@ $page_views = [162, 21, 6];
               <p><?php echo number_format($total_electric_per_month); ?> บาท</p>
           </div>
           <div class="card">
-              <h2>Total Rows</h2>
+              <h2>หน่วยงานที่เข้าร่วมทั้งหมด</h2>
               <p>189 แห่ง</p>
-              <!-- <p><?php echo $total_rows; ?></p> -->
           </div>
           <div class="chart-container">
               <canvas id="pie-chart" class="pie-chart"></canvas>
