@@ -133,3 +133,57 @@ $page_views = [162, 21, 6];
     </script>
 </body>
 </html>
+
+
+          <!-- <div class="chart-container">
+              <canvas id="doughnut-chart" class="doughnut-chart"></canvas>
+          </div>
+          <div class="chart-container">
+              <canvas id="bar-chart" class="bar-chart"></canvas>
+          </div>
+      </div>
+    </div>
+
+    <script>
+        const ctxDoughnut = document.getElementById('doughnut-chart').getContext('2d');
+        const doughnutChart = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May'],
+                datasets: [{
+                    data: [50, 60, 70, 180, 190],
+                    backgroundColor: ['#FF5733', '#36a2eb', '#50C878', '#FFC300', '#C70039']
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        backgroundColor: '#ccc',
+                        borderRadius: 3,
+                        font: {
+                            color: 'red',
+                            weight: 'bold',
+                        },
+                    },
+                    doughnutlabel: {
+                        labels: [
+                            {
+                                text: '550',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                },
+                            },
+                            {
+                                text: 'total',
+                                font: {
+                                    size: 12,
+                                },
+                            },
+                        ],
+                    },
+                },
+                responsive: true
+            }
+        }); -->

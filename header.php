@@ -41,7 +41,7 @@ $objConnect->close();
     <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="js/logout.js"></script>
+    <script src="/evo/js/logout.js"></script>
 </head>
 <body>
     <nav role="navigation" class="primary-navigation">
