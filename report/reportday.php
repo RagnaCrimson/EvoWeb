@@ -18,35 +18,33 @@ include '../connect.php';
     <?php include '../header.php'; ?>
     <div class="card-center">
         <div class="container">
-            <h2>รายงานตามวันที่</h2>
-                <label for="branch">ทีมฝ่ายขาย</label>
-                <select id="branch">
+            <h2>ดูรายงาน</h2>
+            <form action="process_form.php" method="post">
+                <label for="sales_team">ทีมฝ่ายขาย</label>
+                <select id="sales_team" name="sales_team">
                     <option value="">-- เลือก --</option>
-                    <option value="รายงาน">พิเย็น</option>
-                    <option value="รายงาน">ดร.อี๊ด</option>
-                    <option value="รายงาน">VJK</option>
+                    <option value="พิเย็น">คุณพิเย็น</option>
+                    <option value="ดร.อี๊ด">ดร.อี๊ด</option>
+                    <option value="VJK">VJK</option>
+                </select>
+                <label for="task_status">สถานะงาน</label>
+                <select id="task_status" name="task_status">
+                    <option value="">-- เลือก --</option>
+                    <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
+                    <option value="ตอบรับ">ตอบรับ</option>
+                    <option value="เข้าสำรวจ">เข้าสำรวจ</option>
+                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
                 </select>
                 <label for="date">เลือกวันที่</label>
-                <input type="date" id="date" class="flatpickr" placeholder="เลือกวันที่">
+                <input type="text" id="date" name="date" class="flatpickr" placeholder="เลือกวันที่"><br><br>
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="status" value="ทั้งหมด" checked>
-                        ทั้งหมด
-                    </label>
-                    <label>
-                        <input type="radio" name="status" value="ทีมฝ่ายขาย">
-                        ทีมฝ่ายขาย
-                    </label>
-                    <label>
-                        <input type="radio" name="status" value="สถานะงาน">
-                        สถานะงาน
-                    </label>
+                    <div class="button-group">
+                        <button type="submit" name="view" class="btcolor">View</button>
+                        <button type="submit" name="pdf" class="btcolor">PDF</button>
+                    </div>
                 </div>
-                <div class="button-group">
-                    <button type="submit" name="view" class="btcolor">View</button>
-                    <button type="submit" name="pdf" class="btcolor">PDF</button>
-                </div>
-        </div>
+            </form>
+        </div>         
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

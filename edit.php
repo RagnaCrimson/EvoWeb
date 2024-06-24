@@ -71,7 +71,7 @@ if(isset($_POST['submit'])) {
             alert("Record updated successfully.");
             window.location.href = "data_view.php"; // Redirect to data_view.php
         </script>';
-        exit; // Stop further execution
+        exit;
     } else {
         echo "Error updating record: " . $objConnect->error;
     }
@@ -156,7 +156,7 @@ if(isset($_POST['submit'])) {
                     </div>
                     <div class="form-group">
                         <label for="Date">วันที่ได้รับเอกสาร :</label>
-                        <input type="text" class="form-control" id="Date" name="data[V_Date]" value="<?php echo $row_edit['V_Date']; ?>">
+                        <input type="date" class="form-control" id="Date" name="data[V_Date]" value="<?php echo date_format(date_create($row_edit['V_Date']), 'D-m-y'); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>

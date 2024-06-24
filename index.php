@@ -140,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" id="V_Sale" name="V_Sale"><br><br>
 
             <label for="V_Date">วันที่ได้รับเอกสาร :</label>
-            <input type="text" placeholder="00/00/0000" id="V_Date" name="V_Date"><br><br>
+            <input type="date" id="V_Date" name="V_Date"><br><br>
 
             <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
             <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>

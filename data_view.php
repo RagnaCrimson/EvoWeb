@@ -94,7 +94,7 @@ try {
                                     <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></p>
                                     <p>Email : <?php echo htmlspecialchars($row["V_ExecMail"]); ?></p><br>
                                     <p>ทีมฝ่ายขาย : <?php echo htmlspecialchars($row["V_Sale"]); ?></p>
-                                    <p>วันที่รับเอกสาร : <?php echo htmlspecialchars($row["V_Date"]); ?></p>
+                                    <p>วันที่รับเอกสาร : <?php echo date('d-m-Y', strtotime($row["V_Date"])); ?></p>
                                     <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
                                 </div>
                                 <div class="right">
