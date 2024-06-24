@@ -36,7 +36,7 @@ $objConnect->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/evo/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -47,17 +47,17 @@ $objConnect->close();
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
-            <li><a href="dashboard.php">Dashboard</a>
+            <li><a href="/evo/dashboard.php">Dashboard</a>
             <li><a href="#">รายการ &dtrif;</a>
                 <ul class="dropdown">
-                    <li><a href="data_view.php">ดูข้อมูลทั้งหมด</a></li>
-                    <li><a href="index.php">เพิ่มข้อมูล</a></li>
-                    <li><a href="status_view.php">ดูสถานะ</a></li>
+                    <li><a href="/evo/data_view.php">ดูข้อมูลทั้งหมด</a></li>
+                    <li><a href="/evo/index.php">เพิ่มข้อมูล</a></li>
+                    <li><a href="/evo/status_view.php">ดูสถานะ</a></li>
                 </ul>
             </li>
             <li><a href="#">Report &dtrif;</a>
                 <ul class="dropdown">
-                    <li><a href="#">ตามวัน</a></li>
+                    <li><a href="/evo/report/reportday.php">ตามวัน</a></li>
                     <li><a href="#">ตามสถานะ</a></li>
                     <li><a href="#">บริษัทผู้รับเหมา</a></li>
                 </ul>

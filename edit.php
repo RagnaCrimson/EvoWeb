@@ -1,14 +1,5 @@
 <?php
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "datastore_db";
-
-$objConnect = new mysqli($server, $username, $password, $database);
-
-if ($objConnect->connect_error) {
-    die("Connection failed: " . $objConnect->connect_error);
-}
+include 'connect.php'; 
 
 mysqli_query($objConnect, "SET NAMES utf8");
 

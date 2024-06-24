@@ -1,0 +1,91 @@
+.card-center {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+input[type="text"]::placeholder,
+select::placeholder {
+    color: #999;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.radio-group label {
+    margin: 0 10px;
+}
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+}
+
+.button-group {
+    display: inline-block;
+}
+.button-group button {
+    margin-right: 10px;
+}
+
+.btcolor {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4382ca;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+.btcolor:hover {
+    background-color: #4382ca;
+}
+
+.bgcolor {
+    background-color: lightblue;
+}
+.bgcolor {
+    background-color: lightblue;
+}
