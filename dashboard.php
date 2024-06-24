@@ -110,6 +110,8 @@ $page_views = [162, 21, 6];
             }
         });
 
+        // แยกประเภทตามจำนวนค่าใช้ไฟต่อเดือน 0-25000 / 25000-50000 / 500000-75000 / 75000-100000 / 100000-1250000 / 12500000++++
+
         const ctxBar = document.getElementById('bar-chart').getContext('2d');
         const barChart = new Chart(ctxBar, {
             type: 'bar',

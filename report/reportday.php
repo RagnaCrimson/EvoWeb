@@ -19,7 +19,7 @@ include '../connect.php';
     <div class="card-center">
         <div class="container">
             <h2>ดูรายงาน</h2>
-            <form action="process_form.php" method="post">
+            <form action="process_form.php" method="post" target="_blank">
                 <label for="sales_team">ทีมฝ่ายขาย</label>
                 <select id="sales_team" name="sales_team">
                     <option value="">-- เลือก --</option>
@@ -35,8 +35,12 @@ include '../connect.php';
                     <option value="เข้าสำรวจ">เข้าสำรวจ</option>
                     <option value="ไม่ผ่าน">ไม่ผ่าน</option>
                 </select>
-                <label for="date">เลือกวันที่</label>
-                <input type="text" id="date" name="date" class="flatpickr" placeholder="เลือกวันที่"><br><br>
+
+                <label for="start_date">ตั้งแต่วันที่</label>
+                <input type="text" id="start_date" name="start_date" data-input>
+                <label for="end_date">ถึงวันที่</label>
+                <input type="text" id="end_date" name="end_date" data-input>
+
                 <div class="radio-group">
                     <div class="button-group">
                         <button type="submit" name="view" class="btcolor">View</button>
@@ -48,11 +52,15 @@ include '../connect.php';
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            flatpickr("#date", {
-                dateFormat: "Y-m-d",
-                locale: "th"
-            });
+        flatpickr("#start_date", {
+            dateFormat: "Y-m-d",
+            locale: "th"
         });
+        flatpickr("#end_date", {
+            dateFormat: "Y-m-d",
+            locale: "th"
+        });
+    });
     </script>
 </body>
 </html>
