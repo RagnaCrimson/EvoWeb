@@ -23,7 +23,7 @@ include '../connect.php';
                 <label for="sales_team">ทีมฝ่ายขาย</label>
                 <select id="sales_team" name="sales_team">
                     <option value="">-- เลือก --</option>
-                    <option value="พิเย็น">คุณพิเย็น</option>
+                    <option value="คุณพิเย็น">คุณพิเย็น</option>
                     <option value="ดร.อี๊ด">ดร.อี๊ด</option>
                     <option value="VJK">VJK</option>
                 </select>
