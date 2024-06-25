@@ -3,7 +3,7 @@ include 'connect.php';
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-if(isset($_GET['id'])) {
+if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
     $strSQL_edit = "SELECT * FROM view WHERE V_Name = '$id'";
@@ -19,7 +19,7 @@ if(isset($_GET['id'])) {
     exit;
 }
 
-if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     $newData = $_POST['data']; 
 
     $vName = $objConnect->real_escape_string($newData['V_Name']);
@@ -75,7 +75,6 @@ if(isset($_POST['submit'])) {
     } else {
         echo "Error updating record: " . $objConnect->error;
     }
-    
 }
 ?>
 
@@ -97,86 +96,86 @@ if(isset($_POST['submit'])) {
                 <div class="left">
                     <div class="form-group">
                         <label for="name">ชื่อหน่วยงาน :</label>
-                        <input type="text" class="form-control" id="name" name="data[V_Name]" value="<?php echo $row_edit['V_Name']; ?>">
+                        <input type="text" class="form-control" id="name" name="data[V_Name]" value="<?php echo htmlspecialchars($row_edit['V_Name']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="province">จังหวัด :</label>
-                        <input type="text" class="form-control" id="province" name="data[V_Province]" value="<?php echo $row_edit['V_Province']; ?>">
+                        <input type="text" class="form-control" id="province" name="data[V_Province]" value="<?php echo htmlspecialchars($row_edit['V_Province']); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="distric">ตำบล :</label>
-                        <input type="text" class="form-control" id="distric" name="data[V_District]" value="<?php echo $row_edit['V_District']; ?>">
+                        <label for="district">ตำบล :</label>
+                        <input type="text" class="form-control" id="district" name="data[V_District]" value="<?php echo htmlspecialchars($row_edit['V_District']); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="V_SubDistrict">อำเภอ :</label>
-                        <input type="text" class="form-control" id="province" name="data[V_SubDistrict]" value="<?php echo $row_edit['V_SubDistrict']; ?>">
+                        <label for="subdistrict">อำเภอ :</label>
+                        <input type="text" class="form-control" id="subdistrict" name="data[V_SubDistrict]" value="<?php echo htmlspecialchars($row_edit['V_SubDistrict']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="ExecName">ชื่อผู้บริหาร :</label>
-                        <input type="text" class="form-control" id="ExecName" name="data[V_ExecName]" value="<?php echo $row_edit['V_ExecName']; ?>">
+                        <input type="text" class="form-control" id="ExecName" name="data[V_ExecName]" value="<?php echo htmlspecialchars($row_edit['V_ExecName']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="ExecPhone">เบอร์ผู้บริหาร :</label>
-                        <input type="text" class="form-control" id="ExecPhone" name="data[V_ExecPhone]" value="<?php echo $row_edit['V_ExecPhone']; ?>">
+                        <input type="text" class="form-control" id="ExecPhone" name="data[V_ExecPhone]" value="<?php echo htmlspecialchars($row_edit['V_ExecPhone']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="ExecMail">อีเมลผู้บริหาร :</label>
-                        <input type="text" class="form-control" id="ExecMail" name="data[V_ExecMail]" value="<?php echo $row_edit['V_ExecMail']; ?>">
+                        <input type="email" class="form-control" id="ExecMail" name="data[V_ExecMail]" value="<?php echo htmlspecialchars($row_edit['V_ExecMail']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="CoordName1">ชื่อผู้ประสานงาน 1 :</label>
-                        <input type="text" class="form-control" id="CoordName1" name="data[V_CoordName1]" value="<?php echo $row_edit['V_CoordName1']; ?>">                
+                        <input type="text" class="form-control" id="CoordName1" name="data[V_CoordName1]" value="<?php echo htmlspecialchars($row_edit['V_CoordName1']); ?>">                
                     </div>
                     <div class="form-group">
                         <label for="CoordPhone1">เบอร์โทรผู้ประสานงาน 1 :</label>
-                        <input type="text" class="form-control" id="CoordPhone1" name="data[V_CoordPhone1]" value="<?php echo $row_edit['V_CoordPhone1']; ?>">
+                        <input type="text" class="form-control" id="CoordPhone1" name="data[V_CoordPhone1]" value="<?php echo htmlspecialchars($row_edit['V_CoordPhone1']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
-                        <input type="text" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo $row_edit['V_CoordMail1']; ?>">
+                        <input type="email" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail1']); ?>">
                     </div>
                 </div>
 
                 <div class="right">
                     <div class="form-group">
                         <label for="CoordName2">ชื่อผู้ประสานงาน 2 :</label>
-                        <input type="text" class="form-control" id="CoordName2" name="data[V_CoordName2]" value="<?php echo $row_edit['V_CoordName2']; ?>">
+                        <input type="text" class="form-control" id="CoordName2" name="data[V_CoordName2]" value="<?php echo htmlspecialchars($row_edit['V_CoordName2']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="CoordPhone2">เบอร์ผู้ประสานงาน 2 :</label>
-                        <input type="text" class="form-control" id="CoordPhone2" name="data[V_CoordPhone2]" value="<?php echo $row_edit['V_CoordPhone2']; ?>">
+                        <input type="text" class="form-control" id="CoordPhone2" name="data[V_CoordPhone2]" value="<?php echo htmlspecialchars($row_edit['V_CoordPhone2']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
-                        <input type="text" class="form-control" id="CoordMail2" name="data[V_CoordMail2]" value="<?php echo $row_edit['V_CoordMail2']; ?>">
+                        <input type="email" class="form-control" id="CoordMail2" name="data[V_CoordMail2]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail2']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="sale">ทีมฝ่ายขาย :</label>
-                        <input type="text" class="form-control" id="sale" name="data[V_Sale]" value="<?php echo $row_edit['V_Sale']; ?>">
+                        <input type="text" class="form-control" id="sale" name="data[V_Sale]" value="<?php echo htmlspecialchars($row_edit['V_Sale']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Date">วันที่ได้รับเอกสาร :</label>
-                        <input type="date" class="form-control" id="Date" name="data[V_Date]" value="<?php echo date_format(date_create($row_edit['V_Date']), 'D-m-y'); ?>">
+                        <input type="date" class="form-control" id="Date" name="data[V_Date]" value="<?php echo htmlspecialchars($row_edit['V_Date']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-                        <input type="number" step="any" class="form-control" id="Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo $row_edit['V_Electric_per_year']; ?>">
+                        <input type="number" step="any" class="form-control" id="Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_year']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-                        <input type="number" step="any"  class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo $row_edit['V_Electric_per_month']; ?>">
+                        <input type="number" step="any" class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Peak_year">กิโลวัตต์ทั้งปี :</label>
-                        <input type="number" step="any"  class="form-control" id="Peak_year" name="data[V_Peak_year]" value="<?php echo $row_edit['V_Peak_year']; ?>">
+                        <input type="number" step="any" class="form-control" id="Peak_year" name="data[V_Peak_year]" value="<?php echo htmlspecialchars($row_edit['V_Peak_year']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="Peak_month">กิโลวัตต์ทั้งเดือน :</label>
-                        <input type="number" step="any"  class="form-control" id="Peak_month" name="data[V_Peak_month]" value="<?php echo $row_edit['V_Peak_month']; ?>">
+                        <input type="number" step="any" class="form-control" id="Peak_month" name="data[V_Peak_month]" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="comment">หมายเหตุ :</label>
-                        <input type="text" class="form-control" id="Ecomment" name="data[V_comment]" value="<?php echo $row_edit['V_comment']; ?>">
+                        <input type="text" class="form-control" id="comment" name="data[V_comment]" value="<?php echo htmlspecialchars($row_edit['V_comment']); ?>">
                     </div>            
                 </div>
             </div>
@@ -186,7 +185,7 @@ if(isset($_POST['submit'])) {
             </div>
         </form>
 
-            <?php include 'back.html'; ?>
+        <?php include 'back.html'; ?>
     </div>
 </body>
 </html>

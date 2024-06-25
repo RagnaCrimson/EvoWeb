@@ -57,7 +57,7 @@ $objConnect->close();
             </li>
             <li><a href="#">Report &dtrif;</a>
                 <ul class="dropdown">
-                    <li><a href="/evo/report/reportday.php">ตามวัน</a></li>
+                    <li><a href="/evo/report/reportday.php">เลือกวันที่</a></li>
                     <li><a href="#">ตามสถานะ</a></li>
                     <li><a href="#">บริษัทผู้รับเหมา</a></li>
                 </ul>
