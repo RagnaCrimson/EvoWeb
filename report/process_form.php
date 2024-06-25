@@ -105,21 +105,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "<p>No data available.</p>";
         }
     } elseif (isset($_POST['pdf'])) {
-
         if (mysqli_num_rows($result) > 0) {
             $pdf = new FPDF();
             $pdf->AddPage();
-            $pdf->SetFont('AngsanaNew', '', 12);
+	        $pdf->AddFont('angsa','','angsa.php');
+            $pdf->SetFont('angsa', '', 16);
             $pdf->Cell(0, 10, 'Report Results', 0, 1, 'C');
             
-            $pdf->SetFont('AngsanaNew', '', 10);
+            $pdf->SetFont('angsa', '', 16);
             $header = array('Sale', 'Date', 'Name', 'Province', 'Exec Name', 'Exec Phone', 'Electric Per Year (บาท)', 'Electric Per Month (บาท)', 'Peak Year', 'Peak Month', 'Status');
             foreach($header as $col) {
                 $pdf->Cell(30, 7, $col, 1);
             }
             $pdf->Ln();
             
-            $pdf->SetFont('AngsanaNew', '', 10);
+            $pdf->SetFont('angsa', '', 16);
             while ($row = mysqli_fetch_assoc($result)) {
                 $pdf->Cell(30, 6, $row['V_Sale'], 1);
                 $pdf->Cell(30, 6, date('d-m-Y', strtotime($row['V_Date'])), 1);
@@ -134,19 +134,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $pdf->Cell(30, 6, $row['T_Status'], 1);
                 $pdf->Ln();
             }
+            
+            $pdf_data = $pdf->Output('', 'S'); 
+            echo '<script>';
+            echo 'var pdfWindow = window.open("", "_blank");'; 
+            echo 'pdfWindow.document.write("<embed width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64,'.base64_encode($pdf_data).'\' type=\'application/pdf\'/>");';
+            echo '</script>';
         } else {
-            echo "<p>No data available.</p>";
+            echo "<p>No data available to generate PDF.</p>";
         }
-    }
-
-    if (mysqli_num_rows($result) > 0) {
-        $pdf_data = $pdf->Output('', 'S');
-        echo '<script>';
-        echo 'var pdfWindow = window.open("", "_blank");'; 
-        echo 'pdfWindow.document.write("<embed width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64,'.base64_encode($pdf_data).'\' type=\'application/pdf\'/>");';
-        echo '</script>';
-    } else {
-        echo "<p>No data available.</p>";
     }
 }
 ?>
