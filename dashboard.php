@@ -46,11 +46,11 @@ $row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
 $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
 
 
-// Get count of total_peak_per_month in range 0-100
-$strSQL_count_0_100 = "SELECT COUNT(*) AS count_0_100 FROM view WHERE V_Peak_month BETWEEN 0 AND 100";
-$result_count_0_100 = $objConnect->query($strSQL_count_0_100);
-$row_count_0_100 = $result_count_0_100->fetch_assoc();
-$count_0_100 = $row_count_0_100['count_0_100'];
+// Get count of total_peak_per_month in range 0-99
+$strSQL_count_0_99 = "SELECT COUNT(*) AS count_0_99 FROM view WHERE V_Peak_month BETWEEN 0 AND 99";
+$result_count_0_99 = $objConnect->query($strSQL_count_0_99);
+$row_count_0_99 = $result_count_0_99->fetch_assoc();
+$count_0_99 = $row_count_0_99['count_0_99'];
 
 // Get count of total_peak_per_month in range 100-199
 $strSQL_count_100_199 = "SELECT COUNT(*) AS count_100_199 FROM view WHERE V_Peak_month BETWEEN 100 AND 199";
@@ -58,17 +58,17 @@ $result_count_100_199 = $objConnect->query($strSQL_count_100_199);
 $row_count_100_199 = $result_count_100_199->fetch_assoc();
 $count_100_199 = $row_count_100_199['count_100_199'];
 
-// Get count of total_peak_per_month in range 200-300
-$strSQL_count_200_300 = "SELECT COUNT(*) AS count_200_300 FROM view WHERE V_Peak_month BETWEEN 200 AND 300";
-$result_count_200_300 = $objConnect->query($strSQL_count_200_300);
-$row_count_200_300 = $result_count_200_300->fetch_assoc();
-$count_200_300 = $row_count_200_300['count_200_300'];
+// Get count of total_peak_per_month in range 200-299
+$strSQL_count_200_299 = "SELECT COUNT(*) AS count_200_299 FROM view WHERE V_Peak_month BETWEEN 200 AND 299";
+$result_count_200_299 = $objConnect->query($strSQL_count_200_299);
+$row_count_200_299 = $result_count_200_299->fetch_assoc();
+$count_200_299 = $row_count_200_299['count_200_299'];
 
-// Get count of total_peak_per_month in range 300+
-$strSQL_count_300_up = "SELECT COUNT(*) AS count_300_up FROM view WHERE V_Peak_month > 300";
-$result_count_300_up = $objConnect->query($strSQL_count_300_up);
-$row_count_300_up = $result_count_300_up->fetch_assoc();
-$count_300_up = $row_count_300_up['count_300_up'];
+// Get count of total_peak_per_month in range 300-5000
+$strSQL_count_300_5000 = "SELECT COUNT(*) AS count_300_5000 FROM view WHERE V_Peak_month BETWEEN 300 AND 5000";
+$result_count_300_5000 = $objConnect->query($strSQL_count_300_5000);
+$row_count_300_5000 = $result_count_300_5000->fetch_assoc();
+$count_300_5000 = $row_count_300_5000['count_300_5000'];
 
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
@@ -135,48 +135,48 @@ $page_views = [162, 21, 6];
         });
         const ctxNewDoughnut = document.getElementById('new-doughnut-chart').getContext('2d');
         const newDoughnutChart = new Chart(ctxNewDoughnut, {
-            type: 'doughnut',
-            data: {
-                labels: ['0-100', '100-199', '200-300', '300+'],
-                datasets: [{
-                    label: 'Total Peak per Month',
-                    data: [
-                        <?php echo $count_0_100; ?>, 
-                        <?php echo $count_100_199; ?>, 
-                        <?php echo $count_200_300; ?>, 
-                        <?php echo $count_300_up; ?>
-                    ],
-                    backgroundColor: ['#FF5733', '#FFC300', '#36a2eb', '#50C878'] 
-                }]
+        type: 'doughnut',
+        data: {
+            labels: ['0-99', '100-199', '200-299', '300-5000'],
+            datasets: [{
+                label: 'Total Peak per Month',
+                data: [
+                    <?php echo $count_0_99; ?>,
+                    <?php echo $count_100_199; ?>,
+                    <?php echo $count_200_299; ?>,
+                    <?php echo $count_300_5000; ?>
+                ],
+                backgroundColor: ['#FF5733', '#FFC300', '#36a2eb', '#50C878']
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = newDoughnutChart.data.labels[segmentIndex];
+                    window.location.href = `details.php?range=${label}`;
+                }
             },
-            options: {
-                responsive: true,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const segmentIndex = elements[0].index;
-                        const label = newDoughnutChart.data.labels[segmentIndex];
-                        window.location.href = `details.php?range=${label}`;
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        formatter: (value, context) => {
-                            if (context.dataIndex === 0) {
-                                return 'Peak Month Total';
-                            }
-                            return '';
-                        },
-                        color: '#000',
-                        font: {
-                            weight: 'bold',
-                            size: 16
-                        },
-                        align: 'center',
-                        anchor: 'center'
-                    }
+            plugins: {
+                datalabels: {
+                    formatter: (value, context) => {
+                        if (context.dataIndex === 0) {
+                            return 'Peak Month Total';
+                        }
+                        return '';
+                    },
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 16
+                    },
+                    align: 'center',
+                    anchor: 'center'
                 }
             }
-        });
+        }
+    });
     </script>
 </body>
 </html>

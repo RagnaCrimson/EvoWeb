@@ -5,19 +5,19 @@ include 'connect.php';
 
 $range = isset($_GET['range']) ? $_GET['range'] : '';
 
-$valid_ranges = ['0-100', '100-199', '200-300', '300+'];
+$valid_ranges = ['0-99', '100-199', '200-299', '300-5000'];
 if (!in_array($range, $valid_ranges)) {
     die("Invalid range specified.");
 }
 
-if ($range === '0-100') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 0 AND 100";
+if ($range === '0-99') {
+    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 0 AND 99";
 } elseif ($range === '100-199') {
     $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 100 AND 199";
-} elseif ($range === '200-300') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 300";
-} elseif ($range === '300+') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month > 300";
+} elseif ($range === '200-299') {
+    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 299";
+} elseif ($range === '300-5000') {
+    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 300 AND 5000";
 }
 
 $result = $objConnect->query($strSQL);
@@ -42,7 +42,7 @@ if (!$result) {
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
-            <li><a href="/evo/dashboard.php">Dashboard</a>
+            <li><a href="/evo/dashboard.php">Dashboard</a></li>
             <li><a href="#">รายการ &dtrif;</a>
                 <ul class="dropdown">
                     <li><a href="/evo/data_view.php">ดูข้อมูลทั้งหมด</a></li>
@@ -67,24 +67,24 @@ if (!$result) {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Province</th>
-                    <th>District</th>
-                    <th>SubDistrict</th>
-                    <th>Peak Month</th>
+                    <th>ชื่อหน่วยงาน</th>
+                    <th>จังหวัด</th>
+                    <th>ตำบล</th>
+                    <th>อำเภอ</th>
+                    <th>Peak ต่อปี</th>
+                    <th>Peak ต่อเดือน</th>
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                while ($row = $result->fetch_assoc()): 
-                ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_District']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_SubDistrict']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_Peak_month']); ?></td>
+                    <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
+                    <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
