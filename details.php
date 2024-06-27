@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include 'connect.php';
 
 $range = isset($_GET['range']) ? $_GET['range'] : '';
@@ -32,7 +34,6 @@ if (!$result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Details</title>
-    <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="/evo/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="/evo/js/logout.js"></script>

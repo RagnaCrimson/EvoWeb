@@ -70,8 +70,6 @@ $result_count_300_up = $objConnect->query($strSQL_count_300_up);
 $row_count_300_up = $result_count_300_up->fetch_assoc();
 $count_300_up = $row_count_300_up['count_300_up'];
 
-
-
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
 $new_wins = 100000000; 
