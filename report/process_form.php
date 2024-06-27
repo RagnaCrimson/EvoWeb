@@ -14,10 +14,10 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $sales_team = $_POST['sales_team'];
-    $task_status = $_POST['task_status'];
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
+    $sales_team = isset($_POST['sales_team']) ? $_POST['sales_team'] : '';
+    $task_status = isset($_POST['task_status']) ? $_POST['task_status'] : '';
+    $start_date = isset($_POST['start_date']) ? $_POST['start_date'] : '';
+    $end_date = isset($_POST['end_date']) ? $_POST['end_date'] : '';
 
     $query = "SELECT view.*, task.T_Status 
               FROM view 
@@ -25,25 +25,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               WHERE 1=1";
     
     if (!empty($sales_team)) {
-        $query .= " AND view.V_Sale = '" . mysqli_real_escape_string($conn, $sales_team) . "'";
+        $query .= " AND view.V_Sale = '" . $conn->real_escape_string($sales_team) . "'";
     }
     if (!empty($task_status)) {
-        $query .= " AND task.T_Status = '" . mysqli_real_escape_string($conn, $task_status) . "'";
+        $query .= " AND task.T_Status = '" . $conn->real_escape_string($task_status) . "'";
     }
     if (!empty($start_date) && !empty($end_date)) {
-        $query .= " AND view.V_Date BETWEEN '" . mysqli_real_escape_string($conn, $start_date) . "' AND '" . mysqli_real_escape_string($conn, $end_date) . "'";
+        $query .= " AND view.V_Date BETWEEN '" . $conn->real_escape_string($start_date) . "' AND '" . $conn->real_escape_string($end_date) . "'";
     }
     
     $query .= " ORDER BY view.V_Date ASC";
 
-    $result = mysqli_query($conn, $query);
+    $result = $conn->query($query);
 
     if (!$result) {
-        die("Query failed: " . mysqli_error($conn));
+        die("Query failed: " . $conn->error);
     }
 
     if (isset($_POST['view'])) {
-        if (mysqli_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
             ?>
             <!DOCTYPE html>
             <html lang="en">
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </thead>
                         <tbody>
                             <?php
-                            while ($row = mysqli_fetch_assoc($result)) {
+                            while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
                                 echo "<td>{$row['V_Sale']}</td>";
                                 echo "<td>" . date('d-m-Y', strtotime($row['V_Date'])) . "</td>";
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "<p>No data available.</p>";
         }
     } elseif (isset($_POST['pdf'])) {
-        if (mysqli_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
             $pdf = new FPDF();
             $pdf->AddPage();
 	        $pdf->AddFont('angsa','','angsa.php');
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $pdf->Ln();
             
             $pdf->SetFont('angsa', '', 16);
-            while ($row = mysqli_fetch_assoc($result)) {
+            while ($row = $result->fetch_assoc()) {
                 $pdf->Cell(30, 6, $row['V_Sale'], 1);
                 $pdf->Cell(30, 6, date('d-m-Y', strtotime($row['V_Date'])), 1);
                 $pdf->Cell(30, 6, $row['V_Name'], 1);
