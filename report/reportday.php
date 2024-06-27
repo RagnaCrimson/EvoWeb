@@ -26,6 +26,8 @@ include '../connect.php';
                     <option value="คุณพิเย็น">คุณพิเย็น</option>
                     <option value="ดร.อี๊ด">ดร.อี๊ด</option>
                     <option value="VJK">VJK</option>
+                    <option value="คุณชนินทร์">คุณชนินทร์</option>
+                    <option value="คุณปริม">คุณปริม</option>
                 </select>
                 <label for="task_status">สถานะงาน</label>
                 <select id="task_status" name="task_status">
