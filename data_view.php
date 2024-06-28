@@ -87,6 +87,7 @@ try {
                             </div>
                             <div class="card-body">
                                 <div class="left">
+                                    <p>ID : <?php echo htmlspecialchars($row["V_ID"]); ?></p>
                                     <p>จังหวัด : <?php echo htmlspecialchars($row["V_Province"]); ?></p>
                                     <p>อำเภอ : <?php echo htmlspecialchars($row["V_District"]); ?></p>
                                     <p>ตำบล : <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></p><br>

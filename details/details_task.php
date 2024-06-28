@@ -1,7 +1,6 @@
 <?php
 session_start();
 include '../connect.php';
-mysqli_query($objConnect, "SET NAMES utf8");
 
 $status = isset($_GET['status']) ? $_GET['status'] : '';
 
@@ -69,7 +68,7 @@ if (!$result) {
         </ul>
     </nav>
 
-    <div class="container">
+    <div class="container content-color">
         <h2>สถานะงานที่: <?php echo htmlspecialchars($status); ?></h2>
         <table class="table table-bordered">
             <thead>
@@ -98,5 +97,6 @@ if (!$result) {
             </tbody>
         </table>
     </div>
+    <?php include '../back.html'; ?>
 </body>
 </html>
