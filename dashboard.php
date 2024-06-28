@@ -1,7 +1,6 @@
 <?php
 include 'connect.php';
 
-// Fetch different statuses from the `task` table
 $status_labels = [];
 $status_counts = [];
 
@@ -43,28 +42,6 @@ if (!$result_sum_month) {
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
-// display SUM peak year
-$strSQL_sum_peak_year = "SELECT SUM(V_Peak_year) AS total_peak_per_year FROM view";
-$result_sum_peak_year = $objConnect->query($strSQL_sum_peak_year);
-
-if (!$result_sum_peak_year) {
-    die("Query failed: " . $objConnect->error);
-}
-
-$row_sum_peak_year = $result_sum_peak_year->fetch_assoc();
-$total_peak_per_year = $row_sum_peak_year['total_peak_per_year'];
-
-// display SUM peak month
-$strSQL_sum_peak_month = "SELECT SUM(V_Peak_month) AS total_peak_per_month FROM view";
-$result_sum_peak_month = $objConnect->query($strSQL_sum_peak_month);
-
-if (!$result_sum_peak_month) {
-    die("Query failed: " . $objConnect->error);
-}
-
-$row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
-$total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
-
 // Get count of total_peak_per_month in range 0-99
 $strSQL_count_0_99 = "SELECT COUNT(*) AS count_0_99 FROM view WHERE V_Peak_month BETWEEN 0 AND 99";
 $result_count_0_99 = $objConnect->query($strSQL_count_0_99);
@@ -89,11 +66,71 @@ $result_count_300_5000 = $objConnect->query($strSQL_count_300_5000);
 $row_count_300_5000 = $result_count_300_5000->fetch_assoc();
 $count_300_5000 = $row_count_300_5000['count_300_5000'];
 
+// Get count of V_Electric_per_year in specific ranges
+$strSQL_count_electric_1_10000 = "SELECT COUNT(*) AS count_electric_1_10000 FROM view WHERE V_Electric_per_year BETWEEN 1 AND 10000";
+$result_count_electric_1_10000 = $objConnect->query($strSQL_count_electric_1_10000);
+$row_count_electric_1_10000 = $result_count_electric_1_10000->fetch_assoc();
+$count_electric_1_10000 = $row_count_electric_1_10000['count_electric_1_10000'];
+
+$strSQL_count_electric_10001_30000 = "SELECT COUNT(*) AS count_electric_10001_30000 FROM view WHERE V_Electric_per_year BETWEEN 10001 AND 30000";
+$result_count_electric_10001_30000 = $objConnect->query($strSQL_count_electric_10001_30000);
+$row_count_electric_10001_30000 = $result_count_electric_10001_30000->fetch_assoc();
+$count_electric_10001_30000 = $row_count_electric_10001_30000['count_electric_10001_30000'];
+
+$strSQL_count_electric_30001_50000 = "SELECT COUNT(*) AS count_electric_30001_50000 FROM view WHERE V_Electric_per_year BETWEEN 30001 AND 50000";
+$result_count_electric_30001_50000 = $objConnect->query($strSQL_count_electric_30001_50000);
+$row_count_electric_30001_50000 = $result_count_electric_30001_50000->fetch_assoc();
+$count_electric_30001_50000 = $row_count_electric_30001_50000['count_electric_30001_50000'];
+
+$strSQL_count_electric_50001_100000 = "SELECT COUNT(*) AS count_electric_50001_100000 FROM view WHERE V_Electric_per_year BETWEEN 50001 AND 100000";
+$result_count_electric_50001_100000 = $objConnect->query($strSQL_count_electric_50001_100000);
+$row_count_electric_50001_100000 = $result_count_electric_50001_100000->fetch_assoc();
+$count_electric_50001_100000 = $row_count_electric_50001_100000['count_electric_50001_100000'];
+
+$strSQL_count_electric_100001_200000 = "SELECT COUNT(*) AS count_electric_100001_200000 FROM view WHERE V_Electric_per_year BETWEEN 100001 AND 200000";
+$result_count_electric_100001_200000 = $objConnect->query($strSQL_count_electric_100001_200000);
+$row_count_electric_100001_200000 = $result_count_electric_100001_200000->fetch_assoc();
+$count_electric_100001_200000 = $row_count_electric_100001_200000['count_electric_100001_200000'];
+
+$strSQL_count_electric_200001_10000000 = "SELECT COUNT(*) AS count_electric_200001_10000000 FROM view WHERE V_Electric_per_year BETWEEN 200001 AND 10000000";
+$result_count_electric_200001_10000000 = $objConnect->query($strSQL_count_electric_200001_10000000);
+$row_count_electric_200001_10000000 = $result_count_electric_200001_10000000->fetch_assoc();
+$count_electric_200001_10000000 = $row_count_electric_200001_10000000['count_electric_200001_10000000'];
+
+// Get count of V_Electric_per_month in specific ranges
+$strSQL_count_electric_month_1_10000 = "SELECT COUNT(*) AS count_electric_month_1_10000 FROM view WHERE V_Electric_per_month BETWEEN 1 AND 10000";
+$result_count_electric_month_1_10000 = $objConnect->query($strSQL_count_electric_month_1_10000);
+$row_count_electric_month_1_10000 = $result_count_electric_month_1_10000->fetch_assoc();
+$count_electric_month_1_10000 = $row_count_electric_month_1_10000['count_electric_month_1_10000'];
+
+$strSQL_count_electric_month_10001_30000 = "SELECT COUNT(*) AS count_electric_month_10001_30000 FROM view WHERE V_Electric_per_month BETWEEN 10001 AND 30000";
+$result_count_electric_month_10001_30000 = $objConnect->query($strSQL_count_electric_month_10001_30000);
+$row_count_electric_month_10001_30000 = $result_count_electric_month_10001_30000->fetch_assoc();
+$count_electric_month_10001_30000 = $row_count_electric_month_10001_30000['count_electric_month_10001_30000'];
+
+$strSQL_count_electric_month_30001_50000 = "SELECT COUNT(*) AS count_electric_month_30001_50000 FROM view WHERE V_Electric_per_month BETWEEN 30001 AND 50000";
+$result_count_electric_month_30001_50000 = $objConnect->query($strSQL_count_electric_month_30001_50000);
+$row_count_electric_month_30001_50000 = $result_count_electric_month_30001_50000->fetch_assoc();
+$count_electric_month_30001_50000 = $row_count_electric_month_30001_50000['count_electric_month_30001_50000'];
+
+$strSQL_count_electric_month_50001_100000 = "SELECT COUNT(*) AS count_electric_month_50001_100000 FROM view WHERE V_Electric_per_month BETWEEN 50001 AND 100000";
+$result_count_electric_month_50001_100000 = $objConnect->query($strSQL_count_electric_month_50001_100000);
+$row_count_electric_month_50001_100000 = $result_count_electric_month_50001_100000->fetch_assoc();
+$count_electric_month_50001_100000 = $row_count_electric_month_50001_100000['count_electric_month_50001_100000'];
+
+$strSQL_count_electric_month_100001_200000 = "SELECT COUNT(*) AS count_electric_month_100001_200000 FROM view WHERE V_Electric_per_month BETWEEN 100001 AND 200000";
+$result_count_electric_month_100001_200000 = $objConnect->query($strSQL_count_electric_month_100001_200000);
+$row_count_electric_month_100001_200000 = $result_count_electric_month_100001_200000->fetch_assoc();
+$count_electric_month_100001_200000 = $row_count_electric_month_100001_200000['count_electric_month_100001_200000'];
+
+$strSQL_count_electric_month_200001_10000000 = "SELECT COUNT(*) AS count_electric_month_200001_10000000 FROM view WHERE V_Electric_per_month BETWEEN 200001 AND 10000000";
+$result_count_electric_month_200001_10000000 = $objConnect->query($strSQL_count_electric_month_200001_10000000);
+$row_count_electric_month_200001_10000000 = $result_count_electric_month_200001_10000000->fetch_assoc();
+$count_electric_month_200001_10000000 = $row_count_electric_month_200001_10000000['count_electric_month_200001_10000000'];
+
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
-$page_views = [162, 21, 6]; 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +149,7 @@ $page_views = [162, 21, 6];
         <div class="dashboard">
             <div class="card">
                 <h2>รวมจำนวนไฟฟ้ากิโลวัต Kw</h2>
-                <p><?php echo number_format($total_peak_per_year); ?></p>
+                <p><?php echo number_format($total_electric_per_year); ?></p>
             </div>
             <div class="card">
                 <h2>รวมค่าใช้ไฟฟ้าต่อปี</h2>
@@ -132,6 +169,12 @@ $page_views = [162, 21, 6];
             <div class="chart-container">
                 <canvas id="new-doughnut-chart" class="doughnut-chart"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="electric-year-chart" class="pie-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="electric-month-chart" class="pie-chart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -148,7 +191,7 @@ $page_views = [162, 21, 6];
                 label: 'สถานะงาน',
                 data: statusCounts,
                 backgroundColor: [
-                    '#50C878','#36a2eb', '#FF5733',  '#FFCE56', 
+                    '#b6ddea','#12725c', '#898989',  '#0b6165', 
                     '#C70039', '#581845', '#FFC300'
                 ]
             }]
@@ -159,7 +202,7 @@ $page_views = [162, 21, 6];
                 if (elements.length > 0) {
                     const segmentIndex = elements[0].index;
                     const label = pieChart.data.labels[segmentIndex];
-                    window.location.href = `details_task.php?status=${encodeURIComponent(label)}`;
+                    window.location.href = `details/details_task.php?status=${encodeURIComponent(label)}`;
                 }
             },
             plugins: {
@@ -184,7 +227,7 @@ $page_views = [162, 21, 6];
                     <?php echo $count_200_299; ?>,
                     <?php echo $count_300_5000; ?>
                 ],
-                backgroundColor: ['#FF5733', '#FFC300', '#36a2eb', '#50C878']
+                backgroundColor: ['#ea4335', '#fbbc05', '#4285f4', '#34a853']
             }]
         },
         options: {
@@ -193,7 +236,7 @@ $page_views = [162, 21, 6];
                 if (elements.length > 0) {
                     const segmentIndex = elements[0].index;
                     const label = newDoughnutChart.data.labels[segmentIndex];
-                    window.location.href = `details.php?range=${label}`;
+                    window.location.href = `details/details.php?range=${label}`;
                 }
             },
             plugins: {
@@ -215,6 +258,85 @@ $page_views = [162, 21, 6];
                     },
                     textAlign: 'center',
                     textAnchor: 'middle' 
+                }
+            }
+        }
+    });
+
+    const electricYearLabels = ['1-10,000', '10,001-30,000', '30,001-50,000', '50,001-100,000', '100,001-200,000', '200,001-10,000,000'];
+    const electricYearCounts = [
+        <?php echo $count_electric_1_10000; ?>,
+        <?php echo $count_electric_10001_30000; ?>,
+        <?php echo $count_electric_30001_50000; ?>,
+        <?php echo $count_electric_50001_100000; ?>,
+        <?php echo $count_electric_100001_200000; ?>,
+        <?php echo $count_electric_200001_10000000; ?>
+    ];
+
+    const ctxElectricYear = document.getElementById('electric-year-chart').getContext('2d');
+    const electricYearChart = new Chart(ctxElectricYear, {
+        type: 'pie',
+        data: {
+            labels: electricYearLabels,
+            datasets: [{
+                label: 'Total Electric per Year',
+                data: electricYearCounts,
+                backgroundColor: ['#34a853', '#50C878', '#008b85', '#509ce4',  '#085298', '#0b2c4b']
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = electricYearChart.data.labels[segmentIndex];
+                    window.location.href = `details/details_electric.php?range=${encodeURIComponent(label)}`;
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ค่าใช้ไฟฟ้าต่อปี'
+                }
+            }
+        }
+    });
+
+    // Chart data for V_Electric_per_month
+    const electricMonthLabels = ['1-10,000', '10,001-30,000', '30,001-50,000', '50,001-100,000', '100,001-200,000', '200,001-10,000,000'];
+    const electricMonthCounts = [
+        <?php echo $count_electric_month_1_10000; ?>,
+        <?php echo $count_electric_month_10001_30000; ?>,
+        <?php echo $count_electric_month_30001_50000; ?>,
+        <?php echo $count_electric_month_50001_100000; ?>,
+        <?php echo $count_electric_month_100001_200000; ?>,
+        <?php echo $count_electric_month_200001_10000000; ?>
+    ];
+
+    const ctxElectricMonth = document.getElementById('electric-month-chart').getContext('2d');
+    const electricMonthChart = new Chart(ctxElectricMonth, {
+        type: 'pie',
+        data: {
+            labels: electricMonthLabels,
+            datasets: [{
+                label: 'Total Electric per Month',
+                data: electricMonthCounts,
+                backgroundColor: ['#9fb8d2', '#7e93ba', '#4a5f90', '#284377', '#1b2f55', '#0b2c4b']
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = electricMonthChart.data.labels[segmentIndex];
+                    window.location.href = `details/details_electric.php?range=${encodeURIComponent(label)}`;
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ค่าใช้ไฟฟ้าต่อเดือน'
                 }
             }
         }

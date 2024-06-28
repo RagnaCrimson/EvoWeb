@@ -184,6 +184,10 @@ a {
   background-color: lightblue;
 }
 
+.content-color{
+  background-color: #f5eee8;
+}
+
 .container {
   margin-top: 50px;
   margin-bottom: 50px;

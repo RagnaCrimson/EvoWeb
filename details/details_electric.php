@@ -1,23 +1,35 @@
 <?php
 session_start();
 
-include 'connect.php';
+include '../connect.php';
 
 $range = isset($_GET['range']) ? $_GET['range'] : '';
 
-$valid_ranges = ['0-99', '100-199', '200-299', '300-5000'];
+$valid_ranges = [
+    '1-10000',
+    '10001-30000',
+    '30001-50000',
+    '50001-100000',
+    '100001-200000',
+    '200001-10000000'
+];
+
 if (!in_array($range, $valid_ranges)) {
     die("Invalid range specified.");
 }
 
-if ($range === '0-99') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 0 AND 99 ORDER BY V_Peak_month DESC";
-} elseif ($range === '100-199') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 100 AND 199 ORDER BY V_Peak_month DESC";
-} elseif ($range === '200-299') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 299 ORDER BY V_Peak_month DESC";
-} elseif ($range === '300-5000') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 300 AND 5000 ORDER BY V_Peak_month DESC";
+if ($range === '1-10000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 1 AND 10000 OR V_Electric_per_month BETWEEN 1 AND 10000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
+} elseif ($range === '10001-30000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 10001 AND 30000 OR V_Electric_per_month BETWEEN 10001 AND 30000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
+} elseif ($range === '30001-50000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 30001 AND 50000 OR V_Electric_per_month BETWEEN 30001 AND 50000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
+} elseif ($range === '50001-100000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 50001 AND 100000 OR V_Electric_per_month BETWEEN 50001 AND 100000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
+} elseif ($range === '100001-200000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 100001 AND 200000 OR V_Electric_per_month BETWEEN 100001 AND 200000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
+} elseif ($range === '200001-10000000') {
+    $strSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 200001 AND 10000000 OR V_Electric_per_month BETWEEN 200001 AND 10000000 ORDER BY V_Electric_per_year DESC, V_Electric_per_month DESC";
 }
 
 $result = $objConnect->query($strSQL);
@@ -32,7 +44,7 @@ if (!$result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details</title>
+    <title>Details Electric</title>
     <link rel="stylesheet" href="/evo/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="/evo/js/logout.js"></script>
@@ -61,29 +73,29 @@ if (!$result) {
     </nav>
 
     <div class="container">
-        <h2>Details for Range: <?php echo htmlspecialchars($range); ?></h2>
+        <h2>หน่วยงานที่ค่าใช้ไฟฟ้า : <?php echo htmlspecialchars($range); ?></h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>ค่าใช้ไฟฟ้าต่อเดือน</th>
+                    <th>ค่าใช้ไฟฟ้าต่อปี</th>
                     <th>ID</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
                     <th>ตำบล</th>
                     <th>อำเภอ</th>
-                    <th>Peak ต่อปี</th>
-                    <th>Peak ต่อเดือน</th>
                 </tr>
             </thead>
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
+                    <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
+                    <td><?php echo number_format($row["V_Electric_per_year"], 2); ?></td>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_District']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_SubDistrict']); ?></td>
-                    <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
-                    <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
