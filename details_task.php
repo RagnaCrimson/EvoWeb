@@ -1,29 +1,38 @@
 <?php
 session_start();
-
 include 'connect.php';
+mysqli_query($objConnect, "SET NAMES utf8");
 
-$range = isset($_GET['range']) ? $_GET['range'] : '';
+$status = isset($_GET['status']) ? $_GET['status'] : '';
 
-$valid_ranges = ['0-99', '100-199', '200-299', '300-5000'];
-if (!in_array($range, $valid_ranges)) {
-    die("Invalid range specified.");
+if (empty($status)) {
+    die("Invalid status specified.");
 }
 
-if ($range === '0-99') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 0 AND 99 ORDER BY V_Peak_month DESC";
-} elseif ($range === '100-199') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 100 AND 199 ORDER BY V_Peak_month DESC";
-} elseif ($range === '200-299') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 299 ORDER BY V_Peak_month DESC";
-} elseif ($range === '300-5000') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 300 AND 5000 ORDER BY V_Peak_month DESC";
+$strSQL_datastore_db = "
+    SELECT view.*, task.T_Status, files.filename 
+    FROM view 
+    LEFT JOIN task ON view.V_ID = task.T_ID
+    LEFT JOIN files ON view.V_ID = files.id
+    WHERE task.T_Status = ?";
+$stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+
+if (!$stmt_datastore_db) {
+    die("Prepare failed: " . $objConnect->error);
 }
 
-$result = $objConnect->query($strSQL);
+$stmt_datastore_db->bind_param("s", $status);
+
+$result = $stmt_datastore_db->execute();
 
 if (!$result) {
-    die("Query failed: " . $objConnect->error);
+    die("Query execution failed: " . $stmt_datastore_db->error);
+}
+
+$result = $stmt_datastore_db->get_result();
+
+if (!$result) {
+    die("Result retrieval failed: " . $stmt_datastore_db->error);
 }
 ?>
 
@@ -61,15 +70,15 @@ if (!$result) {
     </nav>
 
     <div class="container">
-        <h2>Details for Range: <?php echo htmlspecialchars($range); ?></h2>
+        <h2>Details for Status: <?php echo htmlspecialchars($status); ?></h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>สถานะ</th>
                     <th>ID</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
-                    <th>ตำบล</th>
-                    <th>อำเภอ</th>
+                    <th>หมายเหตุ</th>
                     <th>Peak ต่อปี</th>
                     <th>Peak ต่อเดือน</th>
                 </tr>
@@ -77,11 +86,11 @@ if (!$result) {
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
+                    <td><?php echo htmlspecialchars($row['T_Status']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_District']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_SubDistrict']); ?></td>
+                    <td><?php echo htmlspecialchars($row['V_comment']); ?></td>
                     <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
                     <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                 </tr>

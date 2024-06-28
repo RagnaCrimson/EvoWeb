@@ -1,5 +1,25 @@
 <?php
-include 'connect.php'; 
+include 'connect.php';
+
+// Fetch different statuses from the `task` table
+$status_labels = [];
+$status_counts = [];
+
+$strSQL_status = "SELECT T_Status, COUNT(*) as status_count FROM task GROUP BY T_Status";
+$result_status = $objConnect->query($strSQL_status);
+
+if (!$result_status) {
+    die("Query failed: " . $objConnect->error);
+}
+
+while ($row_status = $result_status->fetch_assoc()) {
+    $status_labels[] = $row_status['T_Status'];
+    $status_counts[] = $row_status['status_count'];
+}
+
+// Convert PHP arrays to JSON for use in JavaScript
+$status_labels_json = json_encode($status_labels, JSON_UNESCAPED_UNICODE);
+$status_counts_json = json_encode($status_counts);
 
 // display SUM electric_per_year
 $strSQL_sum_year = "SELECT SUM(V_Electric_per_year) AS total_electric_per_year FROM view";
@@ -45,7 +65,6 @@ if (!$result_sum_peak_month) {
 $row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
 $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
 
-
 // Get count of total_peak_per_month in range 0-99
 $strSQL_count_0_99 = "SELECT COUNT(*) AS count_0_99 FROM view WHERE V_Peak_month BETWEEN 0 AND 99";
 $result_count_0_99 = $objConnect->query($strSQL_count_0_99);
@@ -72,7 +91,6 @@ $count_300_5000 = $row_count_300_5000['count_300_5000'];
 
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
-$new_wins = 100000000; 
 $page_views = [162, 21, 6]; 
 ?>
 
@@ -117,24 +135,44 @@ $page_views = [162, 21, 6];
         </div>
     </div>
 
-    <script>
-        const ctxPie = document.getElementById('pie-chart').getContext('2d');
-        const pieChart = new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: ['ส่งการไฟฟ้า', 'ตอบรับ', 'ไม่ผ่าน'],
-                datasets: [{
-                    label: 'Page Views',
-                    data: [<?php echo implode(', ', $page_views); ?>],
-                    backgroundColor: ['#50C878', '#36a2eb', '#FF5733']
-                }]
+<script>
+    const statusLabels = <?php echo $status_labels_json; ?>;
+    const statusCounts = <?php echo $status_counts_json; ?>;
+
+    const ctxPie = document.getElementById('pie-chart').getContext('2d');
+    const pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: 'สถานะงาน',
+                data: statusCounts,
+                backgroundColor: [
+                    '#50C878','#36a2eb', '#FF5733',  '#FFCE56', 
+                    '#C70039', '#581845', '#FFC300'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = pieChart.data.labels[segmentIndex];
+                    window.location.href = `details_task.php?status=${encodeURIComponent(label)}`;
+                }
             },
-            options: {
-                responsive: true
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'สถานะงาน'
+                }
             }
-        });
-        const ctxNewDoughnut = document.getElementById('new-doughnut-chart').getContext('2d');
-        const newDoughnutChart = new Chart(ctxNewDoughnut, {
+        }
+    });
+
+    const ctxNewDoughnut = document.getElementById('new-doughnut-chart').getContext('2d');
+    const newDoughnutChart = new Chart(ctxNewDoughnut, {
         type: 'doughnut',
         data: {
             labels: ['0-99', '100-199', '200-299', '300-5000'],
@@ -159,10 +197,14 @@ $page_views = [162, 21, 6];
                 }
             },
             plugins: {
+                title: {
+                    display: true,
+                    text: 'ค่า Peak ต่อเดือน'
+                },
                 datalabels: {
                     formatter: (value, context) => {
                         if (context.dataIndex === 0) {
-                            return 'Peak Month Total';
+                            return 'ค่า Peak ต่อเดือน';
                         }
                         return '';
                     },
@@ -171,12 +213,12 @@ $page_views = [162, 21, 6];
                         weight: 'bold',
                         size: 16
                     },
-                    align: 'center',
-                    anchor: 'center'
+                    textAlign: 'center',
+                    textAnchor: 'middle' 
                 }
             }
         }
     });
-    </script>
+</script>
 </body>
 </html>
