@@ -45,7 +45,7 @@ include '../connect.php';
 
                 <div class="radio-group">
                     <div class="button-group">
-                        <button type="submit" name="view" class="btcolor">View</button>
+                        <!-- <button type="submit" name="view" class="btcolor">View</button> -->
                         <button type="submit" name="pdf" class="btcolor">PDF</button>
                     </div>
                 </div>
