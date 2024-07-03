@@ -9,45 +9,42 @@ class MYPDF extends TCPDF {
     }
 
     public function Header() {
-        $this->SetFont('prompt', 'B', 16);
-        $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเจอจี เท็ค จำกัด', 0, 1, 'C');
+        $this->SetFont('prompt', 'B', 14);
+        $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเตอร์จี เท็ค จำกัด', 0, 1, 'C');
         $this->Ln(5);
-        $this->SetFont('prompt', '', 12);
-        $this->Cell(0, 0, 'ผู้ทำรายงาน ', 0, 1, 'C');
+        $this->SetFont('prompt', '', 10);
+        $this->Cell(0, 0, 'ผู้ทำรายงาน', 0, 1, 'C');
         $this->Ln(5);
         $this->Cell(0, 0, 'รายงานสถานะการจัดส่งเอกสาร', 0, 1, 'C');
-        $this->Ln(10);
+        $this->Ln(17);
 
-        $this->SetFont('prompt', 'B', 14);
-        $this->Cell(30, 10, 'ลำดับ', 1, 0, 'C');
-        // $this->Cell(30, 10, 'เลขที่ใบเสร็จ', 1, 0, 'C');
-        $this->Cell(30, 10, 'วันที่', 1, 0, 'C');
-        // $this->Cell(30, 10, 'หมายเลขพ้อย', 1, 0, 'C');
-        $this->Cell(50, 10, 'ชื่อหน่วยงาน', 1, 0, 'C');
-        $this->Cell(30, 10, 'สถานะ', 1, 0, 'C');
-        // $this->Cell(50, 10, 'รายการ', 1, 0, 'C');
-        // $this->Cell(30, 10, 'ประเภท', 1, 0, 'C');
-        // $this->Cell(30, 10, 'จำนวนเงิน', 1, 0, 'C');
-        // $this->Cell(20, 10, 'รวม', 1, 0, 'C');
+        $this->SetFont('prompt', 'B', 12);
+        $this->Cell(25, 8, 'ลำดับ', 1, 0, 'C');
+        $this->Cell(30, 8, 'วันที่', 1, 0, 'C');
+        $this->Cell(80, 8, 'ชื่อหน่วยงาน', 1, 0, 'C');
+        $this->Cell(45, 8, 'สถานะ', 1, 0, 'C');
         $this->Ln();
     }
 
     public function Footer() {
-        $this->SetY(-50);
-        $this->SetFont('prompt', '', 12);
+        $this->SetY(-40);
+        $this->SetFont('prompt', '', 10);
 
+        $this->SetX(60);
         $this->Cell(0, 10, 'ผู้จัดทำ........................................................', 0, 1, 'L');
         $this->Ln(5);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
 
-        $this->SetY(-35);
+        $this->SetY(-40);
+        $this->SetX(120);
         $this->Cell(0, 10, 'ผู้จัดการ.....................................................', 0, 1, 'L');
-        $this->Ln(5);
+        $this->Ln(10);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
 
-        $this->SetY(-20);
+        $this->SetY(-40);
+        $this->SetX(180);
         $this->Cell(0, 10, 'ผู้ตรวจสอบ................................................', 0, 1, 'L');
-        $this->Ln(5);
+        $this->Ln(15);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
     }
 }
@@ -81,7 +78,7 @@ $pdf->SetSubject('Sales Report');
 $pdf->SetKeywords('TCPDF, PDF, report, sales');
 
 $pdf->AddFont('prompt', '', dirname(__FILE__).'/fonts/Prompt-Regular.ttf', true);
-$pdf->SetFont('prompt', '', 12);
+$pdf->SetFont('prompt', '', 10);
 
 $pdf->SetMargins(10, 8, 10);
 $pdf->SetFooterMargin(8);
@@ -120,22 +117,17 @@ if (!$result) {
 }
 
 if ($result->num_rows > 0) {
-    $pdf->SetFont('prompt', '', 12);
+    $pdf->SetFont('prompt', '', 10);
+    $counter = 1;
     while ($row = $result->fetch_assoc()) {
-        if ($pdf->GetY() > 180) {
+        if ($pdf->GetY() > 130) {  // ปรับค่าตางรางตรงนี้
             $pdf->AddPage();
             $pdf->SetY(50);
         }
-        $pdf->Cell(30, 10, $row['V_Sale'], 1, 0, 'L');
-        // $pdf->Cell(30, 10, $row['V_ReceiptNumber'], 1, 0, 'L');
-        $pdf->Cell(30, 10, date('d-m-Y', strtotime($row['V_Date'])), 1, 0, 'L');
-        // $pdf->Cell(30, 10, $row['V_PointNumber'], 1, 0, 'L');
-        $pdf->Cell(50, 10, $row['V_Name'], 1, 0, 'L');
-        $pdf->Cell(30, 10, $row['T_Status'], 1, 0, 'L');
-        // $pdf->Cell(50, 10, $row['V_Item'], 1, 0, 'L');
-        // $pdf->Cell(30, 10, $row['V_Type'], 1, 0, 'L');
-        // $pdf->Cell(30, 10, $row['V_Amount'], 1, 0, 'L');
-        // $pdf->Cell(20, 10, $row['V_Total'], 1, 0, 'L');
+        $pdf->Cell(25, 8, $counter++, 1, 0, 'L');
+        $pdf->Cell(30, 8, date('d-m-Y', strtotime($row['V_Date'])), 1, 0, 'L');
+        $pdf->Cell(80, 8, $row['V_Name'], 1, 0, 'L');
+        $pdf->Cell(45, 8, $row['T_Status'], 1, 0, 'L');
         $pdf->Ln();
     }
 
