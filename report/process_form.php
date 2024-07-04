@@ -14,9 +14,13 @@ class MYPDF extends TCPDF {
         $this->SetFont('prompt', 'B', 14);
         $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเตอร์จี เท็ค จำกัด', 0, 1, 'C');
         $this->Ln(5);
+
+        $this->SetX(0);
         $this->SetFont('prompt', '', 10);
         $this->Cell(0, 0, 'ผู้ทำรายงาน: ' . $_SESSION['name'], 0, 1, 'C');
         $this->Ln(5);
+
+        $this->SetX(0);
         $this->Cell(0, 0, 'รายงานสถานะการจัดส่งเอกสาร', 0, 1, 'C');
         $this->Ln(17);
 
@@ -24,7 +28,7 @@ class MYPDF extends TCPDF {
         $this->SetY(42);
         $this->Cell(25, 8, 'ลำดับ', 1, 0, 'C');
         $this->Cell(30, 8, 'วันที่', 1, 0, 'C');
-        $this->Cell(80, 8, 'ชื่อหน่วยงาน', 1, 0, 'C');
+        $this->Cell(90, 8, 'ชื่อหน่วยงาน', 1, 0, 'C');
         $this->Cell(45, 8, 'สถานะ', 1, 0, 'C');
         $this->Ln();
     }
@@ -36,18 +40,24 @@ class MYPDF extends TCPDF {
         $this->SetX(60);
         $this->Cell(0, 10, 'ผู้จัดทำ........................................................', 0, 1, 'L');
         $this->Ln(5);
+        $this->SetY(-30);
+        $this->SetX(60);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
 
         $this->SetY(-40);
         $this->SetX(120);
         $this->Cell(0, 10, 'ผู้จัดการ.....................................................', 0, 1, 'L');
         $this->Ln(10);
+        $this->SetY(-30);
+        $this->SetX(120);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
 
         $this->SetY(-40);
         $this->SetX(180);
         $this->Cell(0, 10, 'ผู้ตรวจสอบ................................................', 0, 1, 'L');
         $this->Ln(15);
+        $this->SetY(-30);
+        $this->SetX(180);
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
     }
 }
@@ -128,10 +138,10 @@ if ($result->num_rows > 0) {
             $pdf->AddPage();
             $pdf->SetY(50);
         }
-        $pdf->Cell(25, 8, $counter++, 1, 0, 'L');
-        $pdf->Cell(30, 8, date('d-m-Y', strtotime($row['V_Date'])), 1, 0, 'L');
-        $pdf->Cell(80, 8, $row['V_Name'], 1, 0, 'L');
-        $pdf->Cell(45, 8, $row['T_Status'], 1, 0, 'L');
+        $pdf->Cell(25, 8, $counter++, 1, 0, 'C');
+        $pdf->Cell(30, 8, date('d-m-Y', strtotime($row['V_Date'])), 1, 0, 'C');
+        $pdf->Cell(90, 8, $row['V_Name'], 1, 0, 'L');
+        $pdf->Cell(45, 8, $row['T_Status'], 1, 0, 'C');
         $pdf->Ln();
     }
 

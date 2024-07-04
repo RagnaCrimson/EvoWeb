@@ -2,13 +2,14 @@
 include 'connect.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $required_fields = ['V_Name', 'V_Province', 'V_ExecName', 'V_ExecPhone', 'V_ExecMail', 'V_CoordName1', 'V_CoordPhone1', 'V_CoordMail1', 'V_Sale', 'V_Date', 'V_Electric_per_year', 'V_Electric_per_month', 'V_comment', 'T_Status'];
-  $missing_fields = array_diff($required_fields, array_keys($_POST));
+    $required_fields = ['V_Name', 'V_Province', 'V_ExecName', 'V_ExecPhone', 'V_ExecMail', 'V_CoordName1', 'V_CoordPhone1', 'V_CoordMail1', 'V_Sale', 'V_Date', 'V_Electric_per_year', 'V_Electric_per_month', 'V_comment', 'T_Status'];
+    $missing_fields = array_diff($required_fields, array_keys($_POST));
 
-  if (!empty($missing_fields)) {
-      die("Please fill in all required fields: " . implode(', ', $missing_fields));
-  }
+    if (!empty($missing_fields)) {
+        die("Please fill in all required fields: " . implode(', ', $missing_fields));
+    }
 
+    // Handle form fields
     $name = htmlspecialchars($_POST['V_Name']);
     $province = htmlspecialchars($_POST['V_Province']);
     $district = htmlspecialchars($_POST['V_District']);
@@ -29,41 +30,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $comment = htmlspecialchars($_POST['V_comment']);
     $status = htmlspecialchars($_POST['T_Status']);
 
-    $sql_datastore_db = "INSERT INTO view (V_Name, V_Province, V_District, V_SubDistrict, V_ExecName, V_ExecPhone, V_ExecMail, 
-        V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, 
-        V_Electric_per_year, V_Electric_per_month, V_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["file"]["name"]);
+    $uploadOk = 1;
+    $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-    $stmt_datastore_db = $objConnect->prepare($sql_datastore_db);
-    if ($stmt_datastore_db === false) {
-        die("Error preparing statement for datastore_db: " . $objConnect->error);
+    // Check if file is a PDF
+    if($fileType != "pdf") {
+        echo "Sorry, only PDF files are allowed.";
+        $uploadOk = 0;
     }
-    $stmt_datastore_db->bind_param("ssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
-        $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
-        $electric_per_year, $electric_per_month, $comment);
 
-    if ($stmt_datastore_db->execute()) {
-        $last_id = $stmt_datastore_db->insert_id;
-
-        $sql_task = "INSERT INTO task (T_Status) VALUES (?)";
-        $stmt_task = $objConnect->prepare($sql_task);
-        if ($stmt_task === false) {
-            die("Error preparing statement for task: " . $objConnect->error);
-        }
-        $stmt_task->bind_param("s", $status);
-
-        if ($stmt_task->execute()) {
-            echo "<script>alert('Data inserted successfully.');</script>";
-        } else {
-            echo "Error: " . $sql_task . "<br>" . $stmt_task->error;
-        }
-
-        $stmt_task->close();
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
     } else {
-        echo "Error: " . $sql_datastore_db . "<br>" . $stmt_datastore_db->error;
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            echo "The file ". basename( $_FILES["file"]["name"]). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
     }
 
-    $stmt_datastore_db->close();
-    $objConnect->close();
+    // Insert data into the database
+    $sql = "INSERT INTO view (V_Name, V_Province, V_District, V_SubDistrict, V_ExecName, V_ExecPhone, V_ExecMail, V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, V_Electric_per_year, V_Electric_per_month, V_comment, T_Status, file_path) 
+            VALUES ('$name', '$province', '$district', '$sub_district', '$exec_name', '$exec_phone', '$exec_mail', '$coord_name1', '$coord_phone1', '$coord_mail1', '$coord_name2', '$coord_phone2', '$coord_mail2', '$sale', '$date', '$electric_per_year', '$electric_per_month', '$comment', '$status', '$target_file')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    $conn->close();
 }
 ?>
 
@@ -90,90 +90,95 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <h1 style="margin-top: 50px; margin-bottom: 50px;">เพิ่มข้อมูล</h1>
     </div>
 
-      <div class="container">
-        <form action="index.php" method="POST" onsubmit="showSuccessPopup()">
-      <div class="card-body">
+    <div class="container">
+        <form action="index.php" method="POST" enctype="multipart/form-data">
+            <div class="card-body">
 
-        <div class="left">
-          <label for="V_Name">ชื่อหน่วยงาน :</label>
-          <input type="text" id="V_Name" name="V_Name" required><br><br>
+                <div class="left">
+                    <label for="V_Name">ชื่อหน่วยงาน :</label>
+                    <input type="text" id="V_Name" name="V_Name" required><br><br>
 
-          <label for="V_Province">จังหวัด :</label>
-          <input type="text" id="V_Province" name="V_Province" required><br><br>
+                    <label for="V_Province">จังหวัด :</label>
+                    <input type="text" id="V_Province" name="V_Province" required><br><br>
 
-          <label for="V_District">อำเภอ:</label>
-          <input type="text" id="V_District" name="V_District"><br><br>
+                    <label for="V_District">อำเภอ:</label>
+                    <input type="text" id="V_District" name="V_District"><br><br>
 
-          <label for="V_SubDistrict">ตำบล :</label>
-          <input type="text" id="V_SubDistrict" name="V_SubDistrict"><br><br>
+                    <label for="V_SubDistrict">ตำบล :</label>
+                    <input type="text" id="V_SubDistrict" name="V_SubDistrict"><br><br>
 
-          <label for="V_ExecName">ชื่อผู้บริหาร :</label>
-          <input type="text" id="V_ExecName" name="V_ExecName"><br><br>
+                    <label for="V_ExecName">ชื่อผู้บริหาร :</label>
+                    <input type="text" id="V_ExecName" name="V_ExecName"><br><br>
 
-          <label for="V_ExecPhone">เบอร์ผู้บริหาร :</label>
-          <input type="text" id="V_ExecPhone" name="V_ExecPhone"><br><br>
+                    <label for="V_ExecPhone">เบอร์ผู้บริหาร :</label>
+                    <input type="text" id="V_ExecPhone" name="V_ExecPhone"><br><br>
 
-          <label for="V_ExecMail">อีเมลผู้บริหาร :</label>
-          <input type="text" id="V_ExecMail" name="V_ExecMail"><br><br>
+                    <label for="V_ExecMail">อีเมลผู้บริหาร :</label>
+                    <input type="text" id="V_ExecMail" name="V_ExecMail"><br><br>
 
-          <label for="V_CoordName1">ชื่อผู้ประสานงาน 1 :</label>
-          <input type="text" id="V_CoordName1" name="V_CoordName1"><br><br>
+                    <label for="V_CoordName1">ชื่อผู้ประสานงาน 1 :</label>
+                    <input type="text" id="V_CoordName1" name="V_CoordName1"><br><br>
 
-          <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1 :</label>
-          <input type="text" id="V_CoordPhone1" name="V_CoordPhone1"><br><br>
+                    <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1 :</label>
+                    <input type="text" id="V_CoordPhone1" name="V_CoordPhone1"><br><br>
 
-          <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
-          <input type="text" id="V_CoordMail1" name="V_CoordMail1"><br><br>
-        </div>
-      
-        <div class="right">
-            <label for="V_CoordName2">ชื่อผู้ประสานงาน 2 :</label>
-            <input type="text" id="V_CoordName2" name="V_CoordName2"><br><br>
+                    <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
+                    <input type="text" id="V_CoordMail1" name="V_CoordMail1"><br><br>
+                </div>
+                
+                <div class="right">
+                    <label for="V_CoordName2">ชื่อผู้ประสานงาน 2 :</label>
+                    <input type="text" id="V_CoordName2" name="V_CoordName2"><br><br>
 
-            <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2 :</label>
-            <input type="text" id="V_CoordPhone2" name="V_CoordPhone2"><br><br>
+                    <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2 :</label>
+                    <input type="text" id="V_CoordPhone2" name="V_CoordPhone2"><br><br>
 
-            <label for="V_CoordMail2">อีเมลผู้ปนะสานงาน 2 :</label>
-            <input type="text" id="V_CoordMail2" name="V_CoordMail2"><br><br>
+                    <label for="V_CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
+                    <input type="text" id="V_CoordMail2" name="V_CoordMail2"><br><br>
 
-            <label for="V_Sale">ทีมฝ่ายขาย :</label>
-            <input type="text" id="V_Sale" name="V_Sale"><br><br>
+                    <label for="V_Sale">ทีมฝ่ายขาย :</label>
+                    <input type="text" id="V_Sale" name="V_Sale"><br><br>
 
-            <label for="V_Date">วันที่ได้รับเอกสาร :</label>
-            <input type="date" id="V_Date" name="V_Date"><br><br>
+                    <label for="V_Date">วันที่ได้รับเอกสาร :</label>
+                    <input type="date" id="V_Date" name="V_Date"><br><br>
 
-            <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-            <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>
+                    <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year"><br><br>
 
-            <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-            <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
+                    <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month"><br><br>
 
-            <label for="V_Peak_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-            <input type="number" step="any" placeholder="000.00" id="V_Peak_year" name="V_Peak_year"><br><br>
+                    <label for="V_Peak_year">ค่าใช้ไฟฟ้าต่อปี :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Peak_year" name="V_Peak_year"><br><br>
 
-            <label for="V_Peak_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-            <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month"><br><br>
+                    <label for="V_Peak_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month"><br><br>
 
-            <label for="V_comment">หมายเหตุ :</label>
-            <input type="text" id="V_comment" name="V_comment"><br><br>
+                    <label for="V_comment">หมายเหตุ :</label>
+                    <input type="text" id="V_comment" name="V_comment"><br><br>
 
-            <label for="T_Status">สถานะ :</label>
-              <select id="T_Status" name="T_Status" class="form-control" required>
-                <option value="">-- เลือกสถานะ --</option>
-                <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
-                <option value="ตอบรับ">ตอบรับ</option>
-                <option value="ส่งมอบงาน">ส่งมอบงาน</option>
-                <option value="ไม่ผ่าน">ไม่ผ่าน</option>
-              </select><br><br>
+                    <label for="T_Status">สถานะ :</label>
+                    <select id="T_Status" name="T_Status" class="form-control" required>
+                        <option value="">-- เลือกสถานะ --</option>
+                        <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
+                        <option value="ตอบรับ">ตอบรับ</option>
+                        <option value="ส่งมอบงาน">ส่งมอบงาน</option>
+                        <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                    </select><br><br>
 
-            <div class="center">
-              <button type="submit" class="btn btn-primary btn-lg">เพิ่มข้อมูล</button>
-              <button type="button" class="btn btn-primary btn-lg">ยกเลิก</button>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Select file</label>
+                        <input type="file" class="form-control" name="file" id="file" required>
+                    </div>
+
+                    <div class="center">
+                        <button type="submit" class="btn btn-primary btn-lg">เพิ่มข้อมูล</button>
+                        <button type="button" class="btn btn-primary btn-lg">ยกเลิก</button>
+                    </div>
+                </div>
             </div>
-        </div>
-      </div>
+        </form>
     </div>
-    </form>
-  <?php include 'back.html'; ?>
+    <?php include 'back.html'; ?>
 </body>
 </html>
