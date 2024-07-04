@@ -9,16 +9,19 @@ class MYPDF extends TCPDF {
     }
 
     public function Header() {
+        $this->SetY(10);
+        $this->SetX(0);
         $this->SetFont('prompt', 'B', 14);
         $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเตอร์จี เท็ค จำกัด', 0, 1, 'C');
         $this->Ln(5);
         $this->SetFont('prompt', '', 10);
-        $this->Cell(0, 0, 'ผู้ทำรายงาน', 0, 1, 'C');
+        $this->Cell(0, 0, 'ผู้ทำรายงาน: ' . $_SESSION['name'], 0, 1, 'C');
         $this->Ln(5);
         $this->Cell(0, 0, 'รายงานสถานะการจัดส่งเอกสาร', 0, 1, 'C');
         $this->Ln(17);
 
         $this->SetFont('prompt', 'B', 12);
+        $this->SetY(42);
         $this->Cell(25, 8, 'ลำดับ', 1, 0, 'C');
         $this->Cell(30, 8, 'วันที่', 1, 0, 'C');
         $this->Cell(80, 8, 'ชื่อหน่วยงาน', 1, 0, 'C');
@@ -48,6 +51,7 @@ class MYPDF extends TCPDF {
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
     }
 }
+session_start();
 
 $servername = "localhost";
 $username = "root";
@@ -80,7 +84,7 @@ $pdf->SetKeywords('TCPDF, PDF, report, sales');
 $pdf->AddFont('prompt', '', dirname(__FILE__).'/fonts/Prompt-Regular.ttf', true);
 $pdf->SetFont('prompt', '', 10);
 
-$pdf->SetMargins(10, 8, 10);
+$pdf->SetMargins(50, 8, 10);
 $pdf->SetFooterMargin(8);
 $pdf->SetAutoPageBreak(TRUE, 20);
 
@@ -120,7 +124,7 @@ if ($result->num_rows > 0) {
     $pdf->SetFont('prompt', '', 10);
     $counter = 1;
     while ($row = $result->fetch_assoc()) {
-        if ($pdf->GetY() > 130) {  // ปรับค่าตางรางตรงนี้
+        if ($pdf->GetY() > 160) {  // ปรับค่าตางรางตรงนี้
             $pdf->AddPage();
             $pdf->SetY(50);
         }
