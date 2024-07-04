@@ -12,7 +12,7 @@ class MYPDF extends TCPDF {
         $this->SetY(10);
         $this->SetX(0);
         $this->SetFont('prompt', 'B', 14);
-        $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเตอร์จี เท็ค จำกัด', 0, 1, 'C');
+        $this->Cell(0, 0, 'บริษัท อีโวลูชั่น เอ็นเนอร์จี เท็ค จำกัด', 0, 1, 'C');
         $this->Ln(5);
 
         $this->SetX(0);
