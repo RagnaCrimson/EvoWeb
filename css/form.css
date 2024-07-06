@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+form {
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 1%;
+    padding: 40px;
+    border: 1px solid #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.field {
+    width: 22%;
+    display: flex;
+    flex-direction: column;
+}
+
+.field.full-width {
+    width: 100%;
+}
+
+.field.half-width {
+    width: 48%;
+}
+
+.field label {
+    margin-bottom: 5px;
+}
+
+.field input, .field textarea, .row button {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.field textarea {
+    height: 100px;
+}
+
+.row.center {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.row.center button {
+    margin-right: 10px;
+}
+
+.row.center button:last-child {
+    margin-right: 0;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .field, .field.half-width {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .row button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .row button:last-child {
+        margin-bottom: 0;
+    }
+
+    .row.center {
+        flex-direction: column;
+    }
+
+    .row.center button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .row.center button:last-child {
+        margin-bottom: 0;
+    }
+}
