@@ -128,13 +128,9 @@
                 <label for="file" class="form-label">Select file</label>
                 <input type="file" class="form-control" accept="application/pdf" name="file" id="file" required>
             </div>
-            <div class="field half-width">
-                <label for="field15">Field 15</label>
-                <input type="text" id="field15" name="field15">
-            </div>
         </div>
         <div class="row center">
-            <button type="submit">Submit</button>
+            <button type="submit" value="Submit">Submit</button>
             <button type="reset">Reset</button>
         </div>
     </form>
