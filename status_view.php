@@ -100,14 +100,6 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     </form>
                 </nav>
 
-                <form action="upload.php" method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Select file</label>
-                        <input type="file" class="form-control" name="file" id="file" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Upload file</button>
-                </form><br><br>
-
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>

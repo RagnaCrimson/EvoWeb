@@ -12,6 +12,7 @@
 </head>
 <body class="bgcolor">
 <?php include 'header.php'; ?>
+<div style="margin-bottom: 30px; margin-top: 30px;"><h1>เพิ่มข้อมูล</h1></div>
     <form action="upload.php" method="POST" onsubmit="showSuccessPopup()" enctype="multipart/form-data">
         <div class="row">
             <div class="field">
