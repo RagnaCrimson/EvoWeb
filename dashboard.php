@@ -42,29 +42,41 @@ if (!$result_sum_month) {
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
-// Get count of total_peak_per_month in range 0-99
-$strSQL_count_0_99 = "SELECT COUNT(*) AS count_0_99 FROM view WHERE V_Peak_month BETWEEN 0 AND 99";
-$result_count_0_99 = $objConnect->query($strSQL_count_0_99);
-$row_count_0_99 = $result_count_0_99->fetch_assoc();
-$count_0_99 = $row_count_0_99['count_0_99'];
+// Get count of total_peak_per_month in range 0
+$strSQL_count_0 = "SELECT COUNT(*) AS count_0 FROM view WHERE V_Peak_month = 0";
+$result_count_0 = $objConnect->query($strSQL_count_0);
+$row_count_0 = $result_count_0->fetch_assoc();
+$count_0 = $row_count_0['count_0'];
 
-// Get count of total_peak_per_month in range 100-199
-$strSQL_count_100_199 = "SELECT COUNT(*) AS count_100_199 FROM view WHERE V_Peak_month BETWEEN 100 AND 199";
-$result_count_100_199 = $objConnect->query($strSQL_count_100_199);
-$row_count_100_199 = $result_count_100_199->fetch_assoc();
-$count_100_199 = $row_count_100_199['count_100_199'];
+// Get count of total_peak_per_month in range 1-50
+$strSQL_count_1_50 = "SELECT COUNT(*) AS count_1_50 FROM view WHERE V_Peak_month BETWEEN 1 AND 50";
+$result_count_1_50 = $objConnect->query($strSQL_count_1_50);
+$row_count_1_50 = $result_count_1_50->fetch_assoc();
+$count_1_50 = $row_count_1_50['count_1_50'];
 
-// Get count of total_peak_per_month in range 200-299
-$strSQL_count_200_299 = "SELECT COUNT(*) AS count_200_299 FROM view WHERE V_Peak_month BETWEEN 200 AND 299";
-$result_count_200_299 = $objConnect->query($strSQL_count_200_299);
-$row_count_200_299 = $result_count_200_299->fetch_assoc();
-$count_200_299 = $row_count_200_299['count_200_299'];
+// Get count of total_peak_per_month in range 51-100
+$strSQL_count_51_100 = "SELECT COUNT(*) AS count_51_100 FROM view WHERE V_Peak_month BETWEEN 51 AND 100";
+$result_count_51_100 = $objConnect->query($strSQL_count_51_100);
+$row_count_51_100 = $result_count_51_100->fetch_assoc();
+$count_51_100 = $row_count_51_100['count_51_100'];
 
-// Get count of total_peak_per_month in range 300-5000
-$strSQL_count_300_5000 = "SELECT COUNT(*) AS count_300_5000 FROM view WHERE V_Peak_month BETWEEN 300 AND 5000";
-$result_count_300_5000 = $objConnect->query($strSQL_count_300_5000);
-$row_count_300_5000 = $result_count_300_5000->fetch_assoc();
-$count_300_5000 = $row_count_300_5000['count_300_5000'];
+// Get count of total_peak_per_month in range 101-150
+$strSQL_count_101_150 = "SELECT COUNT(*) AS count_101_150 FROM view WHERE V_Peak_month BETWEEN 101 AND 150";
+$result_count_101_150 = $objConnect->query($strSQL_count_101_150);
+$row_count_101_150 = $result_count_101_150->fetch_assoc();
+$count_101_150 = $row_count_101_150['count_101_150'];
+
+// Get count of total_peak_per_month in range 151-199
+$strSQL_count_151_199 = "SELECT COUNT(*) AS count_151_199 FROM view WHERE V_Peak_month BETWEEN 151 AND 199";
+$result_count_151_199 = $objConnect->query($strSQL_count_151_199);
+$row_count_151_199 = $result_count_151_199->fetch_assoc();
+$count_151_199 = $row_count_151_199['count_151_199'];
+
+// Get count of total_peak_per_month in range 200-1000
+$strSQL_count_200_10000 = "SELECT COUNT(*) AS count_200_10000 FROM view WHERE V_Peak_month BETWEEN 200 AND 10000";
+$result_count_200_10000 = $objConnect->query($strSQL_count_200_10000);
+$row_count_200_10000 = $result_count_200_10000->fetch_assoc();
+$count_200_10000 = $row_count_200_10000['count_200_10000'];
 
 // ============== V_Electric_per_year ================
 
@@ -232,16 +244,18 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     const newDoughnutChart = new Chart(ctxNewDoughnut, {
         type: 'doughnut',
         data: {
-            labels: ['0-99', '100-199', '200-299', '300-5000'],
+            labels: ['0', '1-50', '51-100', '101-150', '151-199', '200-10000'],
             datasets: [{
                 label: 'Total Peak per Month',
                 data: [
-                    <?php echo $count_0_99; ?>,
-                    <?php echo $count_100_199; ?>,
-                    <?php echo $count_200_299; ?>,
-                    <?php echo $count_300_5000; ?>
+                    <?php echo $count_0; ?>,
+                    <?php echo $count_1_50; ?>,
+                    <?php echo $count_51_100; ?>,
+                    <?php echo $count_101_150; ?>,
+                    <?php echo $count_151_199; ?>,
+                    <?php echo $count_200_10000; ?>
                 ],
-                backgroundColor: ['#ea4335', '#fbbc05', '#4285f4', '#34a853']
+                backgroundColor: ['#ea4335', '#fbbc05', '#4285f4', '#34a853', '#FF5733', '#8E44AD']
             }]
         },
         options: {
@@ -271,11 +285,12 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                         size: 16
                     },
                     textAlign: 'center',
-                    textAnchor: 'middle' 
+                    textAnchor: 'middle'
                 }
             }
         }
     });
+
 
     const electricYearLabels = ['1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
     const electricYearCounts = [

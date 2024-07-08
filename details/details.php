@@ -4,19 +4,32 @@ include '../connect.php';
 
 $range = isset($_GET['range']) ? $_GET['range'] : '';
 
-$valid_ranges = ['0-99', '100-199', '200-299', '300-5000'];
+$valid_ranges = ['0', '1-50', '51-100', '101-150', '151-199', '200-10000'];
 if (!in_array($range, $valid_ranges)) {
     die("Invalid range specified.");
 }
 
-if ($range === '0-99') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 0 AND 99 ORDER BY V_Peak_month DESC";
-} elseif ($range === '100-199') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 100 AND 199 ORDER BY V_Peak_month DESC";
-} elseif ($range === '200-299') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 299 ORDER BY V_Peak_month DESC";
-} elseif ($range === '300-5000') {
-    $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 300 AND 5000 ORDER BY V_Peak_month DESC";
+switch ($range) {
+    case '0':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month = 0 ORDER BY V_Peak_month DESC";
+        break;
+    case '1-50':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 1 AND 50 ORDER BY V_Peak_month DESC";
+        break;
+    case '51-100':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 51 AND 100 ORDER BY V_Peak_month DESC";
+        break;
+    case '101-150':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 101 AND 150 ORDER BY V_Peak_month DESC";
+        break;
+    case '151-199':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 151 AND 199 ORDER BY V_Peak_month DESC";
+        break;
+    case '200-10000':
+        $strSQL = "SELECT * FROM view WHERE V_Peak_month BETWEEN 200 AND 10000 ORDER BY V_Peak_month DESC";
+        break;
+    default:
+        die("Invalid range specified.");
 }
 
 $result = $objConnect->query($strSQL);
@@ -55,7 +68,7 @@ if (!$result) {
                     <li><a href="#">บริษัทผู้รับเหมา</a></li>
                 </ul>
             </li>
-            <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
+            <li><a onclick="confirmLogout()">ลงชื่อออก</a></li>
         </ul>
     </nav>
 
