@@ -87,10 +87,10 @@ if (!$yearResult || !$monthResult) {
                 <tr>
                     <th>ค่าใช้ไฟฟ้าต่อเดือน</th>
                     <th>ID</th>
+                    <th>ทีมฝ่ายขาย</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
-                    <th>ตำบล</th>
-                    <th>อำเภอ</th>
+                    <th>ค่า PEAK/เดือน</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,9 +99,9 @@ if (!$yearResult || !$monthResult) {
                     <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['V_Sale']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_District']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_SubDistrict']); ?></td>
+                    <td><?php echo htmlspecialchars($row['V_Peak_month']); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
