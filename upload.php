@@ -36,21 +36,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $date = htmlspecialchars($_POST['V_Date']);
                 $electric_per_year = htmlspecialchars($_POST['V_Electric_per_year']);
                 $electric_per_month = htmlspecialchars($_POST['V_Electric_per_month']);
+                $vPeakYear = htmlspecialchars($_POST['V_Peak_year']);
+                $vPeakMonth = htmlspecialchars($_POST['V_Peak_month']);
                 $comment = htmlspecialchars($_POST['V_comment']);
                 $status = htmlspecialchars($_POST['T_Status']);
 
                 $sql_datastore_db = "INSERT INTO view (V_Name, V_Province, V_District, V_SubDistrict, V_ExecName, V_ExecPhone, V_ExecMail, 
                                                         V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, 
-                                                        V_Electric_per_year, V_Electric_per_month, V_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                        V_Electric_per_year, V_Electric_per_month, V_Peak_year, V_Peak_month, V_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 $stmt_datastore_db = $objConnect->prepare($sql_datastore_db);
                 if ($stmt_datastore_db === false) {
                     die("Error preparing statement for datastore_db: " . $objConnect->error);
                 }
 
-                $stmt_datastore_db->bind_param("ssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
+                $stmt_datastore_db->bind_param("ssssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
                                                 $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
-                                                $electric_per_year, $electric_per_month, $comment);
+                                                $electric_per_year, $electric_per_month,$vPeakYear, $vPeaMonth, $comment);
 
                 if ($stmt_datastore_db->execute()) {
                     $last_id = $stmt_datastore_db->insert_id;

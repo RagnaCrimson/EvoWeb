@@ -187,7 +187,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             </div>
             <div class="card">
                 <h2>หน่วยงานที่เข้าร่วมทั้งหมด</h2>
-                <p>224 แห่ง</p>
+                <p>324 แห่ง</p>
             </div>
             <div class="chart-container">
                 <canvas id="pie-chart" class="pie-chart"></canvas>
