@@ -80,29 +80,17 @@ $count_200_10000 = $row_count_200_10000['count_200_10000'];
 
 // ============== V_Electric_per_year ================
 
-// Get count of V_Electric_per_year in ranges 1-10,000
-$strSQL_count_electric_1_10000 = "SELECT COUNT(*) AS count_electric_1_10000 FROM view WHERE V_Electric_per_year BETWEEN 1 AND 10000";
-$result_count_electric_1_10000 = $objConnect->query($strSQL_count_electric_1_10000);
-$row_count_electric_1_10000 = $result_count_electric_1_10000->fetch_assoc();
-$count_electric_1_10000 = $row_count_electric_1_10000['count_electric_1_10000'];
+// Get count of V_Electric_per_year in range 0
+$strSQL_count_electric_0 = "SELECT COUNT(*) AS count_electric_0 FROM view WHERE V_Electric_per_year = 0";
+$result_count_electric_0 = $objConnect->query($strSQL_count_electric_0);
+$row_count_electric_0 = $result_count_electric_0->fetch_assoc();
+$count_electric_0 = $row_count_electric_0['count_electric_0'];
 
-// Get count of V_Electric_per_year in ranges 10,001-30,000
-$strSQL_count_electric_10001_30000 = "SELECT COUNT(*) AS count_electric_10001_30000 FROM view WHERE V_Electric_per_year BETWEEN 10001 AND 30000";
-$result_count_electric_10001_30000 = $objConnect->query($strSQL_count_electric_10001_30000);
-$row_count_electric_10001_30000 = $result_count_electric_10001_30000->fetch_assoc();
-$count_electric_10001_30000 = $row_count_electric_10001_30000['count_electric_10001_30000'];
-
-// Get count of V_Electric_per_year in ranges 30,001-50,000
-$strSQL_count_electric_30001_50000 = "SELECT COUNT(*) AS count_electric_30001_50000 FROM view WHERE V_Electric_per_year BETWEEN 30001 AND 50000";
-$result_count_electric_30001_50000 = $objConnect->query($strSQL_count_electric_30001_50000);
-$row_count_electric_30001_50000 = $result_count_electric_30001_50000->fetch_assoc();
-$count_electric_30001_50000 = $row_count_electric_30001_50000['count_electric_30001_50000'];
-
-// Get count of V_Electric_per_year in ranges 50,001-100,000
-$strSQL_count_electric_50001_100000 = "SELECT COUNT(*) AS count_electric_50001_100000 FROM view WHERE V_Electric_per_year BETWEEN 50001 AND 100000";
-$result_count_electric_50001_100000 = $objConnect->query($strSQL_count_electric_50001_100000);
-$row_count_electric_50001_100000 = $result_count_electric_50001_100000->fetch_assoc();
-$count_electric_50001_100000 = $row_count_electric_50001_100000['count_electric_50001_100000'];
+// Get count of V_Electric_per_year in ranges 1-100,000
+$strSQL_count_electric_1_100000 = "SELECT COUNT(*) AS count_electric_1_100000 FROM view WHERE V_Electric_per_year BETWEEN 1 AND 100000";
+$result_count_electric_1_100000 = $objConnect->query($strSQL_count_electric_1_100000);
+$row_count_electric_1_100000 = $result_count_electric_1_100000->fetch_assoc();
+$count_electric_1_100000 = $row_count_electric_1_100000['count_electric_1_100000'];
 
 // Get count of V_Electric_per_year in ranges 100,001-200,000
 $strSQL_count_electric_100001_200000 = "SELECT COUNT(*) AS count_electric_100001_200000 FROM view WHERE V_Electric_per_year BETWEEN 100001 AND 200000";
@@ -110,11 +98,23 @@ $result_count_electric_100001_200000 = $objConnect->query($strSQL_count_electric
 $row_count_electric_100001_200000 = $result_count_electric_100001_200000->fetch_assoc();
 $count_electric_100001_200000 = $row_count_electric_100001_200000['count_electric_100001_200000'];
 
-// Get count of V_Electric_per_year in ranges 200,001-10,000,000
-$strSQL_count_electric_200001_10000000 = "SELECT COUNT(*) AS count_electric_200001_10000000 FROM view WHERE V_Electric_per_year BETWEEN 200001 AND 10000000";
-$result_count_electric_200001_10000000 = $objConnect->query($strSQL_count_electric_200001_10000000);
-$row_count_electric_200001_10000000 = $result_count_electric_200001_10000000->fetch_assoc();
-$count_electric_200001_10000000 = $row_count_electric_200001_10000000['count_electric_200001_10000000'];
+// Get count of V_Electric_per_year in ranges 200,001-500,000
+$strSQL_count_electric_200001_500000 = "SELECT COUNT(*) AS count_electric_200001_500000 FROM view WHERE V_Electric_per_year BETWEEN 200001 AND 500000";
+$result_count_electric_200001_500000 = $objConnect->query($strSQL_count_electric_200001_500000);
+$row_count_electric_200001_500000 = $result_count_electric_200001_500000->fetch_assoc();
+$count_electric_200001_500000 = $row_count_electric_200001_500000['count_electric_200001_500000'];
+
+// Get count of V_Electric_per_year in ranges 500,001-1,000,000
+$strSQL_count_electric_500001_1000000 = "SELECT COUNT(*) AS count_electric_500001_1000000 FROM view WHERE V_Electric_per_year BETWEEN 500001 AND 1000000";
+$result_count_electric_500001_1000000 = $objConnect->query($strSQL_count_electric_500001_1000000);
+$row_count_electric_500001_1000000 = $result_count_electric_500001_1000000->fetch_assoc();
+$count_electric_500001_1000000 = $row_count_electric_500001_1000000['count_electric_500001_1000000'];
+
+// Get count of V_Electric_per_year in ranges 1,000,001-90,000,000
+$strSQL_count_electric_1000001_90000000 = "SELECT COUNT(*) AS count_electric_1000001_90000000 FROM view WHERE V_Electric_per_year BETWEEN 1000001 AND 90000000";
+$result_count_electric_1000001_90000000 = $objConnect->query($strSQL_count_electric_1000001_90000000);
+$row_count_electric_1000001_90000000 = $result_count_electric_1000001_90000000->fetch_assoc();
+$count_electric_1000001_90000000 = $row_count_electric_1000001_90000000['count_electric_1000001_90000000'];
 
 // =========== V_Electric_per_month ================
 
@@ -292,14 +292,14 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     });
 
 
-    const electricYearLabels = ['1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
+    const electricYearLabels = ['0', '1-100000', '100001-200000', '200001-500000', '500001-1000000', '1000001-90000000'];
     const electricYearCounts = [
-        <?php echo $count_electric_1_10000; ?>,
-        <?php echo $count_electric_10001_30000; ?>,
-        <?php echo $count_electric_30001_50000; ?>,
-        <?php echo $count_electric_50001_100000; ?>,
+        <?php echo $count_electric_0; ?>,
+        <?php echo $count_electric_1_100000; ?>,
         <?php echo $count_electric_100001_200000; ?>,
-        <?php echo $count_electric_200001_10000000; ?>
+        <?php echo $count_electric_200001_500000; ?>,
+        <?php echo $count_electric_500001_1000000; ?>,
+        <?php echo $count_electric_1000001_90000000; ?>
     ];
 
     const ctxElectricYear = document.getElementById('electric-year-chart').getContext('2d');
