@@ -118,6 +118,12 @@ $count_electric_1000001_90000000 = $row_count_electric_1000001_90000000['count_e
 
 // =========== V_Electric_per_month ================
 
+// Get count of V_Electric_per_year in range 0
+$strSQL_count_electric_month_0 = "SELECT COUNT(*) AS count_electric_month_0 FROM view WHERE V_Electric_per_month = 0";
+$result_count_electric_month_0 = $objConnect->query($strSQL_count_electric_month_0);
+$row_count_electric_month_0 = $result_count_electric_month_0->fetch_assoc();
+$count_electric_month_0 = $row_count_electric_month_0['count_electric_month_0'];
+
 // Get count of V_Electric_per_month in ranges 1-10,000
 $strSQL_count_electric_month_1_10000 = "SELECT COUNT(*) AS count_electric_month_1_10000 FROM view WHERE V_Electric_per_month BETWEEN 1 AND 10000";
 $result_count_electric_month_1_10000 = $objConnect->query($strSQL_count_electric_month_1_10000);
@@ -310,7 +316,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             datasets: [{
                 label: 'Total Electric per Year',
                 data: electricYearCounts,
-                backgroundColor: ['#34a853', '#50C878', '#008b85', '#509ce4',  '#085298', '#0b2c4b']
+                backgroundColor: ['#40B5AD', '#008080', '#4682B4', '#509ce4',  '#085298', '#0b2c4b']
             }]
         },
         options: {
@@ -325,14 +331,15 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             plugins: {
                 title: {
                     display: true,
-                    text: 'ค่าใช้ไฟฟ้าต่อปี'
+                    text: 'ค่าไฟฟ้าต่อปี'
                 }
             }
         }
     });
 
-    const electricMonthLabels = ['1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
+    const electricMonthLabels = ['0' , '1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
     const electricMonthCounts = [
+        <?php echo $count_electric_month_0; ?>,
         <?php echo $count_electric_month_1_10000; ?>,
         <?php echo $count_electric_month_10001_30000; ?>,
         <?php echo $count_electric_month_30001_50000; ?>,
@@ -349,7 +356,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             datasets: [{
                 label: 'Total Electric per Month',
                 data: electricMonthCounts,
-                backgroundColor: ['#9fb8d2', '#7e93ba', '#4a5f90', '#284377', '#1b2f55', '#0b2c4b']
+                backgroundColor: ['#adbccc', '#9fb8d2', '#7e93ba', '#4a5f90', '#284377', '#1b2f55', '#0b2c4b']
             }]
         },
         options: {
@@ -364,7 +371,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             plugins: {
                 title: {
                     display: true,
-                    text: 'ค่าใช้ไฟฟ้าต่อเดือน'
+                    text: 'ค่าไฟฟ้าต่อเดือน'
                 }
             }
         }

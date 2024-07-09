@@ -6,6 +6,7 @@ include '../connect.php';
 $range = isset($_GET['range']) ? $_GET['range'] : '';
 
 $valid_ranges = [
+    '0',
     '1-10000',
     '10001-30000',
     '30001-50000',
@@ -18,31 +19,42 @@ if (!in_array($range, $valid_ranges)) {
     die("Invalid range specified.");
 }
 
-// Construct SQL query based on the selected range
-if ($range === '1-10000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 1 AND 10000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 1 AND 10000 ORDER BY V_Electric_per_month DESC";
-} elseif ($range === '10001-30000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 10001 AND 30000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 10001 AND 30000 ORDER BY V_Electric_per_month DESC";
-} elseif ($range === '30001-50000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 30001 AND 50000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 30001 AND 50000 ORDER BY V_Electric_per_month DESC";
-} elseif ($range === '50001-100000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 50001 AND 100000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 50001 AND 100000 ORDER BY V_Electric_per_month DESC";
-} elseif ($range === '100001-200000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 100001 AND 200000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 100001 AND 200000 ORDER BY V_Electric_per_month DESC";
-} elseif ($range === '200001-10000000') {
-    $yearSQL = "SELECT * FROM view WHERE V_Electric_per_year BETWEEN 200001 AND 10000000 ORDER BY V_Electric_per_year DESC";
-    $monthSQL = "SELECT * FROM view WHERE V_Electric_per_month BETWEEN 200001 AND 10000000 ORDER BY V_Electric_per_month DESC";
+switch ($range) {
+    case '0':
+        $monthCondition = "V_Electric_per_month = 0";
+        break;
+    case '1-10000':
+        $monthCondition = "V_Electric_per_month BETWEEN 1 AND 10000";
+        break;
+    case '10001-30000':
+        $monthCondition = "V_Electric_per_month BETWEEN 10001 AND 30000";
+        break;
+    case '30001-50000':
+        $monthCondition = "V_Electric_per_month BETWEEN 30001 AND 50000";
+        break;
+    case '50001-100000':
+        $monthCondition = "V_Electric_per_month BETWEEN 50001 AND 100000";
+        break;
+    case '100001-200000':
+        $monthCondition = "V_Electric_per_month BETWEEN 100001 AND 200000";
+        break;
+    case '200001-10000000':
+        $monthCondition = "V_Electric_per_month BETWEEN 200001 AND 10000000";
+        break;
+    default:
+        die("Invalid range specified.");
 }
 
-$yearResult = $objConnect->query($yearSQL);
+$monthSQL = "
+    SELECT v.*, t.T_Status 
+    FROM view v 
+    JOIN task t ON v.V_ID = t.T_ID 
+    WHERE $monthCondition 
+    ORDER BY V_Electric_per_month DESC";
+
 $monthResult = $objConnect->query($monthSQL);
 
-if (!$yearResult || !$monthResult) {
+if (!$monthResult) {
     die("Query failed: " . $objConnect->error);
 }
 ?>
@@ -85,23 +97,26 @@ if (!$yearResult || !$monthResult) {
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>ลำดับ</th>
                     <th>ค่าใช้ไฟฟ้าต่อเดือน</th>
                     <th>ID</th>
-                    <th>ทีมฝ่ายขาย</th>
                     <th>ชื่อหน่วยงาน</th>
-                    <th>จังหวัด</th>
+                    <th>ทีมฝ่ายขาย</th>
                     <th>ค่า PEAK/เดือน</th>
+                    <th>สถานะ</th>
                 </tr>
             </thead>
             <tbody>
+                <?php $rowNumber = 1; ?>
                 <?php while ($row = $monthResult->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo number_format($row["V_Electric_per_month"], 2); ?></td>
+                    <td><?php echo $rowNumber++; ?></td>
+                    <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Sale']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
-                    <td><?php echo htmlspecialchars($row['V_Peak_month']); ?></td>
+                    <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
+                    <td><?php echo htmlspecialchars($row['T_Status']); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
