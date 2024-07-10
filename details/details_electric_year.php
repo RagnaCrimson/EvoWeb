@@ -114,7 +114,7 @@ $statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
         </ul>
     </nav>
 
-    <div class="container">
+    <div class="container content-color">
         <h2>หน่วยงานที่ค่าใช้ไฟฟ้าต่อปี: <?php echo htmlspecialchars($range); ?></h2>
 
         <form method="GET" action="">

@@ -16,7 +16,7 @@ if ($view_id < 2) {
     die("Invalid ID provided.");
 }
 
-$sql_view = "SELECT V_Name, V_comment FROM view WHERE V_ID = $view_id";
+$sql_view = "SELECT V_Name, V_Sale, V_comment FROM view WHERE V_ID = $view_id";
 $result_view = $conn->query($sql_view);
 
 if ($result_view->num_rows == 0) {
@@ -60,6 +60,10 @@ $conn->close();
                 <input type="text" id="V_Name" name="V_Name" value="<?php echo htmlspecialchars($view['V_Name']); ?>" disabled>
             </p>
             <p>
+                <label for="V_Sale">ทีมฝ่ายขาย:</label>
+                <input type="text" id="V_Sale" name="V_Sale" value="<?php echo htmlspecialchars($view['V_Sale']); ?>" disabled>
+            </p>
+            <p>
                 <label for="V_comment">หมายเหตุ :</label>
                 <input type="text" class="form-control" id="V_comment" name="V_comment"  value="<?php echo htmlspecialchars($view['V_comment']); ?>">
             </p>
@@ -75,6 +79,7 @@ $conn->close();
             </p>
                 <div class="center">
                     <input type="submit" class="btn btn-info btn-lg" value="Update">
+                    <button class="btn btn-default btn-lg"><a href="status_view.php">Cancel</a></button>
                 </div>   
             </div>
         </form>

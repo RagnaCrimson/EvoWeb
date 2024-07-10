@@ -48,7 +48,6 @@ switch ($range) {
         die("Invalid range specified.");
 }
 
-// Build additional filter conditions
 $provinceCondition = $provinceFilter ? "AND V_Province = '$provinceFilter'" : '';
 $saleCondition = $saleFilter ? "AND V_Sale = '$saleFilter'" : '';
 $statusCondition = $statusFilter ? "AND T_Status = '$statusFilter'" : '';
@@ -66,7 +65,6 @@ if (!$monthResult) {
     die("Query failed: " . $objConnect->error);
 }
 
-// Get distinct values for filters
 $provinces = $objConnect->query("SELECT DISTINCT V_Province FROM view");
 $sales = $objConnect->query("SELECT DISTINCT V_Sale FROM view");
 $statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
@@ -106,7 +104,7 @@ $statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
         </ul>
     </nav>
 
-    <div class="container">
+    <div class="container content-color">
         <h2>หน่วยงานที่ค่าใช้ไฟฟ้าต่อเดือน: <?php echo htmlspecialchars($range); ?></h2>
         <form method="GET" action="">
             <input type="hidden" name="range" value="<?php echo htmlspecialchars($range); ?>">

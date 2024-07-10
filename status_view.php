@@ -5,6 +5,10 @@ mysqli_query($objConnect, "SET NAMES utf8");
 
 $search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
 
+$saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
+$statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
+$provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
+
 $rows_per_page = 20;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $rows_per_page;
@@ -15,18 +19,25 @@ if ($search) {
         FROM view 
         LEFT JOIN task ON view.V_ID = task.T_ID
         LEFT JOIN files ON view.V_ID = files.id
-        WHERE view.V_Name LIKE CONCAT('%', ?, '%') 
+        WHERE (view.V_Name LIKE CONCAT('%', ?, '%') 
         OR view.V_Province LIKE CONCAT('%', ?, '%') 
-        OR task.T_Status LIKE CONCAT('%', ?, '%')";
+        OR task.T_Status LIKE CONCAT('%', ?, '%'))
+        AND (view.V_Sale = ? OR ? = '')
+        AND (task.T_Status = ? OR ? = '')
+        AND (view.V_Province = ? OR ? = '')";
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
-    $stmt_datastore_db->bind_param("sss", $search, $search, $search);
+    $stmt_datastore_db->bind_param("ssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 } else {
     $strSQL_datastore_db = "
         SELECT view.*, task.T_Status, files.filename 
         FROM view 
         LEFT JOIN task ON view.V_ID = task.T_ID
-        LEFT JOIN files ON view.V_ID = files.id";
+        LEFT JOIN files ON view.V_ID = files.id
+        WHERE (view.V_Sale = ? OR ? = '')
+        AND (task.T_Status = ? OR ? = '')
+        AND (view.V_Province = ? OR ? = '')";
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+    $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 }
 
 $stmt_datastore_db->execute();
@@ -99,7 +110,6 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                         <button type="submit" class="btn btn-primary">ค้นหา</button>
                     </form>
                 </nav>
-
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
@@ -109,7 +119,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
-                    <th>หมายเหตุ</th>
+                    <th>ทีมฝ่ายขาย</th>
                     <th>สถานะ</th>
                     <th>แก้ไข</th>
                 </tr>
@@ -135,7 +145,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                                     No file
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo htmlspecialchars($row["V_comment"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
                             <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
                             <td><a href="edit_status.php?view_id=<?php echo urlencode($row['V_ID']); ?>" class="btn btn-info btn-lg">Update</a></td>
                         </tr>
