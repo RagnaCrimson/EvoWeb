@@ -164,7 +164,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     <td colspan="4"></td>
                 </tr>
                 <tr>
-                    <td colspan="7"><strong>Total Rows</strong></td>
+                    <td col000span="7"><strong>Total Rows</strong></td>
                     <td><strong><?php echo $total_rows; ?></strong></td>
                 </tr>
             </table>
