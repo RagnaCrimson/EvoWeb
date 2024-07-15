@@ -1,11 +1,11 @@
 <?php
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "datastore_db";
+$servername = "localhost";
+$username = "evoluti1_evo";
+$password = "uzVztKVrghrZhu4n7LHF";
+$dbname = "evoluti1_evo";
 
 try {
-    $objConnect = new mysqli($server, $username, $password, $database);
+    $objConnect = new mysqli($servername, $username, $password, $dbname);
 
     if ($objConnect->connect_error) {
         throw new Exception("Connection failed: " . $objConnect->connect_error);
@@ -34,10 +34,10 @@ try {
     $total_pages = ceil($total_rows / $rows_per_page);
 
     if ($search) {
-        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.id WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.ID WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
         $stmt_data->bind_param("ssii", $search, $search, $offset, $rows_per_page);
     } else {
-        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.id LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.ID LIMIT ?, ?");
         $stmt_data->bind_param("ii", $offset, $rows_per_page);
     }
 
@@ -106,7 +106,7 @@ try {
                                     <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
                                     <p>Email : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
                                     <p>ค่าไฟ/ปี : <b><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?> บาท</b></p>
-                                    <p>ค่าฟ/เดือน : <b><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?> บาท</b></p><br>
+                                    <p>ค่าไฟ/เดือน : <b><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?> บาท</b></p><br>
                                     <p>การใช้ไฟ/ปี : <b><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></b></p>
                                     <p>การใช้ไฟ/เดือน : <b><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></b></p>
                                     <?php if (!empty($row["filename"])): ?>
