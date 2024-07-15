@@ -2,9 +2,9 @@
 session_start();
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "datastore_db";
+$username = "evoluti1_evo";
+$password = "uzVztKVrghrZhu4n7LHF";
+$dbname = "evoluti1_evo";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
