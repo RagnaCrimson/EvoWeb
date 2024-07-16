@@ -98,6 +98,63 @@
                 <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month">
             </div>
         </div>
+        <h3>ค่า PEAK ของแต่ละเดือน</h3>
+        <div class="row">
+            <div class="field">
+                <label for="P_1">เดือน 1 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_1" name="P_1">
+            </div>
+            <div class="field">
+                <label for="P_2">เดือน 2 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_2" name="P_2">
+            </div>
+            <div class="field">
+                <label for="P_3">เดือน 3 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_3" name="P_3">
+            </div>
+            <div class="field">
+                <label for="P_4">เดือน 4 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_4" name="P_4">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label for="P_5">เดือน 5 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_5" name="P_5">
+            </div>
+            <div class="field">
+                <label for="P_6">เดือน 6 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_6" name="P_6">
+            </div>
+            <div class="field">
+                <label for="P_7">เดือน 7 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_7" name="P_7">
+            </div>
+            <div class="field">
+                <label for="P_8">เดือน 8 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_8" name="P_8">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label for="P_9">เดือน 9 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_9" name="P_9">
+            </div>
+            <div class="field">
+                <label for="P_10">เดือน 10 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_10" name="P_10">
+            </div>
+            <div class="field">
+                <label for="P_11">เดือน 11 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_11" name="P_11">
+            </div>
+            <div class="field">
+                <label for="P_12">เดือน 12 :</label>
+                <input type="number" step="any" placeholder="000.00" id="P_12" name="P_12">
+            </div>
+        </div>
 
         <div class="row">
             <div class="field full-width">

@@ -19,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
                 $filename = $_FILES["file"]["name"];
 
+                // Bind POST data for view table
                 $name = htmlspecialchars($_POST['V_Name']);
                 $province = htmlspecialchars($_POST['V_Province']);
                 $district = htmlspecialchars($_POST['V_District']);
@@ -52,30 +53,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $stmt_datastore_db->bind_param("ssssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
                                                 $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
-                                                $electric_per_year, $electric_per_month,$vPeakYear, $vPeaMonth, $comment);
+                                                $electric_per_year, $electric_per_month, $vPeakYear, $vPeakMonth, $comment);
 
                 if ($stmt_datastore_db->execute()) {
                     $last_id = $stmt_datastore_db->insert_id;
 
+                    // Insert data into task table
                     $sql_task = "INSERT INTO task (T_Status) VALUES (?)";
                     $stmt_task = $objConnect->prepare($sql_task);
                     if ($stmt_task === false) {
                         die("Error preparing statement for task: " . $objConnect->error);
                     }
                     $stmt_task->bind_param("s", $status);
-
                     $stmt_task->execute();
                     $stmt_task->close();
 
+                    // Insert data into files table
                     $sql_files = "INSERT INTO files (filename) VALUES (?)";
                     $stmt_files = $objConnect->prepare($sql_files);
                     if ($stmt_files === false) {
-                        die("Error preparing the statement for files: " . $objConnect->error);
+                        die("Error preparing statement for files: " . $objConnect->error);
                     }
                     $stmt_files->bind_param("s", $filename);
-
                     $stmt_files->execute();
                     $stmt_files->close();
+
+                    // Insert data into peak table
+                    $sql_peak = "INSERT INTO peak (P_Month, P_1, P_2, P_3, P_4, P_5, P_6, P_7, P_8, P_9, P_10, P_11, P_12) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $stmt_peak = $objConnect->prepare($sql_peak);
+                    if ($stmt_peak === false) {
+                        die("Error preparing statement for peak: " . $objConnect->error);
+                    }
+
+                    $p_month = htmlspecialchars($_POST['P_Month']);
+                    $p_1 = htmlspecialchars($_POST['P_1']);
+                    $p_2 = htmlspecialchars($_POST['P_2']);
+                    $p_3 = htmlspecialchars($_POST['P_3']);
+                    $p_4 = htmlspecialchars($_POST['P_4']);
+                    $p_5 = htmlspecialchars($_POST['P_5']);
+                    $p_6 = htmlspecialchars($_POST['P_6']);
+                    $p_7 = htmlspecialchars($_POST['P_7']);
+                    $p_8 = htmlspecialchars($_POST['P_8']);
+                    $p_9 = htmlspecialchars($_POST['P_9']);
+                    $p_10 = htmlspecialchars($_POST['P_10']);
+                    $p_11 = htmlspecialchars($_POST['P_11']);
+                    $p_12 = htmlspecialchars($_POST['P_12']);
+
+                    $stmt_peak->bind_param("sssssssssssss", $p_month, $p_1, $p_2, $p_3, $p_4, $p_5, $p_6, $p_7, $p_8, $p_9, $p_10, $p_11, $p_12);
+                    $stmt_peak->execute();
+                    $stmt_peak->close();
 
                     header("Location: index.php");
                     exit;
