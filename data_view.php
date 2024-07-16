@@ -115,7 +115,7 @@ try {
                                         <p>No file uploaded</p>
                                     <?php endif; ?>
                                     <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">Edit</a>
-                                    <a href="graph.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">กราฟ</a>
+                                    <a href="graph.php?id=<?php echo urlencode($row['V_ID']); ?>" class="btn btn-defult btn-lg">กราฟ</a>
                                 </div>
                             </div>
                         </div>

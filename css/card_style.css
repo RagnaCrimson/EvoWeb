@@ -66,3 +66,15 @@ body {
 .card-body p {
     line-height: 1.6;
 }
+
+.chart-container {
+    grid-column: span 2;
+    background-color: white;
+}
+
+.git-center {
+    display: grid;
+    place-items: center;
+    gap: 20px;
+    padding: 40px;
+}

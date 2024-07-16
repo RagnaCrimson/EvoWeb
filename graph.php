@@ -1,14 +1,17 @@
 <?php
-// Include the database connection script
 include 'connect.php';
 
-// Fetch data based on $_GET['id'] (ensure it's sanitized)
-$id = $_GET['id'];
+$v_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Example query to fetch data
-$sql = "SELECT V_Peak_year, V_Peak_month FROM view WHERE V_Name = '$id'";
+if ($v_id <= 0) {
+    die("Invalid V_ID parameter");
+}
 
-$result = $objConnect->query($sql);
+$sql = "SELECT P_1, P_2, P_3, P_4, P_5, P_6, P_7, P_8, P_9, P_10, P_11, P_12 FROM peak WHERE P_ID = ?";
+$stmt = $objConnect->prepare($sql);
+$stmt->bind_param("i", $v_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if (!$result) {
     die("Query failed: " . $objConnect->error);
@@ -16,15 +19,15 @@ if (!$result) {
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $peak_year_data = $row['V_Peak_year'];
-    $peak_month_data = $row['V_Peak_month'];
+    $peak_data = array(
+        $row['P_1'], $row['P_2'], $row['P_3'], $row['P_4'], 
+        $row['P_5'], $row['P_6'], $row['P_7'], $row['P_8'], 
+        $row['P_9'], $row['P_10'], $row['P_11'], $row['P_12']
+    );
 } else {
-    // Handle case where no data is found
-    $peak_year_data = 0;
-    $peak_month_data = 0;
+    $peak_data = array_fill(0, 12, 0);
 }
 
-// Close the database connection at the end of script execution
 $objConnect->close();
 ?>
 
@@ -33,8 +36,8 @@ $objConnect->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Graph</title>
-    <link rel="stylesheet" href="css/dashboard.css">
+    <title>Display Peak Data</title>
+    <link rel="stylesheet" href="css/card_style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -42,9 +45,9 @@ $objConnect->close();
     <?php include 'header.php'; ?>
 
     <div class="container">
-        <div class="dashboard">
+        <div class="git-center">
             <div class="chart-container">
-                <canvas id="myChart" width="400" height="400"></canvas>
+                <canvas id="myChart" width="1000" height="500"></canvas>
             </div>
         </div>
     </div>
@@ -52,23 +55,14 @@ $objConnect->close();
     <script>
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: ['Peak Year', 'Peak Month'],
+                labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6', 'Month 7', 'Month 8', 'Month 9', 'Month 10', 'Month 11', 'Month 12'],
                 datasets: [{
-                    label: 'Electric Peak',
-                    data: [
-                        <?php echo json_encode($peak_year_data); ?>,
-                        <?php echo json_encode($peak_month_data); ?>
-                    ],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
-                    ],
+                    label: 'Peak Data',
+                    data: <?php echo json_encode($peak_data); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }]
             },
