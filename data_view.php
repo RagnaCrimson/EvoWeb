@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "evoluti1_evo";
-$password = "uzVztKVrghrZhu4n7LHF";
-$dbname = "evoluti1_evo";
+$username = "root";
+$password = "";
+$dbname = "datastore_db";
 
 try {
     $objConnect = new mysqli($servername, $username, $password, $dbname);
@@ -115,6 +115,7 @@ try {
                                         <p>No file uploaded</p>
                                     <?php endif; ?>
                                     <a href="edit.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">Edit</a>
+                                    <a href="graph.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-warning btn-lg">กราฟ</a>
                                 </div>
                             </div>
                         </div>

@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "evoluti1_evo";
-$password = "uzVztKVrghrZhu4n7LHF";
-$dbname = "evoluti1_evo";
+$username = "root";
+$password = "";
+$dbname = "datastore_db";
 
 $objConnect = new mysqli($servername, $username, $password, $dbname);
 

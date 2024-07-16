@@ -1,5 +1,5 @@
 <?php
-include '../connect.php';
+include 'connect.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,13 +9,13 @@ include '../connect.php';
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="../css/report.css">
+    <link rel="stylesheet" href="css/report.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body class="bgcolor">
-    <?php include '../header.php'; ?>
+    <?php include 'header.php'; ?>
     <div class="card-center">
         <div class="container">
             <h2>ดูรายงาน</h2>
