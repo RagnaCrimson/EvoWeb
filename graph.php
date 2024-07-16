@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
         $row['P_5'], $row['P_6'], $row['P_7'], $row['P_8'], 
         $row['P_9'], $row['P_10'], $row['P_11'], $row['P_12']
     );
-    $p_month = $row["P_Month"];
+    $p_month = htmlspecialchars($row["P_Month"]);
 } else {
     $peak_data = array_fill(0, 12, 0);
     $p_month = "No data";
@@ -58,10 +58,10 @@ $objConnect->close();
         </div>
     </div>
 
-    <h1><?php echo htmlspecialchars($p_month); ?></h1>
+    <h1><?php echo $p_month; ?></h1>
     <div class="git-center">
         <a href="data_view.php" class="btn btn-primary btn-lg">Back</a>
-        <a href="graph_update.php" class="btn btn-primary btn-lg">Edit</a>
+        <a href="graph_update.php?id=<?php echo $v_id; ?>" class="btn btn-primary btn-lg">Edit</a>
     </div>
 
     <script>
