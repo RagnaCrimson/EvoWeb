@@ -59,8 +59,8 @@ $objConnect->close();
             <li><a href="#">Report &dtrif;</a>
                 <ul class="dropdown">
                     <li><a href="reportday.php">เลือกวันที่</a></li>
-                    <li><a href="#">ตามสถานะ</a></li>
-                    <li><a href="#">บริษัทผู้รับเหมา</a></li>
+                    <!-- <li><a href="#">ตามสถานะ</a></li>
+                    <li><a href="#">บริษัทผู้รับเหมา</a></li> -->
                 </ul>
             </li>
             <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>

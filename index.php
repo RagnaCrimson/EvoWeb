@@ -100,7 +100,7 @@
                 </div>
             <?php endfor; ?>
         </div>
-
+        
         <!-- ========================= -->
 
         <div class="row">
@@ -162,6 +162,5 @@
         </div>
     </form>
     <?php include 'back.html'; ?>
-
 </body>
 </html>
