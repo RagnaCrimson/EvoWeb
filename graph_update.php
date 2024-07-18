@@ -211,7 +211,7 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="row center">
                 <button type="submit" name="submit" class="btn btn-success">Submit</button>
-                <button class="btn btn-default"><a href="data_view.php">Cancel</a></button>
+                <button class="btn btn-default"><a href="graph.php?id=<?php echo urlencode($id); ?>">Cancel</a></button>
             </div>
         </form>
     </div>

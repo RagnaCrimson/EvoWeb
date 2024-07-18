@@ -61,6 +61,7 @@ class MYPDF extends TCPDF {
         $this->Cell(0, 10, 'วันที่..........................................................', 0, 1, 'L');
     }
 }
+
 session_start();
 
 $servername = "localhost";
@@ -134,14 +135,14 @@ if ($result->num_rows > 0) {
     $pdf->SetFont('prompt', '', 10);
     $counter = 1;
     while ($row = $result->fetch_assoc()) {
-        if ($pdf->GetY() > 160) {  // ปรับค่าตางรางตรงนี้
+        if ($pdf->GetY() > 160) {
             $pdf->AddPage();
             $pdf->SetY(50);
         }
         $pdf->Cell(25, 8, $counter++, 1, 0, 'C');
         $pdf->Cell(30, 8, date('d-m-Y', strtotime($row['V_Date'])), 1, 0, 'C');
-        $pdf->Cell(90, 8, $row['V_Name'], 1, 0, 'L');
-        $pdf->Cell(45, 8, $row['T_Status'], 1, 0, 'C');
+        $pdf->Cell(90, 8, htmlspecialchars($row['V_Name']), 1, 0, 'L');
+        $pdf->Cell(45, 8, htmlspecialchars($row['T_Status']), 1, 0, 'C');
         $pdf->Ln();
     }
 

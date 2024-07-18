@@ -129,3 +129,26 @@ label{
     cursor: pointer;
     margin-top: 1rem;
 }
+
+.h-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.h-field {
+    flex: 0 1 calc(8.33% - 20px); /* 12 fields per row */
+    margin: 0 10px;
+    box-sizing: border-box;
+}
+.h-label {
+    display: block;
+    margin-bottom: 5px;
+}
+.h-field input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #B2EBF2;
+    border-radius: 5px;
+}
