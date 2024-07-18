@@ -83,9 +83,8 @@
         <div class="h-row">
             <?php for ($i = 1; $i <= 12; $i++) : ?>
                 <div class="h-field">
-                    <label class="h-label" for="P_M<?php echo $i; ?>">ระบุเดือน <?php echo $i; ?> :</label>
-                    <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>">
                     <label class="h-label" for="P_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
+                    <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>">
                     <input type="number" step="any" placeholder="000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>">
                 </div>
             <?php endfor; ?>
@@ -95,25 +94,15 @@
         <div class="h-row">
             <?php for ($i = 1; $i <= 12; $i++) : ?>
                 <div class="h-field">
-                    <label class="h-label" for="B_M<?php echo $i; ?>">ระบุเดือน <?php echo $i; ?> :</label>
-                    <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>">
                     <label class="h-label" for="B_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
+                    <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>">
                     <input type="number" step="any" placeholder="000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>">
                 </div>
             <?php endfor; ?>
         </div>
 
-        
-        <div class="row">
-            <div class="field half-width">
-                <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี(บาท) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year">
-            </div>
-            <div class="field half-width">
-                <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน(บาท) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month">
-            </div>
-        </div>
+        <!-- ========================= -->
+
         <div class="row">
             <div class="field half-width">
                 <label for="V_Peak_year">ค่า PEAK ต่อปี (KW) :</label>
@@ -122,6 +111,16 @@
             <div class="field half-width">
                 <label for="V_Peak_month">ค่า PEAK ต่อเดือน (KW) :</label>
                 <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month">
+            </div>
+        </div>
+        <div class="row">
+            <div class="field half-width">
+                <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี(บาท) :</label>
+                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year">
+            </div>
+            <div class="field half-width">
+                <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน(บาท) :</label>
+                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month">
             </div>
         </div>
         
@@ -163,56 +162,6 @@
         </div>
     </form>
     <?php include 'back.html'; ?>
-    
-    <script>
-    // Function to calculate and update peak values
-    function updatePeakValues() {
-        let totalPeakYear = 0;
-        let totalPeakMonth = 0;
-
-        // Loop through each month's peak input field
-        for (let i = 1; i <= 12; i++) {
-            let peakValue = parseFloat(document.getElementById('P_' + i).value) || 0; // Get the value, default to 0 if empty or NaN
-            totalPeakYear += peakValue; // Add to yearly total
-        }
-
-        totalPeakMonth = totalPeakYear / 12; // Calculate average monthly peak
-
-        // Update the fields with the calculated values
-        document.getElementById('V_Peak_year').value = totalPeakYear.toFixed(2); // Update yearly peak
-        document.getElementById('V_Peak_month').value = totalPeakMonth.toFixed(2); // Update monthly peak
-    }
-
-    // Attach event listeners to each month's peak input field
-    document.addEventListener('DOMContentLoaded', function() {
-        for (let i = 1; i <= 12; i++) {
-            document.getElementById('P_' + i).addEventListener('input', updatePeakValues);
-        }
-    });
-    function updateElectricValues() {
-        let totalElectricYear = 0;
-        let totalElectricMonth = 0;
-
-        // Loop through each month's electric input field
-        for (let i = 1; i <= 12; i++) {
-            let electricValue = parseFloat(document.getElementById('B_' + i).value) || 0; // Get the value, default to 0 if empty or NaN
-            totalElectricYear += electricValue; // Add to yearly total
-        }
-
-        totalElectricMonth = totalElectricYear / 12; // Calculate average monthly electric
-
-        // Update the fields with the calculated values
-        document.getElementById('V_Electric_per_year').value = totalElectricYear.toFixed(2); // Update yearly electric
-        document.getElementById('V_Electric_per_month').value = totalElectricMonth.toFixed(2); // Update monthly electric
-    }
-
-    // Attach event listeners to each month's electric input field
-    document.addEventListener('DOMContentLoaded', function() {
-        for (let i = 1; i <= 12; i++) {
-            document.getElementById('B_' + i).addEventListener('input', updateElectricValues);
-        }
-    });
-</script>
 
 </body>
 </html>

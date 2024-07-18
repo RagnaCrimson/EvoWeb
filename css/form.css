@@ -2,6 +2,15 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
 form {
     max-width: 1200px;
     margin: 0 auto;
@@ -132,19 +141,30 @@ label{
 
 .h-row {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     margin-bottom: 20px;
+    overflow-x: auto;
 }
+
 .h-field {
-    flex: 0 1 calc(8.33% - 20px); /* 12 fields per row */
+    flex: 0 0 calc(8.33% - 20px);
     margin: 0 10px;
     box-sizing: border-box;
 }
+
+@media (max-width: 1200px) {
+    .h-field {
+        flex: 0 0 calc(8.33% - 16px);
+        margin: 0 8px;
+    }
+}
+
 .h-label {
     display: block;
     margin-bottom: 5px;
 }
+
 .h-field input {
     width: 100%;
     padding: 10px;
