@@ -70,3 +70,70 @@ function login() {
             document.getElementById('B_' + i).addEventListener('input', updateElectricValues);
         }
     });
+
+
+    $(document).on("click", "#addMore", function(e){
+        e.preventDefault();
+    
+        // Generate new set of fields for PEAK
+        var newPeakFields = `
+            <div class="row set row-separator">
+                ${Array.from({ length: 12 }, (_, i) => `
+                    <div class="h-field">
+                        <label class="h-label">เดือน ${i + 1} :</label>
+                        <input type="date" name="P_M${i + 1}[]" class="form-control">
+                        <input type="number" step="any" placeholder="000.00" name="P_${i + 1}[]" class="form-control">
+                    </div>
+                `).join('')}
+                <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-danger remove" title="remove"><i class="fa fa-trash"></i> Remove</button>
+                </div>
+            </div>
+        `;
+    
+        // Generate new set of fields for ELECTRICITY
+        var newElectricityFields = `
+            <div class="row set row-separator">
+                ${Array.from({ length: 12 }, (_, i) => `
+                    <div class="h-field">
+                        <label class="h-label">เดือน ${i + 1} :</label>
+                        <input type="date" name="B_M${i + 1}[]" class="form-control">
+                        <input type="number" step="any" placeholder="000.00" name="B_${i + 1}[]" class="form-control">
+                    </div>
+                `).join('')}
+                <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-danger remove" title="remove"><i class="fa fa-trash"></i> Remove</button>
+                </div>
+            </div>
+        `;
+    
+        // Append new fields to containers
+        $("#peakContainer").append(newPeakFields);
+        $("#electricityContainer").append(newElectricityFields);
+    });
+    
+    $(document).on("click", ".remove", function(e){
+        e.preventDefault();
+        $(this).closest('.set').remove();
+    });
+    
+    $(document).on("submit", "#frm", function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "post",
+            url: "create_items.php", // Update this to your PHP file
+            data: $(this).serialize(),
+            success: function(response){
+                if (response == "success"){
+                    var str = '<div class="alert alert-success">Rows inserted successfully</div>';
+                    $(".set:not(:first)").remove();
+                    $("#frm")[0].reset();
+                } else {
+                    var str = '<div class="alert alert-danger">'+response+'</div>';
+                }
+                $("#msg").html(str);
+            }
+        });
+    });
+    
+    
