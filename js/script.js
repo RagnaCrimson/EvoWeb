@@ -71,7 +71,7 @@ function login() {
         }
     });
 
-
+// Add more data
     $(document).on("click", "#addMore", function(e){
         e.preventDefault();
     
