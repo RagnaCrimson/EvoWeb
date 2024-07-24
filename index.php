@@ -18,6 +18,7 @@
             <div class="field">
                 <label for="V_Name">ชื่อหน่วยงาน :</label>
                 <input type="text" id="V_Name" name="V_Name" required>
+                <div id="duplicateMessage" style="color: red; display: none;"></div>
             </div>
             <div class="field">
                 <label for="V_Province">จังหวัด :</label>
@@ -84,11 +85,11 @@
         <div class="row">
             <div class="field">
                 <label for="serial_number">รหัสการไฟฟ้า :</label>
-                <input type="text"id="serial_number" name="serial_number">
+                <input type="text"id="serial_number" name="serial_number" maxlength="10">
             </div>
             <div class="field">
                 <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
-                <input type="text"id="CA_code" name="CA_code">
+                <input type="number"id="CA_code" name="CA_code" maxlength="12">
             </div>
         </div>
         <div class="h-row" id="peakContainer">
@@ -117,7 +118,7 @@
                 <?php endfor; ?>
             </div>
         </div>
-        <button type="button" id="addMore" class="btn btn-primary">Add More</button><br><br>
+        <!-- <button type="button" id="addMore" class="btn btn-primary">Add More</button><br><br> -->
         
         <!-- ========================= -->
 
@@ -161,6 +162,7 @@
                 <label for="T_Status">สถานะ :</label>
                 <select id="T_Status" name="T_Status" class="form-control" required>
                     <option value="">-- เลือกสถานะ --</option>
+                    <option value="ได้รับเอกสาร">ได้รับเอกสาร</option>
                     <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
                     <option value="ตอบรับ">ตอบรับ</option>
                     <option value="ส่งมอบงาน">ส่งมอบงาน</option>
@@ -180,6 +182,39 @@
         </div>
     </form>
     <?php include 'back.html'; ?>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#V_Name').on('input', function() {
+                var name = $(this).val();
+                if (name.length > 0) {
+                    $.ajax({
+                        url: 'check_duplicate.php',
+                        type: 'GET',
+                        data: { name: name },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.exists) {
+                                $('#duplicateMessage').text('มีชื่อหน่วยงานนี้อยู่ในระบบแล้ว.').show();
+                            } else {
+                                $('#duplicateMessage').text('').hide();
+                            }
+                        }
+                    });
+                } else {
+                    $('#duplicateMessage').text('').hide();
+                }
+            });
+        });
+
+        document.getElementById('CA_code').addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 12) {
+                this.value = this.value.slice(0, 12);
+            }
+        });
+    </script>
 
 </body>
 </html>
