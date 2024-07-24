@@ -6,6 +6,7 @@ mysqli_query($objConnect, "SET NAMES utf8");
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
+    // Retrieve existing data
     $strSQL_edit = "SELECT * FROM view WHERE V_Name = '$id'";
     $result_edit = $objConnect->query($strSQL_edit);
     
@@ -14,6 +15,7 @@ if (isset($_GET['id'])) {
     }
     
     $row_edit = $result_edit->fetch_assoc();
+    $V_ID = $row_edit['V_ID'];
 } else {
     echo "No ID specified.";
     exit;
@@ -43,12 +45,13 @@ if (isset($_POST['submit'])) {
     $vPeakMonth = $objConnect->real_escape_string($newData['V_Peak_month']);
     $vComment = $objConnect->real_escape_string($newData['V_comment']);
     
+    // File upload handling
     $uploadOk = 1;
     $targetDir = "uploads/";
     $targetFile = $targetDir . basename($_FILES["file"]["name"]);
-    $fileType = strtolower(pathinfo($targetFile,PATHINFO_EXTENSION));
+    $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
     
-    if($fileType != "pdf") {
+    if ($fileType != "pdf") {
         echo "Sorry, only PDF files are allowed.";
         $uploadOk = 0;
     }
@@ -60,15 +63,15 @@ if (isset($_POST['submit'])) {
     
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.";
-
     } else {
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
+            echo "The file " . htmlspecialchars(basename($_FILES["file"]["name"])) . " has been uploaded.";
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
     }
 
+    // Update view table
     $strSQL_update = "UPDATE view SET 
                       V_Name = '$vName',
                       V_Province = '$vProvince',
@@ -103,6 +106,60 @@ if (isset($_POST['submit'])) {
         echo "Error updating record: " . $objConnect->error;
     }
 }
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $V_ID = $objConnect->real_escape_string($_POST['V_ID']);
+
+    $peakData = [];
+    $billData = [];
+
+    for ($i = 1; $i <= 12; $i++) {
+        if (isset($_POST["P_M$i"]) && isset($_POST["P_$i"])) {
+            $peakMonth = $_POST["P_M$i"];
+            $peakValue = $_POST["P_$i"];
+
+            $peakData[] = [
+                'P_Month' => $peakMonth,
+                'P_Value' => $peakValue,
+                'P_Column' => "P_$i",
+                'P_M_Column' => "P_M$i"
+            ];
+        }
+    }
+
+    for ($i = 1; $i <= 12; $i++) {
+        if (isset($_POST["B_M$i"]) && isset($_POST["B_$i"])) {
+            $billMonth = $_POST["B_M$i"];
+            $billValue = $_POST["B_$i"];
+
+            $billData[] = [
+                'B_Month' => $billMonth,
+                'B_Value' => $billValue,
+                'B_Column' => "B_$i",
+                'B_M_Column' => "B_M$i"
+            ];
+        }
+    }
+
+    foreach ($peakData as $data) {
+        $sql = "UPDATE peak SET {$data['P_Column']} = ?, {$data['P_M_Column']} = ? WHERE V_ID = ? AND P_Month = ?";
+        $stmt = $objConnect->prepare($sql);
+        $stmt->bind_param("dsis", $data['P_Value'], $data['P_Month'], $V_ID, $data['P_Month']);
+        $stmt->execute();
+    }
+
+    foreach ($billData as $data) {
+        $sql = "UPDATE bill SET {$data['B_Column']} = ?, {$data['B_M_Column']} = ? WHERE V_ID = ? AND B_Month = ?";
+        $stmt = $objConnect->prepare($sql);
+        $stmt->bind_param("dsis", $data['B_Value'], $data['B_Month'], $V_ID, $data['B_Month']);
+        $stmt->execute();
+    }
+
+    $objConnect->close();
+
+    echo "Data updated successfully!";
+}
 ?>
 
 <!DOCTYPE html>
@@ -112,7 +169,9 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Data</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/form.css">
+    <script src="js/script.js"></script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -179,26 +238,56 @@ if (isset($_POST['submit'])) {
                     <input type="email" class="form-control" id="CoordMail2" name="data[V_CoordMail2]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail2']); ?>">                
                 </div>
             </div>
+
+            <h3>ค่า PEAK ของแต่ละเดือน</h3>
+            <div class="h-row" id="peakContainer">
+                <div class="row set">
+                    <?php for ($i = 1; $i <= 12; $i++) : ?>
+                        <div class="h-field">
+                            <label class="h-label" for="P_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
+                            <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>" class="form-control">
+                            <input type="number" step="any" placeholder="000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+
+            <h3>ค่าไฟ ของแต่ละเดือน</h3>
+            <div class="h-row" id="electricityContainer">
+                <div class="row set">
+                    <?php for ($i = 1; $i <= 12; $i++) : ?>
+                        <div class="h-field">
+                            <label class="h-label" for="B_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
+                            <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>" class="form-control">
+                            <input type="number" step="any" placeholder="000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+            <!-- <button type="button" id="addMore" class="btn btn-primary">Add More</button> -->
+
             <div class="row">
                 <div class="field half-width">
-                    <label for="Electric_per_year">ค่าใช้ไฟฟ้าต่อปี :</label>
-                    <input type="number" step="any" class="form-control" id="Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_year']); ?>">                
+                    <label for="V_Peak_year">ค่า PEAK ต่อปี (KW) :</label>
+                    <input type="number" step="any" class="form-control" placeholder="000.00" id="V_Peak_year" name="data[V_Peak_year]" value="<?php echo htmlspecialchars($row_edit['V_Peak_year']); ?>">
                 </div>
                 <div class="field half-width">
-                    <label for="Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน :</label>
-                    <input type="number" step="any" class="form-control" id="Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">                
+                    <label for="V_Peak_month">ค่า PEAK ต่อเดือน (KW) :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="data[V_Peak_month]" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">
                 </div>
             </div>
             <div class="row">
                 <div class="field half-width">
-                    <label for="Peak_year">ค่า PEAK ต่อปี :</label>
-                    <input type="number" step="any" class="form-control" id="Peak_year" name="data[V_Peak_year]" value="<?php echo htmlspecialchars($row_edit['V_Peak_year']); ?>">                
+                    <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี(บาท) :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_year']); ?>">
                 </div>
                 <div class="field half-width">
-                    <label for="Peak_month">ค่า PEAK ต่อเดือน :</label>
-                    <input type="number" step="any" class="form-control" id="Peak_month" name="data[V_Peak_month]" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">                
+                    <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน(บาท) :</label>
+                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
                 </div>
             </div>
+
+            
             <div class="row">
                 <div class="field full-width">
                     <label for="comment">หมายเหตุ :</label>

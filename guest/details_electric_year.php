@@ -96,6 +96,7 @@ $statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
         <ul>
             <li><a href="#">Welcome Guest!</a></li>
             <li><a href="guest_view.php">Dashboard</a></li>
+            <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>
 

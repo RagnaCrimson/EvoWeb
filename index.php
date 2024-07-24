@@ -84,8 +84,8 @@
                 <?php for ($i = 1; $i <= 12; $i++) : ?>
                     <div class="h-field">
                         <label class="h-label" for="P_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
-                        <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>[]" class="form-control">
-                        <input type="number" step="any" placeholder="000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>[]" class="form-control">
+                        <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>" class="form-control">
+                        <input type="number" step="any" placeholder="000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
                     </div>
                 <?php endfor; ?>
             </div>
@@ -97,8 +97,8 @@
                 <?php for ($i = 1; $i <= 12; $i++) : ?>
                     <div class="h-field">
                         <label class="h-label" for="B_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
-                        <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>[]" class="form-control">
-                        <input type="number" step="any" placeholder="000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>[]" class="form-control">
+                        <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>" class="form-control">
+                        <input type="number" step="any" placeholder="000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
                     </div>
                 <?php endfor; ?>
             </div>

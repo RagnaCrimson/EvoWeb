@@ -81,10 +81,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Insert data into peak table
                     $sql_peak = "INSERT INTO peak (V_ID, P_1, P_2, P_3, P_4, P_5, P_6, P_7, P_8, P_9, P_10, P_11, P_12, P_M1, P_M2, P_M3, P_M4, P_M5, P_M6, P_M7, P_M8, P_M9, P_M10, P_M11, P_M12) 
-                                                    VALUES (?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_peak = $objConnect->prepare($sql_peak);
                     if ($stmt_peak === false) {
-                        die("Error preparing statement for peak table: " . $objConnect->error);
+                    die("Error preparing statement for peak table: " . $objConnect->error);
                     }
 
                     $p_1 = htmlspecialchars($_POST['P_1']);
@@ -113,17 +113,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $pm_11 = htmlspecialchars($_POST['P_M11']);
                     $pm_12 = htmlspecialchars($_POST['P_M12']);
 
-                    $stmt_peak->bind_param("isssssssssssssssssssss", $last_id, $p_1, $p_2, $p_3, $p_4, $p_5, $p_6, $p_7, $p_8, $p_9, $p_10, $p_11, $p_12, 
-                                                                        $pm_1, $pm_2, $pm_3, $pm_4, $pm_5, $pm_6, $pm_7, $pm_8, $pm_9, $pm_10, $pm_11, $pm_12);
+                    $stmt_peak->bind_param("issssssssssssssssssssssss", $last_id, $p_1, $p_2, $p_3, $p_4, $p_5, $p_6, $p_7, $p_8, $p_9, $p_10, $p_11, $p_12, 
+                                                    $pm_1, $pm_2, $pm_3, $pm_4, $pm_5, $pm_6, $pm_7, $pm_8, $pm_9, $pm_10, $pm_11, $pm_12);
                     $stmt_peak->execute();
                     $stmt_peak->close();
 
                     // Insert data into bill table
                     $sql_bill = "INSERT INTO bill (V_ID, B_1, B_2, B_3, B_4, B_5, B_6, B_7, B_8, B_9, B_10, B_11, B_12, B_M1, B_M2, B_M3, B_M4, B_M5, B_M6, B_M7, B_M8, B_M9, B_M10, B_M11, B_M12) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_bill = $objConnect->prepare($sql_bill);
                     if ($stmt_bill === false) {
-                        die("Error preparing statement for bill table: " . $objConnect->error);
+                    die("Error preparing statement for bill table: " . $objConnect->error);
                     }
 
                     $b_1 = htmlspecialchars($_POST['B_1']);
@@ -152,21 +152,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $bm_11 = htmlspecialchars($_POST['B_M11']);
                     $bm_12 = htmlspecialchars($_POST['B_M12']);
 
-                    $stmt_bill->bind_param("isssssssssssssssssssss", $last_id, $b_1, $b_2, $b_3, $b_4, $b_5, $b_6, $b_7, $b_8, $b_9, $b_10, $b_11, $b_12, 
-                                                                        $bm_1, $bm_2, $bm_3, $bm_4, $bm_5, $bm_6, $bm_7, $bm_8, $bm_9, $bm_10, $bm_11, $bm_12);
+                    $stmt_bill->bind_param("issssssssssssssssssssssss", $last_id, $b_1, $b_2, $b_3, $b_4, $b_5, $b_6, $b_7, $b_8, $b_9, $b_10, $b_11, $b_12, 
+                                                    $bm_1, $bm_2, $bm_3, $bm_4, $bm_5, $bm_6, $bm_7, $bm_8, $bm_9, $bm_10, $bm_11, $bm_12);
                     $stmt_bill->execute();
                     $stmt_bill->close();
-                    
-                    echo "Data inserted successfully.";
+
                 } else {
-                    die("Error executing statement for view table: " . $stmt_view->error);
+                    echo "Error: " . $stmt_view->error;
                 }
+                $stmt_view->close();
             } else {
                 echo "Sorry, there was an error uploading your file.";
             }
         }
     } else {
-        echo "No file uploaded or there was an error.";
+        echo "No file was uploaded or there was an error uploading the file.";
     }
 }
 ?>

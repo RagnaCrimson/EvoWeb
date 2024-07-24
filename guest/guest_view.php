@@ -174,12 +174,14 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="/evo/js/logout.js"></script>
 </head>
 <body class="bgcolor">
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#">Welcome Guest!</a></li>
             <li><a href="guest_view.php">Dashboard</a></li>
+            <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>
     <div class="container">
