@@ -76,9 +76,21 @@
                 <label for="V_CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
                 <input type="text" id="V_CoordMail2" name="V_CoordMail2">
             </div>
-        </div>
+        </div><br>
 
-        <h3>ค่า PEAK ของแต่ละเดือน</h3>
+        <div class="row">
+            <h3>ค่า PEAK ของแต่ละเดือน</h3>
+        </div>
+        <div class="row">
+            <div class="field">
+                <label for="serial_number">รหัสการไฟฟ้า :</label>
+                <input type="text"id="serial_number" name="serial_number">
+            </div>
+            <div class="field">
+                <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
+                <input type="text"id="CA_code" name="CA_code">
+            </div>
+        </div>
         <div class="h-row" id="peakContainer">
             <div class="row set">
                 <?php for ($i = 1; $i <= 12; $i++) : ?>
@@ -91,7 +103,9 @@
             </div>
         </div>
 
-        <h3>ค่าไฟ ของแต่ละเดือน</h3>
+        <div class="row">
+            <h3>ค่าไฟ ของแต่ละเดือน</h3>
+        </div>
         <div class="h-row" id="electricityContainer">
             <div class="row set">
                 <?php for ($i = 1; $i <= 12; $i++) : ?>
@@ -103,7 +117,7 @@
                 <?php endfor; ?>
             </div>
         </div>
-        <button type="button" id="addMore" class="btn btn-primary">Add More</button>
+        <button type="button" id="addMore" class="btn btn-primary">Add More</button><br><br>
         
         <!-- ========================= -->
 

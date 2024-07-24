@@ -6,10 +6,12 @@
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="../css/form.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/logout.js"></script>
 </head>
 <body class="bgcolor">
     <nav role="navigation" class="primary-navigation">
@@ -86,7 +88,19 @@
             </div>
         </div>
 
-        <h3>ค่า PEAK ของแต่ละเดือน</h3>
+        <div class="row">
+            <h3>ค่า PEAK ของแต่ละเดือน</h3>
+        </div>
+        <div class="row">
+            <div class="field">
+                <label for="serial_number">รหัสการไฟฟ้า :</label>
+                <input type="text"id="serial_number" name="serial_number">
+            </div>
+            <div class="field">
+                <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
+                <input type="text"id="CA_code" name="CA_code">
+            </div>
+        </div>
         <div class="h-row" id="peakContainer">
             <div class="row set">
                 <?php for ($i = 1; $i <= 12; $i++) : ?>
@@ -154,11 +168,7 @@
             <div class="field">
                 <label for="T_Status">สถานะ :</label>
                 <select id="T_Status" name="T_Status" class="form-control" required>
-                    <option value="">-- เลือกสถานะ --</option>
-                    <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
-                    <option value="ตอบรับ">ตอบรับ</option>
-                    <option value="ส่งมอบงาน">ส่งมอบงาน</option>
-                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                    <option value="ได้รับเอกสาร">ส่งเอกสาร</option>
                 </select>
             </div>
         </div>

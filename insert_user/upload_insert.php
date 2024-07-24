@@ -1,5 +1,5 @@
 <?php
-include 'connect.php';
+include '../connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_FILES["file"]) && $_FILES["file"]["error"] == 0) {
@@ -80,15 +80,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt_files->close();
 
                     // Insert data into peak table
-                    $sql_peak = "INSERT INTO peak (V_ID, serial_number, CA_code, P_1, P_2, P_3, P_4, P_5, P_6, P_7, P_8, P_9, P_10, P_11, P_12, P_M1, P_M2, P_M3, P_M4, P_M5, P_M6, P_M7, P_M8, P_M9, P_M10, P_M11, P_M12) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $sql_peak = "INSERT INTO peak (V_ID, P_1, P_2, P_3, P_4, P_5, P_6, P_7, P_8, P_9, P_10, P_11, P_12, P_M1, P_M2, P_M3, P_M4, P_M5, P_M6, P_M7, P_M8, P_M9, P_M10, P_M11, P_M12) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_peak = $objConnect->prepare($sql_peak);
                     if ($stmt_peak === false) {
                     die("Error preparing statement for peak table: " . $objConnect->error);
                     }
 
-                    $numb = htmlspecialchars($_POST['serial_number']);
-                    $ca_code = htmlspecialchars($_POST['CA_code']);
                     $p_1 = htmlspecialchars($_POST['P_1']);
                     $p_2 = htmlspecialchars($_POST['P_2']);
                     $p_3 = htmlspecialchars($_POST['P_3']);
@@ -115,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $pm_11 = htmlspecialchars($_POST['P_M11']);
                     $pm_12 = htmlspecialchars($_POST['P_M12']);
 
-                    $stmt_peak->bind_param("issssssssssssssssssssssssss", $last_id, $numb, $ca_code, $p_1, $p_2, $p_3, $p_4, $p_5, $p_6, $p_7, $p_8, $p_9, $p_10, $p_11, $p_12, 
+                    $stmt_peak->bind_param("issssssssssssssssssssssss", $last_id, $p_1, $p_2, $p_3, $p_4, $p_5, $p_6, $p_7, $p_8, $p_9, $p_10, $p_11, $p_12, 
                                                     $pm_1, $pm_2, $pm_3, $pm_4, $pm_5, $pm_6, $pm_7, $pm_8, $pm_9, $pm_10, $pm_11, $pm_12);
                     $stmt_peak->execute();
                     $stmt_peak->close();
@@ -159,12 +157,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt_bill->execute();
                     $stmt_bill->close();
 
-                    echo "The file " . htmlspecialchars(basename($_FILES["file"]["name"])) . " has been uploaded and data has been inserted.";
-                    header("Location: index.php");
-                    exit();
-
                 } else {
-                    echo "Error inserting data into view table: " . $stmt_view->error;
+                    echo "Error: " . $stmt_view->error;
                 }
                 $stmt_view->close();
             } else {

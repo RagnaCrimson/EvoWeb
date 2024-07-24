@@ -59,6 +59,7 @@ try {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../css/card_style.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/logout.js"></script>
 </head>
 <body class="bgcolor">
     <nav role="navigation" class="primary-navigation">
