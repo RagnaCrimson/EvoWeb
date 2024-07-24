@@ -11,7 +11,7 @@ function login() {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 if (response.success) {
-                    window.location.href = "dashboard.php";
+                    window.location.href = response.redirectUrl;
                 } else {
                     document.getElementById("error").innerText = "Invalid username or password.";
                 }

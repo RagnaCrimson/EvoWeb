@@ -20,7 +20,14 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $_SESSION['username'] = $username; 
-    $response = array('success' => true);
+    
+    if ($username == 'insert') {
+        $redirectUrl = 'insert_user/insert_data.php';
+    } else {
+        $redirectUrl = 'dashboard.php';
+    }
+    
+    $response = array('success' => true, 'redirectUrl' => $redirectUrl);
 } else {
     $response = array('success' => false, 'message' => 'Login failed. Please check your username and password.');
 }
