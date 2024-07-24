@@ -19,6 +19,7 @@
                 <label for="V_Name">ชื่อหน่วยงาน :</label>
                 <input type="text" id="V_Name" name="V_Name" required>
                 <div id="duplicateMessage" style="color: red; display: none;"></div>
+                <div id="suggestions" class="suggestions-container"></div>
             </div>
             <div class="field">
                 <label for="V_Province">จังหวัด :</label>
