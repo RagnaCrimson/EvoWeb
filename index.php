@@ -183,31 +183,7 @@
     </form>
     <?php include 'back.html'; ?>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#V_Name').on('input', function() {
-                var name = $(this).val();
-                if (name.length > 0) {
-                    $.ajax({
-                        url: 'check_duplicate.php',
-                        type: 'GET',
-                        data: { name: name },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.exists) {
-                                $('#duplicateMessage').text('มีชื่อหน่วยงานนี้อยู่ในระบบแล้ว.').show();
-                            } else {
-                                $('#duplicateMessage').text('').hide();
-                            }
-                        }
-                    });
-                } else {
-                    $('#duplicateMessage').text('').hide();
-                }
-            });
-        });
-
         document.getElementById('CA_code').addEventListener('input', function () {
             this.value = this.value.replace(/[^0-9]/g, '');
             if (this.value.length > 12) {

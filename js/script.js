@@ -71,6 +71,33 @@ function login() {
         }
     });
 
+    // check dup
+    $(document).ready(function() {
+        $('#V_Name').on('input', function() {
+            var name = $(this).val();
+            if (name.length > 0) {
+                $.ajax({
+                    url: 'check_duplicate.php',
+                    type: 'GET',
+                    data: { name: name },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.exists) {
+                            $('#duplicateMessage').text('This name already exists in the database.').show();
+                        } else {
+                            $('#duplicateMessage').text('').hide();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            } else {
+                $('#duplicateMessage').text('').hide();
+            }
+        });
+    });
+
 // Add more data
     $(document).on("click", "#addMore", function(e){
         e.preventDefault();
