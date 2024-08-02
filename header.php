@@ -58,7 +58,8 @@ $objConnect->close();
             </li>
             <li><a href="#">Report &dtrif;</a>
                 <ul class="dropdown">
-                    <li><a href="reportday.php">เลือกวันที่</a></li>
+                    <li><a href="report/reportday.php">เลือกวันที่</a></li>
+                    <li><a href="report/allname.php" target="_blank">รายชื่อทั้งหมด</a></li>
                     <!-- <li><a href="#">ตามสถานะ</a></li>
                     <li><a href="#">บริษัทผู้รับเหมา</a></li> -->
                 </ul>

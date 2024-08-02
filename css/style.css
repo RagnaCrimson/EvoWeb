@@ -55,12 +55,6 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
-  text-align: left;
-  padding: 8px;
-  border: 1px solid #ccc;
-}
-
 .center {
   text-align: center;
 }
@@ -156,7 +150,7 @@ a {
     background-color: #fff;
   }
   .table th, .table td {
-      text-align: center;
+      text-align: left;
   }
   .table thead {
       background-color: #509ce4;
