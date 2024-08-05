@@ -4,14 +4,9 @@ include 'connect.php';
 mysqli_query($objConnect, "SET NAMES utf8");
 
 $search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
-
 $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
 $statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
-
-$rows_per_page = 20;
-$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$offset = ($page - 1) * $rows_per_page;
 
 if ($search) {
     $strSQL_datastore_db = "

@@ -21,6 +21,7 @@ $result = $stmt->get_result();
 if (!$result) {
     die("Query failed: " . $objConnect->error);
 }
+$total_rows = $result->num_rows;
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +56,10 @@ if (!$result) {
     <div class="container">
         <div id="View" class="tabcontent">
         <div><h1>รายชื่อหน่วยงานของ <?php echo htmlspecialchars($sales_team); ?> </h1></div>
+        <tr>
+            <td col000span="7"><strong>จำนวนทั้งหมด</strong></td>
+            <td><strong><?php echo $total_rows; ?> หน่วยงาน</strong></td>
+        </tr>
         <table id="data"  class="table table-striped">
             <thead>
                 <tr>
@@ -66,11 +71,9 @@ if (!$result) {
             </thead>
             <tbody>
                 <?php
-                $total_rows = 0;
                 if ($result->num_rows > 0) {
                     $sequence = 1;
                     while ($row = $result->fetch_assoc()) {
-                        $total_rows++;
                         ?>
                         <tr>
                             <td><?php echo $sequence++; ?></td>

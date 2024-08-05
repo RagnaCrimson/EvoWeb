@@ -13,7 +13,8 @@ $strSQL_datastore_db = "
     LEFT JOIN files ON view.V_ID = files.id
     WHERE (view.V_Sale = ? OR ? = '')
     AND (task.T_Status = ? OR ? = '')
-    AND (view.V_Province = ? OR ? = '')";
+    AND (view.V_Province = ? OR ? = '')
+";
 
 $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
 $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
@@ -25,6 +26,7 @@ if (!$resultdatastore_db) {
     die("Query failed: " . $objConnect->error);
 }
 
+$total_rows = $resultdatastore_db->num_rows;
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +61,10 @@ if (!$resultdatastore_db) {
         <div id="View" class="tabcontent">
             <div><h1>รายการชื่อหน่วยงานทั้งหมด</h1></div>
             <table id="data" class="table table-striped">
+                <tr>
+                    <td col000span="7"><strong>จำนวนทั้งหมด</strong></td>
+                    <td><strong><?php echo $total_rows; ?> หน่วยงาน</strong></td>
+                </tr>
                 <thead>
                     <tr>
                         <th>ลำดับ</th>
@@ -69,11 +75,9 @@ if (!$resultdatastore_db) {
                 </thead>
                 <tbody>
                     <?php  
-                    $total_rows = 0; 
                     if ($resultdatastore_db->num_rows > 0) {
                         $sequence = 1;
                         while ($row = $resultdatastore_db->fetch_assoc()) {
-                            $total_rows++; 
                             ?>
                             <tr>     
                                 <td><?php echo $sequence++; ?></td>
@@ -87,10 +91,7 @@ if (!$resultdatastore_db) {
                         echo "<tr><td colspan='6'>ไม่มีข้อมูลรายการ</td></tr>";
                     }
                     ?>
-                <tr>
-                    <td col000span="7"><strong>Total Rows</strong></td>
-                    <td><strong><?php echo $total_rows; ?></strong></td>
-                </tr>
+                </tbody>
             </table>
         </div>
     </div>
