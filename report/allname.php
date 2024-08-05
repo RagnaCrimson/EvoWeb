@@ -1,6 +1,5 @@
 <?php
 include '../connect.php';
-
 mysqli_query($objConnect, "SET NAMES utf8");
 
 $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
@@ -33,12 +32,11 @@ if (!$resultdatastore_db) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
+    <title>Report For Name</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Print specific styles */
         @media print {
             table {
                 page-break-inside: auto;
