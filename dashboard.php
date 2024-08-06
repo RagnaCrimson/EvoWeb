@@ -173,6 +173,8 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel"></script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -196,55 +198,67 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                 <p>324 แห่ง</p>
             </div>
             <div class="chart-container">
-                <canvas id="pie-chart" class="pie-chart"></canvas>
+                <canvas id="pie-chart" class="doughnut-chart"></canvas>
             </div>
             <div class="chart-container">
                 <canvas id="new-doughnut-chart" class="doughnut-chart"></canvas>
             </div>
             <div class="chart-container">
-                <canvas id="electric-year-chart" class="pie-chart"></canvas>
+                <canvas id="electric-year-chart" class="doughnut-chart"></canvas>
             </div>
             <div class="chart-container">
-                <canvas id="electric-month-chart" class="pie-chart"></canvas>
+                <canvas id="electric-month-chart" class="doughnut-chart"></canvas>
             </div>
         </div>
     </div>
 
 <script>
     const statusLabels = <?php echo $status_labels_json; ?>;
-    const statusCounts = <?php echo $status_counts_json; ?>;
+        const statusCounts = <?php echo $status_counts_json; ?>;
 
-    const ctxPie = document.getElementById('pie-chart').getContext('2d');
-    const pieChart = new Chart(ctxPie, {
-        type: 'pie',
-        data: {
-            labels: statusLabels,
-            datasets: [{
-                label: 'สถานะงาน',
-                data: statusCounts,
-                backgroundColor: [
-                    '#b6ddea','#12725c', '#898989',  '#0b6165', 
-                    '#C70039', '#581845', '#FFC300'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            onClick: (event, elements) => {
-                if (elements.length > 0) {
-                    const segmentIndex = elements[0].index;
-                    const label = pieChart.data.labels[segmentIndex];
-                    window.location.href = `details/details_task.php?status=${encodeURIComponent(label)}`;
-                }
+        const ctxPie = document.getElementById('pie-chart').getContext('2d');
+        const pieChart = new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: 'สถานะงาน',
+                    data: statusCounts,
+                    backgroundColor: [
+                        '#b6ddea','#12725c', '#898989',  '#0b6165', 
+                        '#C70039', '#581845', '#FFC300'
+                    ]
+                }]
             },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'สถานะงาน'
+            options: {
+                responsive: true,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const segmentIndex = elements[0].index;
+                        const label = pieChart.data.labels[segmentIndex];
+                        window.location.href = `details/details_task.php?status=${encodeURIComponent(label)}`;
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'สถานะงาน'
+                    },
+                    doughnutlabel: {
+                        labels: [
+                            {
+                                text: 'จำนวนทั้งหมด', // First line of text
+                                font: {
+                                    size: 20,
+                                    weight: 'bold'
+                                },
+                                color: '#000000'
+                            },
+                        ]
+                    }
                 }
             }
-        }
-    });
+        });
 
     const ctxNewDoughnut = document.getElementById('new-doughnut-chart').getContext('2d');
     const newDoughnutChart = new Chart(ctxNewDoughnut, {
@@ -310,7 +324,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
     const ctxElectricYear = document.getElementById('electric-year-chart').getContext('2d');
     const electricYearChart = new Chart(ctxElectricYear, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: electricYearLabels,
             datasets: [{
@@ -350,7 +364,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
     const ctxElectricMonth = document.getElementById('electric-month-chart').getContext('2d');
     const electricMonthChart = new Chart(ctxElectricMonth, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: electricMonthLabels,
             datasets: [{
