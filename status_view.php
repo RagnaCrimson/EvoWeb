@@ -21,6 +21,9 @@ if ($search) {
         AND (task.T_Status = ? OR ? = '')
         AND (view.V_Province = ? OR ? = '')";
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+    if ($stmt_datastore_db === false) {
+        die("Prepare failed: " . $objConnect->error);
+    }
     $stmt_datastore_db->bind_param("ssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 } else {
     $strSQL_datastore_db = "
@@ -32,14 +35,20 @@ if ($search) {
         AND (task.T_Status = ? OR ? = '')
         AND (view.V_Province = ? OR ? = '')";
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+    if ($stmt_datastore_db === false) {
+        die("Prepare failed: " . $objConnect->error);
+    }
     $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 }
 
-$stmt_datastore_db->execute();
+if (!$stmt_datastore_db->execute()) {
+    die("Execute failed: " . $stmt_datastore_db->error);
+}
+
 $resultdatastore_db = $stmt_datastore_db->get_result();
 
-if (!$resultdatastore_db) {
-    die("Query failed: " . $objConnect->error);
+if ($resultdatastore_db === false) {
+    die("Getting result set failed: " . $stmt_datastore_db->error);
 }
 
 // SUM per year
@@ -82,6 +91,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,7 +100,18 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        $(document).ready(function() {
+            $('.view-btn').click(function() {
+                var viewId = $(this).data('id');
+                $('#modal-body').load('status/view_data.php', { view_id: viewId }, function() {
+                    $('#myModal').modal('show');
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -115,8 +136,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
                     <th>ทีมฝ่ายขาย</th>
-                    <th>สถานะ</th>
-                    <th>แก้ไข</th>
+                    <th>ดูรายละเอียด</th>
                 </tr>
                 <?php  
                 $total_rows = 0; 
@@ -141,8 +161,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
-                            <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
-                            <td><a href="edit_status.php?view_id=<?php echo urlencode($row['V_ID']); ?>" class="btn btn-info btn-lg">Update</a></td>
+                            <td><button class="btn btn-info btn-lg view-btn" data-id="<?php echo urlencode($row['V_ID']); ?>">View</button></td>
                         </tr>
                         <?php
                     }
@@ -159,12 +178,28 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     <td colspan="4"></td>
                 </tr>
                 <tr>
-                    <td col000span="7"><strong>Total Rows</strong></td>
+                    <td colspan="7"><strong>Total Rows</strong></td>
                     <td><strong><?php echo $total_rows; ?></strong></td>
                 </tr>
             </table>
         </div>
     </div>
+
+    <!-- Popup -->
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title center">ข้อมูลสถานะ</h4>
+                </div>
+                <div id="modal-body" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php include 'back.html'; ?>
 </body>
 </html>
