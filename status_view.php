@@ -200,6 +200,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
         </div>
     </div>
 
+    <?php include 'buttom.html'; ?>
     <?php include 'back.html'; ?>
 </body>
 </html>

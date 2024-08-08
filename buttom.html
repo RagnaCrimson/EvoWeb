@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go to Bottom Button</title>
+<style>
+    #goToBottomBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 99;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: block;
+    }
+</style>
+</head>
+<body>
+    <div id="goToBottomBtn">
+        <button onclick="scrollToBottom()">Go to Bottom</button>
+    </div>
+
+    <script>
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth"
+            });
+        }
+
+        window.onscroll = function() {
+            var goToBottomBtn = document.getElementById("goToBottomBtn");
+
+            if (window.innerHeight + window.scrollY < document.body.offsetHeight - 20) {
+                goToBottomBtn.style.display = "block";
+            } else {
+                goToBottomBtn.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ include '../connect.php';
 $viewId = isset($_POST['view_id']) ? intval($_POST['view_id']) : 0;
 
 if ($viewId > 0) {
+    // Fetch data for the view
     $strSQL = "
         SELECT view.*, 
                (SELECT T_Status 
@@ -24,8 +25,25 @@ if ($viewId > 0) {
         echo "<h3>ชื่อหน่วยงาน: " . htmlspecialchars($row['V_Name']) . "</h3>";
         echo "<p>จังหวัด : " . htmlspecialchars($row['V_Province']) . "</p>";
         echo "<p>ทีมฝ่ายขาย : " . htmlspecialchars($row['V_Sale']) . "</p>";
-        echo "<p><b>Status: " . htmlspecialchars($row['T_Status']) . "</b></p>";
+        echo "<h4><b>Status: " . htmlspecialchars($row['T_Status']) . "</b></h4>";
         echo "<p>Date: " . htmlspecialchars($row['V_Date']) . "</p>";
+
+        // Form to update T_Status2
+        ?>
+        <form method="POST" action="update_task.php">
+            <input type="hidden" name="view_id" value="<?php echo $viewId; ?>">
+            <div class="form-group">
+                <label for="status2">Update Status:</label>
+                <select id="status2" name="status2" class="form-control">
+                    <option value="">เลือกสถานะ</option>
+                    <option value="ออกแบบ">ออกแบบ</option>
+                    <option value="สำรวจ">สำรวจ</option>
+                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Status</button>
+        </form>
+        <?php
     } else {
         echo "No data found.";
     }
