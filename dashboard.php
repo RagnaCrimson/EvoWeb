@@ -173,8 +173,6 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel"></script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -195,7 +193,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             </div>
             <div class="card">
                 <h2>หน่วยงานที่เข้าร่วมทั้งหมด</h2>
-                <p>324 แห่ง</p>
+                <p>718 แห่ง</p>
             </div>
             <div class="chart-container">
                 <canvas id="pie-chart" class="doughnut-chart"></canvas>
@@ -214,51 +212,39 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
 <script>
     const statusLabels = <?php echo $status_labels_json; ?>;
-        const statusCounts = <?php echo $status_counts_json; ?>;
+    const statusCounts = <?php echo $status_counts_json; ?>;
 
-        const ctxPie = document.getElementById('pie-chart').getContext('2d');
-        const pieChart = new Chart(ctxPie, {
-            type: 'doughnut',
-            data: {
-                labels: statusLabels,
-                datasets: [{
-                    label: 'สถานะงาน',
-                    data: statusCounts,
-                    backgroundColor: [
-                        '#b6ddea','#12725c', '#898989',  '#0b6165', 
-                        '#C70039', '#581845', '#FFC300'
-                    ]
-                }]
+    const ctxPie = document.getElementById('pie-chart').getContext('2d');
+    const pieChart = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: 'สถานะงาน',
+                data: statusCounts,
+                backgroundColor: [
+                    '#b6ddea','#12725c', '#898989',  '#0b6165', 
+                    '#C70039', '#581845', '#FFC300'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = pieChart.data.labels[segmentIndex];
+                    window.location.href = `details/details_task.php?status=${encodeURIComponent(label)}`;
+                }
             },
-            options: {
-                responsive: true,
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const segmentIndex = elements[0].index;
-                        const label = pieChart.data.labels[segmentIndex];
-                        window.location.href = `details/details_task.php?status=${encodeURIComponent(label)}`;
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'สถานะงาน'
-                    },
-                    doughnutlabel: {
-                        labels: [
-                            {
-                                text: 'จำนวนทั้งหมด', // First line of text
-                                font: {
-                                    size: 20,
-                                    weight: 'bold'
-                                },
-                                color: '#000000'
-                            },
-                        ]
-                    }
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'สถานะงาน'
                 }
             }
-        });
+        }
+    });
 
     const ctxNewDoughnut = document.getElementById('new-doughnut-chart').getContext('2d');
     const newDoughnutChart = new Chart(ctxNewDoughnut, {
@@ -370,7 +356,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             datasets: [{
                 label: 'Total Electric per Month',
                 data: electricMonthCounts,
-                backgroundColor: ['#adbccc', '#9fb8d2', '#7e93ba', '#4a5f90', '#284377', '#1b2f55', '#0b2c4b']
+                backgroundColor: ['#450a80', '#2b0057', '#005682', '#e52b50', '#ffbf00', '#8c0404', '#50c878']
             }]
         },
         options: {
