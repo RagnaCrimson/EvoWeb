@@ -9,13 +9,15 @@ $saleFilter = isset($_GET['sale']) ? $_GET['sale'] : '';
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 
 $valid_ranges = [
-    '0',
+    'ไม่มีข้อมูล',
     '1-10000',
     '10001-30000',
     '30001-50000',
     '50001-100000',
     '100001-200000',
-    '200001-10000000'
+    '200001-10000000',
+    'ไม่มีศักยภาพ',
+    'มีศักยภาพ' 
 ];
 
 if (!in_array($range, $valid_ranges)) {
@@ -23,7 +25,7 @@ if (!in_array($range, $valid_ranges)) {
 }
 
 switch ($range) {
-    case '0':
+    case 'ไม่มีข้อมูล':
         $monthCondition = "V_Electric_per_month = 0";
         break;
     case '1-10000':
@@ -43,6 +45,12 @@ switch ($range) {
         break;
     case '200001-10000000':
         $monthCondition = "V_Electric_per_month BETWEEN 200001 AND 10000000";
+        break;
+    case 'ไม่มีศักยภาพ':  // Ineffective Range
+        $monthCondition = "V_Electric_per_month BETWEEN 0 AND 10000";
+        break;
+    case 'มีศักยภาพ':  // Effective Range
+        $monthCondition = "V_Electric_per_month BETWEEN 10001 AND 1000000";
         break;
     default:
         die("Invalid range specified.");

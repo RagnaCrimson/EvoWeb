@@ -4,7 +4,7 @@ include '../connect.php';
 
 $range = isset($_GET['range']) ? $_GET['range'] : '';
 
-$valid_ranges = ['0', '1-50', '51-100', '101-150', '151-199', '200-10000'];
+$valid_ranges = ['ไม่มีข้อมูล', '1-50', '51-100', '101-150', '151-199', '200-10000'];
 if (!in_array($range, $valid_ranges)) {
     die("Invalid range specified.");
 }
@@ -15,7 +15,7 @@ $saleFilter = isset($_GET['sale']) ? $_GET['sale'] : '';
 $strSQL = "SELECT * FROM view WHERE ";
 
 switch ($range) {
-    case '0':
+    case 'ไม่มีข้อมูล':
         $strSQL .= "V_Peak_month = 0";
         break;
     case '1-50':

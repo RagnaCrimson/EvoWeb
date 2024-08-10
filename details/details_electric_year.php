@@ -9,7 +9,7 @@ $saleFilter = isset($_GET['sale']) ? $_GET['sale'] : '';
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 
 $valid_ranges = [
-    '0',
+    'ไม่มีข้อมูล',
     '1-100000',
     '100001-200000',
     '200001-500000',
@@ -22,7 +22,7 @@ if (!in_array($range, $valid_ranges)) {
 }
 
 switch ($range) {
-    case '0':
+    case 'ไม่มีข้อมูล':
         $yearCondition = "V_Electric_per_year = 0";
         $monthCondition = "V_Electric_per_month = 0";
         break;

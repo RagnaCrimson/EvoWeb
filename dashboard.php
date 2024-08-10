@@ -172,8 +172,6 @@ $result_count_electric_month_ineffective = $objConnect->query($strSQL_count_elec
 $row_count_electric_month_ineffective = $result_count_electric_month_ineffective->fetch_assoc();
 $count_electric_month_ineffective = $row_count_electric_month_ineffective['count_electric_month_ineffective'];
 
-$total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
-
 ?>
 
 <!DOCTYPE html>
@@ -188,6 +186,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel@1.0.0"></script>
+    <script src="js/script.js"></script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -208,10 +207,13 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             </div>
             <div class="card">
                 <h2>หน่วยงานที่เข้าร่วมทั้งหมด</h2>
-                <p>718 แห่ง</p>
+                <p id="total-count"></p>
             </div>
             <div class="chart-container">
                 <canvas id="pie-chart" class="doughnut-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="efficiency-chart" class="doughnut-chart"></canvas>
             </div>
             <div class="chart-container">
                 <canvas id="new-doughnut-chart" class="doughnut-chart"></canvas>
@@ -221,9 +223,6 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             </div>
             <div class="chart-container">
                 <canvas id="electric-month-chart" class="doughnut-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="efficiency-chart" class="doughnut-chart"></canvas>
             </div>
 
         </div>
@@ -285,7 +284,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     const newDoughnutChart = new Chart(ctxNewDoughnut, {
         type: 'doughnut',
         data: {
-            labels: ['0', '1-50', '51-100', '101-150', '151-199', '200-10000'],
+            labels: ['ไม่มีข้อมูล', '1-50', '51-100', '101-150', '151-199', '200-10000'],
             datasets: [{
                 label: 'Total Peak per Month',
                 data: [
@@ -338,7 +337,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
         }
     });
 
-    const electricYearLabels = ['0', '1-100000', '100001-200000', '200001-500000', '500001-1000000', '1000001-90000000'];
+    const electricYearLabels = ['ไม่มีข้อมูล', '1-100000', '100001-200000', '200001-500000', '500001-1000000', '1000001-90000000'];
     const electricYearCounts = [
         <?php echo $count_electric_0; ?>,
         <?php echo $count_electric_1_100000; ?>,
@@ -391,7 +390,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
         }
     });
 
-    const electricMonthLabels = ['0' , '1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
+    const electricMonthLabels = ['ไม่มีข้อมูล' , '1-10000', '10001-30000', '30001-50000', '50001-100000', '100001-200000', '200001-10000000'];
     const electricMonthCounts = [
         <?php echo $count_electric_month_0; ?>,
         <?php echo $count_electric_month_1_10000; ?>,
@@ -445,7 +444,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
         }
     });
 
-    const efficiencyLabels = ['ไม่มีประสิทธิภาพ (0-10,000)', 'มีประสิทธิภาพ (10,001-1,000,000)'];
+    const efficiencyLabels = ['ไม่มีศักยภาพ', 'มีศักยภาพ'];
     const efficiencyCounts = [
         <?php echo $count_electric_month_ineffective; ?>,
         <?php echo $count_electric_month_effective; ?>
@@ -464,6 +463,13 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
         },
         options: {
             responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const range = efficiencyLabels[segmentIndex];
+                    window.location.href = `details/details_electric_month.php?range=${encodeURIComponent(range)}`;
+                }
+            },
             plugins: {
                 title: {
                     display: true,
@@ -486,6 +492,19 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             }
         }
     });
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    fetch('total_count.php')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-count').textContent = data.total_count + ' แห่ง';
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
+
 </script>
 <?php include 'back.html'; ?>
 </body>
