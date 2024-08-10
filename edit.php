@@ -239,32 +239,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                 </div>
             </div>
 
-            <h3>ค่า PEAK ของแต่ละเดือน</h3>
+            <div class="row">
+                <h3>ค่า PEAK และค่าไฟของแต่ละเดือน</h3>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label for="serial_number">รหัสการไฟฟ้า :</label>
+                    <input type="text"id="serial_number" name="serial_number" maxlength="10">
+                </div>
+                <div class="field">
+                    <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
+                    <input type="number"id="CA_code" name="CA_code" maxlength="12">
+                </div>
+            </div>
             <div class="h-row" id="peakContainer">
                 <div class="row set">
                     <?php for ($i = 1; $i <= 12; $i++) : ?>
                         <div class="h-field">
-                            <label class="h-label" for="P_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
-                            <input type="date" id="P_M<?php echo $i; ?>" name="P_M<?php echo $i; ?>" class="form-control">
-                            <input type="number" step="any" placeholder="000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
-                        </div>
-                    <?php endfor; ?>
-                </div>
-            </div>
-
-            <h3>ค่าไฟ ของแต่ละเดือน</h3>
-            <div class="h-row" id="electricityContainer">
-                <div class="row set">
-                    <?php for ($i = 1; $i <= 12; $i++) : ?>
-                        <div class="h-field">
-                            <label class="h-label" for="B_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
+                            <label class="h-label" for="M_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
                             <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>" class="form-control">
-                            <input type="number" step="any" placeholder="000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
+                            <input type="number" step="any" placeholder="ค่า Peak 000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
+                            <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
                         </div>
                     <?php endfor; ?>
                 </div>
-            </div>
-            <!-- <button type="button" id="addMore" class="btn btn-primary">Add More</button> -->
+            </div><br><br>
 
             <div class="row">
                 <div class="field half-width">

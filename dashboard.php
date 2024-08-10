@@ -160,6 +160,18 @@ $result_count_electric_month_200001_10000000 = $objConnect->query($strSQL_count_
 $row_count_electric_month_200001_10000000 = $result_count_electric_month_200001_10000000->fetch_assoc();
 $count_electric_month_200001_10000000 = $row_count_electric_month_200001_10000000['count_electric_month_200001_10000000'];
 
+// Get count of V_Electric_per_month in range 0-10,000 (Ineffective)
+$strSQL_count_electric_month_effective = "SELECT COUNT(*) AS count_electric_month_effective FROM view WHERE V_Electric_per_month BETWEEN 10001 AND 1000000";
+$result_count_electric_month_effective = $objConnect->query($strSQL_count_electric_month_effective);
+$row_count_electric_month_effective = $result_count_electric_month_effective->fetch_assoc();
+$count_electric_month_effective = $row_count_electric_month_effective['count_electric_month_effective'];
+
+// Get count of V_Electric_per_month in range 0-10,000 (Ineffective)
+$strSQL_count_electric_month_ineffective = "SELECT COUNT(*) AS count_electric_month_ineffective FROM view WHERE V_Electric_per_month BETWEEN 0 AND 10000";
+$result_count_electric_month_ineffective = $objConnect->query($strSQL_count_electric_month_ineffective);
+$row_count_electric_month_ineffective = $result_count_electric_month_ineffective->fetch_assoc();
+$count_electric_month_ineffective = $row_count_electric_month_ineffective['count_electric_month_ineffective'];
+
 $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
 
 ?>
@@ -173,6 +185,9 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel@1.0.0"></script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -207,10 +222,16 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
             <div class="chart-container">
                 <canvas id="electric-month-chart" class="doughnut-chart"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="efficiency-chart" class="doughnut-chart"></canvas>
+            </div>
+
         </div>
     </div>
 
 <script>
+    Chart.register(ChartDataLabels);
+
     const statusLabels = <?php echo $status_labels_json; ?>;
     const statusCounts = <?php echo $status_counts_json; ?>;
 
@@ -241,6 +262,20 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                 title: {
                     display: true,
                     text: 'สถานะงาน'
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        const percentage = (value / total * 100).toFixed(2) + '%';
+                        return percentage;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    textAlign: 'center',
+                    textAnchor: 'middle'
                 }
             }
         }
@@ -266,6 +301,7 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
         },
         options: {
             responsive: true,
+            cutout: '50%',
             onClick: (event, elements) => {
                 if (elements.length > 0) {
                     const segmentIndex = elements[0].index;
@@ -280,23 +316,27 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                 },
                 datalabels: {
                     formatter: (value, context) => {
-                        if (context.dataIndex === 0) {
-                            return 'ค่า Peak ต่อเดือน';
-                        }
-                        return '';
+                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        const percentage = (value / total * 100).toFixed(2) + '%';
+                        return percentage;
                     },
-                    color: '#000',
+                    color: '#fff',
                     font: {
                         weight: 'bold',
-                        size: 16
+                        size: 14
                     },
-                    textAlign: 'center',
-                    textAnchor: 'middle'
+                    anchor: 'center', 
+                    align: 'center', 
+                    padding: {
+                        bottom: 5
+                    },
+                    display: (context) => {
+                        return context.dataset.data[context.dataIndex] > 20; // Display only if value is greater than 0
+                    }
                 }
             }
         }
     });
-
 
     const electricYearLabels = ['0', '1-100000', '100001-200000', '200001-500000', '500001-1000000', '1000001-90000000'];
     const electricYearCounts = [
@@ -332,6 +372,20 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                 title: {
                     display: true,
                     text: 'ค่าไฟฟ้าต่อปี'
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        const percentage = (value / total * 100).toFixed(2) + '%';
+                        return percentage;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    textAlign: 'center',
+                    textAnchor: 'middle'
                 }
             }
         }
@@ -372,6 +426,62 @@ $total_rows = isset($_SESSION['total_rows']) ? $_SESSION['total_rows'] : 0;
                 title: {
                     display: true,
                     text: 'ค่าไฟฟ้าต่อเดือน'
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        const percentage = (value / total * 100).toFixed(2) + '%';
+                        return percentage;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    textAlign: 'center',
+                    textAnchor: 'middle'
+                }
+            }
+        }
+    });
+
+    const efficiencyLabels = ['ไม่มีประสิทธิภาพ (0-10,000)', 'มีประสิทธิภาพ (10,001-1,000,000)'];
+    const efficiencyCounts = [
+        <?php echo $count_electric_month_ineffective; ?>,
+        <?php echo $count_electric_month_effective; ?>
+    ];
+
+    const ctxEfficiency = document.getElementById('efficiency-chart').getContext('2d');
+    const efficiencyChart = new Chart(ctxEfficiency, {
+        type: 'doughnut',
+        data: {
+            labels: efficiencyLabels,
+            datasets: [{
+                label: 'Efficiency',
+                data: efficiencyCounts,
+                backgroundColor: ['#C70039', '#2ecc71']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'กราฟแสดงประสิทธิภาพ'
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        const percentage = (value / total * 100).toFixed(2) + '%';
+                        return percentage;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    textAlign: 'center',
+                    textAnchor: 'middle'
                 }
             }
         }
