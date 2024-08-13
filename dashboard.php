@@ -263,11 +263,6 @@ $count_electric_month_ineffective = $row_count_electric_month_ineffective['count
                     text: 'สถานะงาน'
                 },
                 datalabels: {
-                    formatter: (value, context) => {
-                        const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
-                        const percentage = (value / total * 100).toFixed(2) + '%';
-                        return percentage;
-                    },
                     color: '#fff',
                     font: {
                         weight: 'bold',
@@ -467,7 +462,7 @@ $count_electric_month_ineffective = $row_count_electric_month_ineffective['count
                 if (elements.length > 0) {
                     const segmentIndex = elements[0].index;
                     const range = efficiencyLabels[segmentIndex];
-                    window.location.href = `details/details_electric_month.php?range=${encodeURIComponent(range)}`;
+                    window.location.href = `details/details_effective.php?range=${encodeURIComponent(range)}`;
                 }
             },
             plugins: {
@@ -488,7 +483,21 @@ $count_electric_month_ineffective = $row_count_electric_month_ineffective['count
                     },
                     textAlign: 'center',
                     textAnchor: 'middle'
-                }
+                },
+                doughnutlabel: {
+                    labels: [
+                    {
+                        text: '550',
+                        font: {
+                        size: 20,
+                        weight: 'bold',
+                        },
+                    },
+                    {
+                        text: 'total',
+                    },
+                    ],
+                },
             }
         }
     });
@@ -509,3 +518,4 @@ $count_electric_month_ineffective = $row_count_electric_month_ineffective['count
 <?php include 'back.html'; ?>
 </body>
 </html>
+

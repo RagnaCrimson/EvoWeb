@@ -1,60 +1,57 @@
 <?php
 session_start();
-include '../connect.php';
 
-$status = isset($_GET['status']) ? $_GET['status'] : '';
+include '../connect.php'; 
 
-if (empty($status)) {
-    die("Invalid status specified.");
-}
-
+$range = isset($_GET['range']) ? $_GET['range'] : '';
 $provinceFilter = isset($_GET['province']) ? $_GET['province'] : '';
 $saleFilter = isset($_GET['sale']) ? $_GET['sale'] : '';
+$statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 
-$strSQL_datastore_db = "
-    SELECT view.*, task.T_Status, files.filename 
-    FROM view 
-    LEFT JOIN task ON view.V_ID = task.T_ID
-    LEFT JOIN files ON view.V_ID = files.id
-    WHERE task.T_Status = ?";
+$valid_ranges = [
+    'ไม่มีข้อมูล',
+    'ไม่มีศักยภาพ',
+    'มีศักยภาพ' 
+];
 
-// Append additional conditions based on filters
-if (!empty($provinceFilter)) {
-    $strSQL_datastore_db .= " AND view.V_Province = ?";
+if (!in_array($range, $valid_ranges)) {
+    die("Invalid range specified.");
 }
 
-if (!empty($saleFilter)) {
-    $strSQL_datastore_db .= " AND view.V_Sale = ?";
+switch ($range) {
+    case 'ไม่มีข้อมูล':
+        $monthCondition = "V_Electric_per_month = 0";
+        break;
+    case 'ไม่มีศักยภาพ':  // Ineffective Range
+        $monthCondition = "V_Electric_per_month BETWEEN 0 AND 10000";
+        break;
+    case 'มีศักยภาพ':  // Effective Range
+        $monthCondition = "V_Electric_per_month BETWEEN 10001 AND 1000000";
+        break;
+    default:
+        die("Invalid range specified.");
 }
 
-$stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+$provinceCondition = $provinceFilter ? "AND V_Province = '$provinceFilter'" : '';
+$saleCondition = $saleFilter ? "AND V_Sale = '$saleFilter'" : '';
+$statusCondition = $statusFilter ? "AND T_Status = '$statusFilter'" : '';
 
-if (!$stmt_datastore_db) {
-    die("Prepare failed: " . $objConnect->error);
+$monthSQL = "
+    SELECT v.*, t.T_Status 
+    FROM view v 
+    JOIN task t ON v.V_ID = t.T_ID 
+    WHERE $monthCondition $provinceCondition $saleCondition $statusCondition 
+    ORDER BY V_Electric_per_month DESC";
+
+$monthResult = $objConnect->query($monthSQL);
+
+if (!$monthResult) {
+    die("Query failed: " . $objConnect->error);
 }
 
-// Bind parameters
-if (!empty($provinceFilter) && !empty($saleFilter)) {
-    $stmt_datastore_db->bind_param("sss", $status, $provinceFilter, $saleFilter);
-} elseif (!empty($provinceFilter)) {
-    $stmt_datastore_db->bind_param("ss", $status, $provinceFilter);
-} elseif (!empty($saleFilter)) {
-    $stmt_datastore_db->bind_param("ss", $status, $saleFilter);
-} else {
-    $stmt_datastore_db->bind_param("s", $status);
-}
-
-$result = $stmt_datastore_db->execute();
-
-if (!$result) {
-    die("Query execution failed: " . $stmt_datastore_db->error);
-}
-
-$result = $stmt_datastore_db->get_result();
-
-if (!$result) {
-    die("Result retrieval failed: " . $stmt_datastore_db->error);
-}
+$provinces = $objConnect->query("SELECT DISTINCT V_Province FROM view");
+$sales = $objConnect->query("SELECT DISTINCT V_Sale FROM view");
+$statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
 
 ?>
 
@@ -63,13 +60,13 @@ if (!$result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details</title>
+    <title>Details Electric</title>
     <link rel="stylesheet" href="/evo/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="/evo/js/logout.js"></script>
 </head>
 <body class="bgcolor">
-    <nav role="navigation" class="primary-navigation">
+<nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
             <li><a href="../dashboard.php">Dashboard</a>
@@ -92,17 +89,14 @@ if (!$result) {
     </nav>
 
     <div class="container content-color">
-        <h2>สถานะงานที่: <?php echo htmlspecialchars($status); ?></h2>
+        <h2>หน่วยงานที่ค่าใช้ไฟฟ้าต่อเดือน: <?php echo htmlspecialchars($range); ?></h2>
         <form method="GET" action="">
-            <input type="hidden" name="status" value="<?php echo htmlspecialchars($status); ?>">
+            <input type="hidden" name="range" value="<?php echo htmlspecialchars($range); ?>">
             <div class="form-group">
                 <label for="province">จังหวัด:</label>
                 <select name="province" id="province" class="form-control">
                     <option value="">--เลือกจังหวัด--</option>
-                    <!-- Populate options dynamically from database -->
-                    <?php
-                    $provinces = $objConnect->query("SELECT DISTINCT V_Province FROM view");
-                    while ($row = $provinces->fetch_assoc()): ?>
+                    <?php while ($row = $provinces->fetch_assoc()): ?>
                         <option value="<?php echo htmlspecialchars($row['V_Province']); ?>" <?php if ($provinceFilter == $row['V_Province']) echo 'selected'; ?>>
                             <?php echo htmlspecialchars($row['V_Province']); ?>
                         </option>
@@ -113,37 +107,52 @@ if (!$result) {
                 <label for="sale">ทีมฝ่ายขาย:</label>
                 <select name="sale" id="sale" class="form-control">
                     <option value="">--เลือกทีมฝ่ายขาย--</option>
-                    <!-- Populate options dynamically from database -->
-                    <?php
-                    $sales = $objConnect->query("SELECT DISTINCT V_Sale FROM view");
-                    while ($row = $sales->fetch_assoc()): ?>
+                    <?php while ($row = $sales->fetch_assoc()): ?>
                         <option value="<?php echo htmlspecialchars($row['V_Sale']); ?>" <?php if ($saleFilter == $row['V_Sale']) echo 'selected'; ?>>
                             <?php echo htmlspecialchars($row['V_Sale']); ?>
                         </option>
                     <?php endwhile; ?>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="status">สถานะ:</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="">--เลือกสถานะ--</option>
+                    <?php while ($row = $statuses->fetch_assoc()): ?>
+                        <option value="<?php echo htmlspecialchars($row['T_Status']); ?>" <?php if ($statusFilter == $row['T_Status']) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($row['T_Status']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">กรอง</button>
         </form>
-        
+
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>สถานะ</th>
+                    <th>ลำดับ</th>
+                    <th>ค่าใช้ไฟฟ้าต่อเดือน</th>
                     <th>ID</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
                     <th>ทีมฝ่ายขาย</th>
+                    <th>ค่า PEAK/เดือน</th>
+                    <th>สถานะ</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+                <?php $rowNumber = 1; ?>
+                <?php while ($row = $monthResult->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($row['T_Status']); ?></td>
+                    <td><?php echo $rowNumber++; ?></td>
+                    <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
                     <td><?php echo htmlspecialchars($row['V_ID']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Sale']); ?></td>
+                    <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
+                    <td><?php echo htmlspecialchars($row['T_Status']); ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>

@@ -16,6 +16,8 @@ if (isset($_GET['id'])) {
     
     $row_edit = $result_edit->fetch_assoc();
     $V_ID = $row_edit['V_ID'];
+    $serial_number = $row_edit['serial_number'] ?? ''; // Use null coalescing operator to handle missing key
+    $CA_code = $row_edit['CA_code'] ?? ''; // Use null coalescing operator to handle missing key
 } else {
     echo "No ID specified.";
     exit;
@@ -105,56 +107,71 @@ if (isset($_POST['submit'])) {
     } else {
         echo "Error updating record: " . $objConnect->error;
     }
-}
 
+    // Update peak table
+    $sql_peak = "UPDATE peak SET 
+                 serial_number = ?, 
+                 CA_code = ?, 
+                 P_1 = ?, P_2 = ?, P_3 = ?, P_4 = ?, P_5 = ?, P_6 = ?, P_7 = ?, P_8 = ?, P_9 = ?, P_10 = ?, P_11 = ?, P_12 = ?, 
+                 P_M1 = ?, P_M2 = ?, P_M3 = ?, P_M4 = ?, P_M5 = ?, P_M6 = ?, P_M7 = ?, P_M8 = ?, P_M9 = ?, P_M10 = ?, P_M11 = ?, P_M12 = ? 
+                 WHERE V_ID = ?";
+    
+    $stmt_peak = $objConnect->prepare($sql_peak);
+    if ($stmt_peak === false) {
+        die("Error preparing statement for peak table: " . $objConnect->error);
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-    $V_ID = $objConnect->real_escape_string($_POST['V_ID']);
-
-    $peakData = [];
-    $billData = [];
+    // Use null coalescing to avoid undefined index errors
+    $numb = $_POST['serial_number'] ?? ''; 
+    $ca_code = $_POST['CA_code'] ?? ''; 
+    $p_values = [];
+    $p_months = [];
 
     for ($i = 1; $i <= 12; $i++) {
-        if (isset($_POST["P_M$i"]) && isset($_POST["P_$i"])) {
-            $peakMonth = $_POST["P_M$i"];
-            $peakValue = $_POST["P_$i"];
-
-            $peakData[] = [
-                'P_Month' => $peakMonth,
-                'P_Value' => $peakValue,
-                'P_Column' => "P_$i",
-                'P_M_Column' => "P_M$i"
-            ];
-        }
+        $p_values[] = $_POST["P_$i"] ?? ''; 
+        $p_months[] = $_POST["P_M$i"] ?? ''; 
     }
+
+    // Combine all values into a single array
+    $params = array_merge([$numb, $ca_code], $p_values, $p_months, [$V_ID]);
+
+    // Create the type string
+    $typeString = "ss" . str_repeat("d", 12) . str_repeat("d", 12) . "i";
+
+    // Bind parameters
+    $stmt_peak->bind_param($typeString, ...$params);
+    $stmt_peak->execute();
+    $stmt_peak->close();
+
+    // Update bill table
+    $sql_bill = "UPDATE bill SET 
+                 B_1 = ?, B_2 = ?, B_3 = ?, B_4 = ?, B_5 = ?, B_6 = ?, B_7 = ?, B_8 = ?, B_9 = ?, B_10 = ?, B_11 = ?, B_12 = ?, 
+                 B_M1 = ?, B_M2 = ?, B_M3 = ?, B_M4 = ?, B_M5 = ?, B_M6 = ?, B_M7 = ?, B_M8 = ?, B_M9 = ?, B_M10 = ?, B_M11 = ?, B_M12 = ? 
+                 WHERE V_ID = ?";
+    
+    $stmt_bill = $objConnect->prepare($sql_bill);
+    if ($stmt_bill === false) {
+        die("Error preparing statement for bill table: " . $objConnect->error);
+    }
+
+    $b_values = [];
+    $b_months = [];
 
     for ($i = 1; $i <= 12; $i++) {
-        if (isset($_POST["B_M$i"]) && isset($_POST["B_$i"])) {
-            $billMonth = $_POST["B_M$i"];
-            $billValue = $_POST["B_$i"];
-
-            $billData[] = [
-                'B_Month' => $billMonth,
-                'B_Value' => $billValue,
-                'B_Column' => "B_$i",
-                'B_M_Column' => "B_M$i"
-            ];
-        }
+        $b_values[] = $_POST["B_$i"] ?? ''; 
+        $b_months[] = $_POST["B_M$i"] ?? ''; 
     }
 
-    foreach ($peakData as $data) {
-        $sql = "UPDATE peak SET {$data['P_Column']} = ?, {$data['P_M_Column']} = ? WHERE V_ID = ? AND P_Month = ?";
-        $stmt = $objConnect->prepare($sql);
-        $stmt->bind_param("dsis", $data['P_Value'], $data['P_Month'], $V_ID, $data['P_Month']);
-        $stmt->execute();
-    }
+    // Combine all values into a single array
+    $params_bill = array_merge($b_values, $b_months, [$V_ID]);
 
-    foreach ($billData as $data) {
-        $sql = "UPDATE bill SET {$data['B_Column']} = ?, {$data['B_M_Column']} = ? WHERE V_ID = ? AND B_Month = ?";
-        $stmt = $objConnect->prepare($sql);
-        $stmt->bind_param("dsis", $data['B_Value'], $data['B_Month'], $V_ID, $data['B_Month']);
-        $stmt->execute();
-    }
+    // Create the type string
+    $typeStringBill = str_repeat("d", 12) . str_repeat("d", 12) . "i";
+
+    // Bind parameters
+    $stmt_bill->bind_param($typeStringBill, ...$params_bill);
+    $stmt_bill->execute();
+    $stmt_bill->close();
 
     $objConnect->close();
 
