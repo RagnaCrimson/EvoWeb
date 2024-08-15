@@ -1,195 +1,3 @@
-<?php
-include 'connect.php'; 
-
-mysqli_query($objConnect, "SET NAMES utf8");
-
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    
-    // Retrieve data from view table
-    $strSQL_edit = "SELECT * FROM view WHERE V_Name = '$id'";
-    $result_edit = $objConnect->query($strSQL_edit);
-    
-    if (!$result_edit) {
-        die("Query failed: " . $objConnect->error);
-    }
-    
-    $row_edit = $result_edit->fetch_assoc();
-    $V_ID = $row_edit['V_ID'] ?? null;
-    
-    // Retrieve additional data from peak table
-    $strSQL_peak = "SELECT serial_number, CA_code FROM peak WHERE V_ID = '$V_ID'";
-    $result_peak = $objConnect->query($strSQL_peak);
-    $row_peak = $result_peak->fetch_assoc();
-    
-    // Retrieve additional data from bill table
-    $strSQL_bill = "SELECT B_M12 FROM bill WHERE V_ID = '$V_ID'";
-    $result_bill = $objConnect->query($strSQL_bill);
-    $row_bill = $result_bill->fetch_assoc();
-    
-    // Retrieve filename from files table
-    $strSQL_file = "SELECT filename FROM files WHERE V_ID = '$V_ID'";
-    $result_file = $objConnect->query($strSQL_file);
-    $row_file = $result_file->fetch_assoc();
-    
-    // Ensure arrays are not null
-    $row_peak = $row_peak ?: [];
-    $row_bill = $row_bill ?: [];
-    $row_file = $row_file ?: [];
-    
-    // Merge data from different tables
-    $row_edit = array_merge($row_edit ?? [], $row_peak ?? [], $row_bill ?? [], $row_file ?? []);
-} else {
-    echo "No ID specified.";
-    exit;
-}
-
-if (isset($_POST['submit'])) {
-    $newData = $_POST['data']; 
-
-    $vName = $objConnect->real_escape_string($newData['V_Name']);
-    $vProvince = $objConnect->real_escape_string($newData['V_Province']);
-    $vDistrict = $objConnect->real_escape_string($newData['V_District']);
-    $vSubDistrict = $objConnect->real_escape_string($newData['V_SubDistrict']);
-    $vExecName = $objConnect->real_escape_string($newData['V_ExecName']);
-    $vExecPhone = $objConnect->real_escape_string($newData['V_ExecPhone']);
-    $vExecMail = $objConnect->real_escape_string($newData['V_ExecMail']);
-    $vCoordName1 = $objConnect->real_escape_string($newData['V_CoordName1']);
-    $vCoordPhone1 = $objConnect->real_escape_string($newData['V_CoordPhone1']);
-    $vCoordMail1 = $objConnect->real_escape_string($newData['V_CoordMail1']);
-    $vCoordName2 = $objConnect->real_escape_string($newData['V_CoordName2']);
-    $vCoordPhone2 = $objConnect->real_escape_string($newData['V_CoordPhone2']);
-    $vCoordMail2 = $objConnect->real_escape_string($newData['V_CoordMail2']);
-    $vSale = $objConnect->real_escape_string($newData['V_Sale']);
-    $vDate = $objConnect->real_escape_string($newData['V_Date']);
-    $vElectricPerYear = $objConnect->real_escape_string($newData['V_Electric_per_year']);
-    $vElectricPerMonth = $objConnect->real_escape_string($newData['V_Electric_per_month']);
-    $vPeakYear = $objConnect->real_escape_string($newData['V_Peak_year']);
-    $vPeakMonth = $objConnect->real_escape_string($newData['V_Peak_month']);
-    $vComment = $objConnect->real_escape_string($newData['V_comment']);
-    
-    // File upload handling
-    $uploadOk = 1;
-    $targetDir = "uploads/";
-    $filename = '';
-    if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
-        $targetFile = $targetDir . basename($_FILES["file"]["name"]);
-        $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        
-        if ($fileType != "pdf") {
-            echo "Sorry, only PDF files are allowed.";
-            $uploadOk = 0;
-        }
-        
-        if ($_FILES["file"]["size"] > 500000) {
-            echo "Sorry, your file is too large.";
-            $uploadOk = 0;
-        }
-        
-        if ($uploadOk == 0) {
-            echo "Sorry, your file was not uploaded.";
-        } else {
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                echo "The file " . htmlspecialchars(basename($_FILES["file"]["name"])) . " has been uploaded.";
-                $filename = basename($_FILES["file"]["name"]);
-            } else {
-                echo "Sorry, there was an error uploading your file.";
-            }
-        }
-    }
-
-    // Update view table
-    $strSQL_update = "UPDATE view SET 
-                      V_Name = '$vName',
-                      V_Province = '$vProvince',
-                      V_District = '$vDistrict',
-                      V_SubDistrict = '$vSubDistrict',
-                      V_ExecName = '$vExecName',
-                      V_ExecPhone = '$vExecPhone',
-                      V_ExecMail = '$vExecMail',
-                      V_CoordName1 = '$vCoordName1',
-                      V_CoordPhone1 = '$vCoordPhone1',
-                      V_CoordMail1 = '$vCoordMail1',
-                      V_CoordName2 = '$vCoordName2',
-                      V_CoordPhone2 = '$vCoordPhone2',
-                      V_CoordMail2 = '$vCoordMail2',
-                      V_Sale = '$vSale',
-                      V_Date = '$vDate',
-                      V_Electric_per_year = '$vElectricPerYear',
-                      V_Electric_per_month = '$vElectricPerMonth',
-                      V_Peak_year = '$vPeakYear',
-                      V_Peak_month = '$vPeakMonth',
-                      V_comment = '$vComment'
-                      WHERE V_Name = '$id'";
-
-    if ($objConnect->query($strSQL_update) === TRUE) {
-        echo '<script>
-            alert("Record updated successfully.");
-            window.location.href = "data_view.php"; // Redirect to data_view.php
-        </script>';
-        exit;
-    } else {
-        echo "Error updating record: " . $objConnect->error;
-    }
-
-    // Update peak table
-    $sql_peak = "UPDATE peak SET 
-                 serial_number = ?, 
-                 CA_code = ? 
-                 WHERE V_ID = ?";
-    
-    $stmt_peak = $objConnect->prepare($sql_peak);
-    if ($stmt_peak === false) {
-        die("Error preparing statement for peak table: " . $objConnect->error);
-    }
-
-    $numb = $_POST['serial_number'] ?? ''; 
-    $ca_code = $_POST['CA_code'] ?? ''; 
-
-    // Bind parameters
-    $stmt_peak->bind_param("ssi", $numb, $ca_code, $V_ID);
-    $stmt_peak->execute();
-    $stmt_peak->close();
-
-    // Update bill table
-    $sql_bill = "UPDATE bill SET 
-                 B_M12 = ? 
-                 WHERE V_ID = ?";
-    
-    $stmt_bill = $objConnect->prepare($sql_bill);
-    if ($stmt_bill === false) {
-        die("Error preparing statement for bill table: " . $objConnect->error);
-    }
-
-    $b_m12 = $_POST['B_M12'] ?? ''; 
-
-    // Bind parameters
-    $stmt_bill->bind_param("di", $b_m12, $V_ID);
-    $stmt_bill->execute();
-    $stmt_bill->close();
-
-    // Update files table only if a new file was uploaded
-    if ($filename) {
-        $sql_file = "UPDATE files SET filename = ? WHERE V_ID = ?";
-        
-        $stmt_file = $objConnect->prepare($sql_file);
-        if ($stmt_file === false) {
-            die("Error preparing statement for files table: " . $objConnect->error);
-        }
-
-        // Bind parameters
-        $stmt_file->bind_param("si", $filename, $V_ID);
-        $stmt_file->execute();
-        $stmt_file->close();
-    }
-
-    $objConnect->close();
-
-    echo "Data updated successfully!";
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,6 +10,7 @@ if (isset($_POST['submit'])) {
     <script src="js/script.js"></script>
 </head>
 <body class="bgcolor">
+    <?php include 'edit_process.php'; ?>
     <?php include 'header.php'; ?>
     <div class="container">
         <h1 class="center">แก้ไขข้อมูล</h1>
@@ -243,7 +52,7 @@ if (isset($_POST['submit'])) {
                 </div>
                 <div class="field">
                     <label for="ExecMail">อีเมลผู้บริหาร :</label>
-                    <input type="email" class="form-control" id="ExecMail" name="data[V_ExecMail]" value="<?php echo htmlspecialchars($row_edit['V_ExecMail']); ?>">
+                    <input type="text" class="form-control" id="ExecMail" name="data[V_ExecMail]" value="<?php echo htmlspecialchars($row_edit['V_ExecMail']); ?>">
                 </div>
             </div>
             <div class="row">
@@ -257,7 +66,7 @@ if (isset($_POST['submit'])) {
                 </div>
                 <div class="field">
                     <label for="CoordMail1">อีเมลผู้ประสานงาน :</label>
-                    <input type="email" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail1']); ?>">                
+                    <input type="text" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail1']); ?>">                
                 </div>
             </div>
 

@@ -90,14 +90,14 @@
             <div class="field">
                 <label class="h-label" for="P_12">ระบุเดือน :</label>
                 <input type="date" id="B_M12" name="B_M12" class="form-control">
-            </div>     
+            </div>   
             <div class="field"> 
-                <label class="h-label" for="V_Peak_month">ค่าไฟ :</label>
-                <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="V_Peak_month" class="form-control">
-            </div>
-            <div class="field"> 
-                <label class="h-label" for="V_Electric_per_month">peak :</label>
+                <label class="h-label" for="V_Electric_per_month">ค่าไฟ :</label>
                 <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="V_Electric_per_month" class="form-control">
+            </div>  
+            <div class="field"> 
+                <label class="h-label" for="V_Peak_month">ค่า peak :</label>
+                <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="V_Peak_month" class="form-control">
             </div>
         </div><br><br>
         

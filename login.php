@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
     
     if ($username == 'insert') {
         $redirectUrl = 'insert_user/insert_data.php';
-    } elseif ($username == 'sale01') {
+    } elseif ($username == 'eet01') {
         $redirectUrl = 'sale_yen/insert_data-yen.php';
     } else {
         $redirectUrl = 'dashboard.php';
