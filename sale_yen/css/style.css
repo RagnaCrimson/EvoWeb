@@ -1,0 +1,235 @@
+/* color 
+    #555273    ม่วง
+    #65799b    ฟ้า
+    #b6d5e1    ฟ้าอ่อน
+    #e2eff1    ฟ้าอ่อน อมเขียว เกือบขาว
+*/
+
+body { 
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .con {
+    display: flex;
+    padding: 15px;
+    font-size: 18px;
+  }
+  
+  .left {
+    flex: 1;
+    padding: 10px;
+  }
+  
+  .right {
+    flex: 1;
+    padding-left: 20px;
+    width: 40%;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .center {
+    text-align: center;
+  }
+  
+  nav {
+    &.primary-navigation {
+      margin: 0 auto;
+      display: block;
+      background-color: #65799b;
+      padding: 25px 0 10px 0;  
+      text-align: center;
+      font-size: 20px;
+      box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  
+      ul li {
+        list-style: none;
+        margin: 0 auto;
+        border-left: 2px solid #e2eff1;
+        display: inline-block;
+        padding: 0 30px;
+        position: relative;
+        text-decoration: none;
+        text-align: center;
+        font-family: arvo;
+      }
+  
+      li a {
+        color: black;
+      }
+  
+      li a:hover {
+        color: #e2eff1;
+      }
+  
+      li:hover {
+        cursor: pointer;
+      }
+  
+      ul li ul {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        padding-left: 0;
+        left: 0;
+        display: none;
+        background: #65799b;
+      }
+  
+      ul li:hover > ul,
+      ul li ul:hover {
+        visibility: visible;
+        opacity: 1;
+        display: block;
+        min-width: 250px;
+        text-align: left;
+        padding-top: 20px;
+        box-shadow: 0px 3px 5px -1px #000000;
+      }
+  
+      ul li ul li {
+        clear: both;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 20px;
+        border-style: none;
+      }
+  
+      ul li ul li a:hover {
+        padding-left: 10px;
+        border-left: 2px solid #e2eff1;
+        transition: all 0.3s ease;
+      }
+    }
+  }
+  
+  a {
+  
+      text-decoration: none;
+  
+      &:hover {
+          color: #e2eff1;
+      }
+   
+  }
+  
+   ul li ul li a { transition: all 0.5s ease; }
+   
+    /* table */
+  
+    .table {
+      margin-top: 30px;
+      padding: auto;
+      background-color: #fff;
+    }
+    .table th, .table td {
+        text-align: left;
+    }
+    .table thead {
+        background-color: #509ce4;
+    }
+  
+    #data {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #data td, #data th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #data tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #data tr:hover {background-color: #ddd;}
+    
+    #data th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #555273;
+      color: white;
+    }
+  
+    /* end table */
+  
+  
+  /* ======================= card data view ======================== */
+  .bgcolor {
+    background-color: lightblue;
+  }
+  
+  .content-color{
+    background-color: #f5eee8;
+  }
+  
+  .container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  
+  .card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .card-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .card-text {
+    font-size: 1em;
+    margin-bottom: 10px;
+  }
+  
+  .card-text strong {
+    color: #555;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  /* =========================== */
