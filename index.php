@@ -37,6 +37,13 @@
 
         <div class="row">
             <div class="field half-width">
+                <label for="V_location">ตำแหน่ง GPS Link google map หรือ พิกัด (ถ้ามี) :</label>
+                <input type="text" id="V_location" name="V_location">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field half-width">
                 <label for="V_ExecName">ชื่อผู้บริหาร :</label>
                 <input type="text" id="V_ExecName" name="V_ExecName">
             </div>
@@ -52,36 +59,21 @@
 
         <div class="row">
             <div class="field half-width">
-                <label for="V_CoordName1">ชื่อผู้ประสานงาน 1 :</label>
+                <label for="V_CoordName1">ชื่อผู้ประสานงาน :</label>
                 <input type="text" id="V_CoordName1" name="V_CoordName1">
             </div>
             <div class="field">
-                <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน 1 :</label>
+                <label for="V_CoordPhone1">เบอร์ผู้ประสานงาน :</label>
                 <input type="text"id="V_CoordPhone1" name="V_CoordPhone1">
             </div>
             <div class="field">
-                <label for="V_CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
+                <label for="V_CoordMail1">อีเมลผู้ประสานงาน :</label>
                 <input type="text" id="V_CoordMail1" name="V_CoordMail1">
             </div>
         </div>
 
         <div class="row">
-            <div class="field half-width">
-                <label for="V_CoordName2">ชื่อผู้ประสานงาน 2 :</label>
-                <input type="text" id="V_CoordName2" name="V_CoordName2">
-            </div>
-            <div class="field">
-                <label for="V_CoordPhone2">เบอร์ผู้ประสานงาน 2 :</label>
-                <input type="text"id="V_CoordPhone2" name="V_CoordPhone2">
-            </div>
-            <div class="field">
-                <label for="V_CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
-                <input type="text" id="V_CoordMail2" name="V_CoordMail2">
-            </div>
-        </div><br>
-
-        <div class="row">
-            <h3>ค่า PEAK และค่าไฟของแต่ละเดือน</h3>
+            <h3>บิลค่าไฟ</h3>
         </div>
         <div class="row">
             <div class="field">
@@ -90,45 +82,25 @@
             </div>
             <div class="field">
                 <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
-                <input type="number"id="CA_code" name="CA_code" maxlength="12">
+                <input type="text"id="CA_code" name="CA_code" maxlength="12">
             </div>
         </div>
-        <div class="h-row" id="peakContainer">
-            <div class="row set">
-                <?php for ($i = 1; $i <= 12; $i++) : ?>
-                    <div class="h-field">
-                        <label class="h-label" for="M_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
-                        <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>" class="form-control">
-                        <input type="number" step="any" placeholder="ค่า Peak 000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
-                        <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
-                    </div>
-                <?php endfor; ?>
-            </div>
-        </div><br><br>
-        <!-- <button type="button" id="addMore" class="btn btn-primary">Add More</button><br><br> -->
-        
-        <!-- ========================= -->
 
         <div class="row">
-            <div class="field half-width">
-                <label for="V_Peak_year">ค่า PEAK ต่อปี (KW) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Peak_year" name="V_Peak_year">
+            <div class="field">
+                <label class="h-label" for="M_12">ระบุเดือน :</label>
+                <input type="date" id="B_M12" name="B_M12" class="form-control">
+            </div>     
+            <div class="field"> 
+                <label class="h-label" for="V_Peak_month">ค่าไฟ :</label>
+                <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="V_Peak_month" class="form-control">
             </div>
-            <div class="field half-width">
-                <label for="V_Peak_month">ค่า PEAK ต่อเดือน (KW) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="V_Peak_month">
-            </div>
-        </div>
-        <div class="row">
-            <div class="field half-width">
-                <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี(บาท) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="V_Electric_per_year">
-            </div>
-            <div class="field half-width">
-                <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน(บาท) :</label>
-                <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="V_Electric_per_month">
+            <div class="field"> 
+                <label class="h-label" for="V_Electric_per_month">peak :</label>
+                <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="V_Electric_per_month" class="form-control">
             </div>
         </div>
+        </div><br><br>
         
         <div class="row">
             <div class="field full-width">

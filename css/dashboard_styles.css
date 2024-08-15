@@ -1,0 +1,57 @@
+body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+}
+.sidebar {
+    width: 220px;
+    background-color: #343a40;
+    color: #fff;
+    padding: 15px;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+}
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.sidebar a:hover {
+    background-color: #495057;
+}
+.sidebar .brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.sidebar .brand img {
+    width: 30px;
+    margin-right: 10px;
+}
+.sidebar .brand span {
+    font-size: 20px;
+}
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    border-bottom: 1px solid #0069d9;
+}
+.chart-container {
+    margin-top: 20px;
+}
