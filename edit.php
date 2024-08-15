@@ -6,7 +6,7 @@ mysqli_query($objConnect, "SET NAMES utf8");
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
-    // Retrieve existing data
+    // Retrieve data from view table
     $strSQL_edit = "SELECT * FROM view WHERE V_Name = '$id'";
     $result_edit = $objConnect->query($strSQL_edit);
     
@@ -15,9 +15,30 @@ if (isset($_GET['id'])) {
     }
     
     $row_edit = $result_edit->fetch_assoc();
-    $V_ID = $row_edit['V_ID'];
-    $serial_number = $row_edit['serial_number'] ?? ''; // Use null coalescing operator to handle missing key
-    $CA_code = $row_edit['CA_code'] ?? ''; // Use null coalescing operator to handle missing key
+    $V_ID = $row_edit['V_ID'] ?? null;
+    
+    // Retrieve additional data from peak table
+    $strSQL_peak = "SELECT serial_number, CA_code FROM peak WHERE V_ID = '$V_ID'";
+    $result_peak = $objConnect->query($strSQL_peak);
+    $row_peak = $result_peak->fetch_assoc();
+    
+    // Retrieve additional data from bill table
+    $strSQL_bill = "SELECT B_M12 FROM bill WHERE V_ID = '$V_ID'";
+    $result_bill = $objConnect->query($strSQL_bill);
+    $row_bill = $result_bill->fetch_assoc();
+    
+    // Retrieve filename from files table
+    $strSQL_file = "SELECT filename FROM files WHERE V_ID = '$V_ID'";
+    $result_file = $objConnect->query($strSQL_file);
+    $row_file = $result_file->fetch_assoc();
+    
+    // Ensure arrays are not null
+    $row_peak = $row_peak ?: [];
+    $row_bill = $row_bill ?: [];
+    $row_file = $row_file ?: [];
+    
+    // Merge data from different tables
+    $row_edit = array_merge($row_edit ?? [], $row_peak ?? [], $row_bill ?? [], $row_file ?? []);
 } else {
     echo "No ID specified.";
     exit;
@@ -50,26 +71,30 @@ if (isset($_POST['submit'])) {
     // File upload handling
     $uploadOk = 1;
     $targetDir = "uploads/";
-    $targetFile = $targetDir . basename($_FILES["file"]["name"]);
-    $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-    
-    if ($fileType != "pdf") {
-        echo "Sorry, only PDF files are allowed.";
-        $uploadOk = 0;
-    }
-    
-    if ($_FILES["file"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-    
-    if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-    } else {
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-            echo "The file " . htmlspecialchars(basename($_FILES["file"]["name"])) . " has been uploaded.";
+    $filename = '';
+    if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
+        $targetFile = $targetDir . basename($_FILES["file"]["name"]);
+        $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+        
+        if ($fileType != "pdf") {
+            echo "Sorry, only PDF files are allowed.";
+            $uploadOk = 0;
+        }
+        
+        if ($_FILES["file"]["size"] > 500000) {
+            echo "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+        
+        if ($uploadOk == 0) {
+            echo "Sorry, your file was not uploaded.";
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                echo "The file " . htmlspecialchars(basename($_FILES["file"]["name"])) . " has been uploaded.";
+                $filename = basename($_FILES["file"]["name"]);
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+            }
         }
     }
 
@@ -94,8 +119,7 @@ if (isset($_POST['submit'])) {
                       V_Electric_per_month = '$vElectricPerMonth',
                       V_Peak_year = '$vPeakYear',
                       V_Peak_month = '$vPeakMonth',
-                      V_comment = '$vComment',
-                      V_File = '$targetFile'
+                      V_comment = '$vComment'
                       WHERE V_Name = '$id'";
 
     if ($objConnect->query($strSQL_update) === TRUE) {
@@ -111,9 +135,7 @@ if (isset($_POST['submit'])) {
     // Update peak table
     $sql_peak = "UPDATE peak SET 
                  serial_number = ?, 
-                 CA_code = ?, 
-                 P_1 = ?, P_2 = ?, P_3 = ?, P_4 = ?, P_5 = ?, P_6 = ?, P_7 = ?, P_8 = ?, P_9 = ?, P_10 = ?, P_11 = ?, P_12 = ?, 
-                 P_M1 = ?, P_M2 = ?, P_M3 = ?, P_M4 = ?, P_M5 = ?, P_M6 = ?, P_M7 = ?, P_M8 = ?, P_M9 = ?, P_M10 = ?, P_M11 = ?, P_M12 = ? 
+                 CA_code = ? 
                  WHERE V_ID = ?";
     
     $stmt_peak = $objConnect->prepare($sql_peak);
@@ -121,32 +143,17 @@ if (isset($_POST['submit'])) {
         die("Error preparing statement for peak table: " . $objConnect->error);
     }
 
-    // Use null coalescing to avoid undefined index errors
     $numb = $_POST['serial_number'] ?? ''; 
     $ca_code = $_POST['CA_code'] ?? ''; 
-    $p_values = [];
-    $p_months = [];
-
-    for ($i = 1; $i <= 12; $i++) {
-        $p_values[] = $_POST["P_$i"] ?? ''; 
-        $p_months[] = $_POST["P_M$i"] ?? ''; 
-    }
-
-    // Combine all values into a single array
-    $params = array_merge([$numb, $ca_code], $p_values, $p_months, [$V_ID]);
-
-    // Create the type string
-    $typeString = "ss" . str_repeat("d", 12) . str_repeat("d", 12) . "i";
 
     // Bind parameters
-    $stmt_peak->bind_param($typeString, ...$params);
+    $stmt_peak->bind_param("ssi", $numb, $ca_code, $V_ID);
     $stmt_peak->execute();
     $stmt_peak->close();
 
     // Update bill table
     $sql_bill = "UPDATE bill SET 
-                 B_1 = ?, B_2 = ?, B_3 = ?, B_4 = ?, B_5 = ?, B_6 = ?, B_7 = ?, B_8 = ?, B_9 = ?, B_10 = ?, B_11 = ?, B_12 = ?, 
-                 B_M1 = ?, B_M2 = ?, B_M3 = ?, B_M4 = ?, B_M5 = ?, B_M6 = ?, B_M7 = ?, B_M8 = ?, B_M9 = ?, B_M10 = ?, B_M11 = ?, B_M12 = ? 
+                 B_M12 = ? 
                  WHERE V_ID = ?";
     
     $stmt_bill = $objConnect->prepare($sql_bill);
@@ -154,24 +161,27 @@ if (isset($_POST['submit'])) {
         die("Error preparing statement for bill table: " . $objConnect->error);
     }
 
-    $b_values = [];
-    $b_months = [];
-
-    for ($i = 1; $i <= 12; $i++) {
-        $b_values[] = $_POST["B_$i"] ?? ''; 
-        $b_months[] = $_POST["B_M$i"] ?? ''; 
-    }
-
-    // Combine all values into a single array
-    $params_bill = array_merge($b_values, $b_months, [$V_ID]);
-
-    // Create the type string
-    $typeStringBill = str_repeat("d", 12) . str_repeat("d", 12) . "i";
+    $b_m12 = $_POST['B_M12'] ?? ''; 
 
     // Bind parameters
-    $stmt_bill->bind_param($typeStringBill, ...$params_bill);
+    $stmt_bill->bind_param("di", $b_m12, $V_ID);
     $stmt_bill->execute();
     $stmt_bill->close();
+
+    // Update files table only if a new file was uploaded
+    if ($filename) {
+        $sql_file = "UPDATE files SET filename = ? WHERE V_ID = ?";
+        
+        $stmt_file = $objConnect->prepare($sql_file);
+        if ($stmt_file === false) {
+            die("Error preparing statement for files table: " . $objConnect->error);
+        }
+
+        // Bind parameters
+        $stmt_file->bind_param("si", $filename, $V_ID);
+        $stmt_file->execute();
+        $stmt_file->close();
+    }
 
     $objConnect->close();
 
@@ -179,12 +189,13 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data</title>
+    <title>แก้ไขข้อมูล</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/form.css">
@@ -193,7 +204,7 @@ if (isset($_POST['submit'])) {
 <body class="bgcolor">
     <?php include 'header.php'; ?>
     <div class="container">
-        <h2 class="center">Edit Data</h2>
+        <h1 class="center">แก้ไขข้อมูล</h1>
         <form method="post" enctype="multipart/form-data">      
             <div class="row">
                 <div class="field">
@@ -213,6 +224,14 @@ if (isset($_POST['submit'])) {
                     <input type="text" class="form-control" id="subdistrict" name="data[V_SubDistrict]" value="<?php echo htmlspecialchars($row_edit['V_SubDistrict']); ?>">
                 </div>
             </div>
+
+            <div class="row">
+                <div class="field half-width">
+                    <label for="V_location">ตำแหน่ง GPS Link google map หรือ พิกัด :</label>
+                    <input type="text" class="form-control" id="V_location" name="data[V_location]" value="<?php echo htmlspecialchars($row_edit['V_location']); ?>">
+                </div>
+            </div>
+
             <div class="row">
                 <div class="field half-width">
                     <label for="ExecName">ชื่อผู้บริหาร :</label>
@@ -229,30 +248,16 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="row">
                 <div class="field half-width">
-                    <label for="CoordName1">ชื่อผู้ประสานงาน 1 :</label>
+                    <label for="CoordName1">ชื่อผู้ประสานงาน :</label>
                     <input type="text" class="form-control" id="CoordName1" name="data[V_CoordName1]" value="<?php echo htmlspecialchars($row_edit['V_CoordName1']); ?>">                
                 </div>
                 <div class="field">
-                    <label for="CoordPhone1">เบอร์โทรผู้ประสานงาน 1 :</label>
+                    <label for="CoordPhone1">เบอร์โทรผู้ประสานงาน :</label>
                     <input type="text" class="form-control" id="CoordPhone1" name="data[V_CoordPhone1]" value="<?php echo htmlspecialchars($row_edit['V_CoordPhone1']); ?>">                
                 </div>
                 <div class="field">
-                    <label for="CoordMail1">อีเมลผู้ประสานงาน 1 :</label>
+                    <label for="CoordMail1">อีเมลผู้ประสานงาน :</label>
                     <input type="email" class="form-control" id="CoordMail1" name="data[V_CoordMail1]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail1']); ?>">                
-                </div>
-            </div>
-            <div class="row">
-                <div class="field half-width">
-                    <label for="CoordName2">ชื่อผู้ประสานงาน 2 :</label>
-                    <input type="text" class="form-control" id="CoordName2" name="data[V_CoordName2]" value="<?php echo htmlspecialchars($row_edit['V_CoordName2']); ?>">                
-                </div>
-                <div class="field">
-                    <label for="CoordPhone2">เบอร์โทรผู้ประสานงาน 2 :</label>
-                    <input type="text" class="form-control" id="CoordPhone2" name="data[V_CoordPhone2]" value="<?php echo htmlspecialchars($row_edit['V_CoordPhone2']); ?>">                
-                </div>
-                <div class="field">
-                    <label for="CoordMail2">อีเมลผู้ประสานงาน 2 :</label>
-                    <input type="email" class="form-control" id="CoordMail2" name="data[V_CoordMail2]" value="<?php echo htmlspecialchars($row_edit['V_CoordMail2']); ?>">                
                 </div>
             </div>
 
@@ -262,25 +267,27 @@ if (isset($_POST['submit'])) {
             <div class="row">
                 <div class="field">
                     <label for="serial_number">รหัสการไฟฟ้า :</label>
-                    <input type="text"id="serial_number" name="serial_number" maxlength="10">
+                    <input type="text"id="serial_number" name="data[serial_number]" maxlength="10" class="form-control" value="<?php echo htmlspecialchars($row_edit['serial_number']); ?>">
                 </div>
                 <div class="field">
                     <label for="CA_code">หมายเลขผู้ใช้ไฟฟ้า :</label>
-                    <input type="number"id="CA_code" name="CA_code" maxlength="12">
+                    <input type="text"id="CA_code" name="data[CA_code]" maxlength="12" class="form-control" value="<?php echo htmlspecialchars($row_edit['CA_code']); ?>">
                 </div>
             </div>
-            <div class="h-row" id="peakContainer">
-                <div class="row set">
-                    <?php for ($i = 1; $i <= 12; $i++) : ?>
-                        <div class="h-field">
-                            <label class="h-label" for="M_<?php echo $i; ?>">เดือน <?php echo $i; ?> :</label>
-                            <input type="date" id="B_M<?php echo $i; ?>" name="B_M<?php echo $i; ?>" class="form-control">
-                            <input type="number" step="any" placeholder="ค่า Peak 000.00" id="P_<?php echo $i; ?>" name="P_<?php echo $i; ?>" class="form-control">
-                            <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="B_<?php echo $i; ?>" name="B_<?php echo $i; ?>" class="form-control">
-                        </div>
-                    <?php endfor; ?>
+            <div class="row">
+                <div class="field">
+                    <label class="h-label" for="M_12">ระบุเดือน :</label>
+                    <input type="date" id="B_M12" name="data[B_M12]" class="form-control" value="<?php echo htmlspecialchars($row_edit['B_M12']); ?>">
+                </div>     
+                <div class="field"> 
+                    <label class="h-label" for="V_Peak_month">ค่าไฟ :</label>
+                    <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="data[V_Peak_month]" class="form-control" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">
                 </div>
-            </div><br><br>
+                <div class="field"> 
+                    <label class="h-label" for="V_Electric_per_month">peak :</label>
+                    <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="data[V_Electric_per_month]" class="form-control" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
+                </div>
+            </div>
 
             <div class="row">
                 <div class="field half-width">
@@ -322,7 +329,7 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="row">
                 <div class="field half-width">
-                    <label for="file" class="form-label">Current File: <?php echo basename($row_edit['V_File']); ?></label>
+                    <label for="file" class="form-label">ไฟล์ PDF: <?php echo basename($row_edit['filename']); ?></label>
                     <input type="file" class="form-control" accept="application/pdf" name="file" id="file">
                 </div>
             </div>

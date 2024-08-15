@@ -88,7 +88,7 @@
 
         <div class="row">
             <div class="field">
-                <label class="h-label" for="M_12">ระบุเดือน :</label>
+                <label class="h-label" for="P_12">ระบุเดือน :</label>
                 <input type="date" id="B_M12" name="B_M12" class="form-control">
             </div>     
             <div class="field"> 
@@ -99,7 +99,6 @@
                 <label class="h-label" for="V_Electric_per_month">peak :</label>
                 <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="V_Electric_per_month" class="form-control">
             </div>
-        </div>
         </div><br><br>
         
         <div class="row">
