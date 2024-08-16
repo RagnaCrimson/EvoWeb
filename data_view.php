@@ -34,10 +34,10 @@ try {
     $total_pages = ceil($total_rows / $rows_per_page);
 
     if ($search) {
-        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.ID WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename, peak.serial_number, peak.CA_code FROM view LEFT JOIN files ON view.V_ID = files.ID LEFT JOIN peak ON view.V_ID = peak.V_ID WHERE view.V_Name LIKE CONCAT('%', ?, '%') OR view.V_Province LIKE CONCAT('%', ?, '%') LIMIT ?, ?");
         $stmt_data->bind_param("ssii", $search, $search, $offset, $rows_per_page);
     } else {
-        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename FROM view LEFT JOIN files ON view.V_ID = files.ID LIMIT ?, ?");
+        $stmt_data = $objConnect->prepare("SELECT view.*, files.filename, peak.serial_number, peak.CA_code FROM view LEFT JOIN files ON view.V_ID = files.ID LEFT JOIN peak ON view.V_ID = peak.V_ID LIMIT ?, ?");
         $stmt_data->bind_param("ii", $offset, $rows_per_page);
     }
 
@@ -91,25 +91,22 @@ try {
                                     <p>จังหวัด : <?php echo htmlspecialchars($row["V_Province"]); ?></p>
                                     <p>อำเภอ : <?php echo htmlspecialchars($row["V_District"]); ?></p>
                                     <p>ตำบล : <?php echo htmlspecialchars($row["V_SubDistrict"]); ?></p><br>
-                                    <p><b>ชื่อผู้บริหาร : </b><?php echo htmlspecialchars($row["V_ExecName"]); ?></p>
-                                    <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></p>
-                                    <p>Email : <?php echo htmlspecialchars($row["V_ExecMail"]); ?></p><br>
                                     <p>ทีมฝ่ายขาย : <?php echo htmlspecialchars($row["V_Sale"]); ?></p>
                                     <p>วันที่รับเอกสาร : <?php echo date('d-m-Y', strtotime($row["V_Date"])); ?></p>
                                     <p>ตำแหน่ง GPS : <?php echo htmlspecialchars($row["V_location"]); ?></p>
+                                    <p><b>หมายเลขผู้ใช้ไฟฟ้า : </b><?php echo ($row["serial_number"] == 0) ? 'N/A' : htmlspecialchars($row["serial_number"]); ?></p>
+                                    <p><b>รหัสเครื่องวัด : </b><?php echo ($row["CA_code"] == 0) ? 'N/A' : htmlspecialchars($row["CA_code"]); ?></p>
                                     <p><u>หมายเหตุ</u> : <?php echo htmlspecialchars($row["V_comment"]); ?></p>
                                 </div>
                                 <div class="right">
+                                    <p><b>ชื่อผู้บริหาร : </b><?php echo htmlspecialchars($row["V_ExecName"]); ?></p>
+                                    <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_ExecPhone"]); ?></p>
+                                    <p>Email : <?php echo htmlspecialchars($row["V_ExecMail"]); ?></p><br>
                                     <p>ชื่อผู้ประสานงาน : <?php echo htmlspecialchars($row["V_CoordName1"]); ?></p>
                                     <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone1"]); ?></p>
                                     <p>Email : <?php echo htmlspecialchars($row["V_CoordMail1"]); ?></p><br>
-                                    <p>ชื่อผู้ประสานงาน : <?php echo htmlspecialchars($row["V_CoordName2"]); ?></p>
-                                    <p>เบอร์โทร : <?php echo htmlspecialchars($row["V_CoordPhone2"]); ?></p>
-                                    <p>Email : <?php echo htmlspecialchars($row["V_CoordMail2"]); ?></p><br>
-                                    <p>ค่าไฟ/ปี : <b><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?> บาท</b></p>
-                                    <p>ค่าไฟ/เดือน : <b><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?> บาท</b></p><br>
-                                    <p>การใช้ไฟ/ปี : <b><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></b></p>
-                                    <p>การใช้ไฟ/เดือน : <b><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></b></p>
+                                    <p>ค่าไฟ/เดือน : <b><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?> บาท</b></p>
+                                    <p>การใช้ไฟ/เดือน : <b><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?> KW</b></p><br>
                                     <?php if (!empty($row["filename"])): ?>
                                         <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" class="btn btn-info btn-lg" target="_blank">PDF File</a>
                                     <?php else: ?>

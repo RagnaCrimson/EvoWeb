@@ -170,11 +170,11 @@ if (isset($_GET['id'])) {
                     <input type="date" id="B_M12" name="data[B_M12]" class="form-control" value="<?php echo htmlspecialchars($row_edit['B_M12']); ?>">
                 </div>     
                 <div class="field"> 
-                    <label class="h-label" for="V_Peak_month">ค่าไฟ :</label>
+                    <label class="h-label" for="V_Peak_month">peak :</label>
                     <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="data[V_Peak_month]" class="form-control" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">
                 </div>
                 <div class="field"> 
-                    <label class="h-label" for="V_Electric_per_month">peak :</label>
+                    <label class="h-label" for="V_Electric_per_month">ค่าไฟ :</label>
                     <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="data[V_Electric_per_month]" class="form-control" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
                 </div>
             </div>
@@ -203,7 +203,7 @@ if (isset($_GET['id'])) {
             </div>
             <div class="row center">
                 <button type="submit" name="submit" class="btn btn-success">Submit</button>
-                <button class="btn btn-default"><a href="data_view.php">Cancel</a></button>
+                <button type="button" class="btn btn-default" onclick="window.location.href='data_view.php';">Cancel</button>
             </div>
         </form>
     </div>

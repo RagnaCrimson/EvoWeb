@@ -12,7 +12,7 @@ if ($objConnect->connect_error) {
     die("Connection failed: " . $objConnect->connect_error);
 }
 
-require_once '../session.php';
+require_once 'session.php';
 
 check_login();
 
@@ -47,6 +47,7 @@ $objConnect->close();
     <nav role="navigation" class="primary-navigation">
         <ul>
             <li><a href="#"><?php echo $_SESSION['name']; ?></a></li>
+            <li><a href="board.php">dashboard</a></li>
             <li><a href="insert_data-yen.php">เพิ่มข้อมูล</a></li>
             <li><a href="#">รายการ &dtrif;</a>
                 <ul class="dropdown">
