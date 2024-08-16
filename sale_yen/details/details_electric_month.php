@@ -175,6 +175,7 @@ $statuses = $objConnect->query("SELECT DISTINCT T_Status FROM task");
             </tbody>
         </table>
     </div>
-    <?php include '../back.html'; ?>
+    <?php include '../../buttom.html'; ?>
+    <?php include '../../back.html'; ?>
 </body>
 </html>
