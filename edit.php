@@ -1,3 +1,83 @@
+<?php
+include 'connect.php';
+
+mysqli_query($objConnect, "SET NAMES utf8");
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    $strSQL_edit = "SELECT * FROM view WHERE V_Name = ?";
+    $stmt_edit = mysqli_prepare($objConnect, $strSQL_edit);
+
+    if (!$stmt_edit) {
+        die("Error preparing statement: " . mysqli_error($objConnect));
+    }
+
+    mysqli_stmt_bind_param($stmt_edit, "s", $id);
+    mysqli_stmt_execute($stmt_edit);
+    $result_edit = mysqli_stmt_get_result($stmt_edit);
+
+    if (!$result_edit) {
+        die("Error executing query: " . mysqli_error($objConnect));
+    }
+
+    $row_edit = mysqli_fetch_assoc($result_edit);
+    mysqli_stmt_close($stmt_edit);
+
+    if (!$row_edit) {
+        die("Error fetching data from view table.");
+    }
+
+    $V_ID = isset($row_edit['V_ID']) ? $row_edit['V_ID'] : null;
+
+    $strSQL_peak = "SELECT P_ID, serial_number, CA_code FROM peak WHERE V_ID = ?";
+    $stmt_peak = mysqli_prepare($objConnect, $strSQL_peak);
+
+    if (!$stmt_peak) {
+        die("Error preparing statement: " . mysqli_error($objConnect));
+    }
+
+    mysqli_stmt_bind_param($stmt_peak, "i", $V_ID);
+    mysqli_stmt_execute($stmt_peak);
+    $result_peak = mysqli_stmt_get_result($stmt_peak);
+    $row_peak = mysqli_fetch_assoc($result_peak);
+    mysqli_stmt_close($stmt_peak);
+
+    $strSQL_bill = "SELECT B_M12 FROM bill WHERE V_ID = ?";
+    $stmt_bill = mysqli_prepare($objConnect, $strSQL_bill);
+
+    if (!$stmt_bill) {
+        die("Error preparing statement: " . mysqli_error($objConnect));
+    }
+
+    mysqli_stmt_bind_param($stmt_bill, "i", $V_ID);
+    mysqli_stmt_execute($stmt_bill);
+    $result_bill = mysqli_stmt_get_result($stmt_bill);
+    $row_bill = mysqli_fetch_assoc($result_bill);
+    mysqli_stmt_close($stmt_bill);
+
+    $strSQL_file = "SELECT filename FROM files WHERE id = ?";
+    $stmt_file = mysqli_prepare($objConnect, $strSQL_file);
+
+    if (!$stmt_file) {
+        die("Error preparing statement: " . mysqli_error($objConnect));
+    }
+
+    mysqli_stmt_bind_param($stmt_file, "i", $V_ID);
+    mysqli_stmt_execute($stmt_file);
+    $result_file = mysqli_stmt_get_result($stmt_file);
+    $row_file = mysqli_fetch_assoc($result_file);
+    mysqli_stmt_close($stmt_file);
+
+    $row_peak = $row_peak ? $row_peak : [];
+    $row_bill = $row_bill ? $row_bill : [];
+    $row_file = $row_file ? $row_file : [];
+    $row_edit = array_merge($row_edit ? $row_edit : [], $row_peak, $row_bill, $row_file);
+} else {
+    echo "No ID specified.";
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +94,8 @@
     <?php include 'header.php'; ?>
     <div class="container">
         <h1 class="center">แก้ไขข้อมูล</h1>
-        <form method="post" enctype="multipart/form-data">      
+        <form method="post" enctype="multipart/form-data">     
+        <input type="hidden" name="V_ID" value="<?php echo htmlspecialchars($row_edit['V_ID']); ?>">
             <div class="row">
                 <div class="field">
                     <label for="name">ชื่อหน่วยงาน :</label>
@@ -97,29 +178,7 @@
                     <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="data[V_Electric_per_month]" class="form-control" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
                 </div>
             </div>
-
-            <div class="row">
-                <div class="field half-width">
-                    <label for="V_Peak_year">ค่า PEAK ต่อปี (KW) :</label>
-                    <input type="number" step="any" class="form-control" placeholder="000.00" id="V_Peak_year" name="data[V_Peak_year]" value="<?php echo htmlspecialchars($row_edit['V_Peak_year']); ?>">
-                </div>
-                <div class="field half-width">
-                    <label for="V_Peak_month">ค่า PEAK ต่อเดือน (KW) :</label>
-                    <input type="number" step="any" placeholder="000.00" id="V_Peak_month" name="data[V_Peak_month]" value="<?php echo htmlspecialchars($row_edit['V_Peak_month']); ?>">
-                </div>
-            </div>
-            <div class="row">
-                <div class="field half-width">
-                    <label for="V_Electric_per_year">ค่าใช้ไฟฟ้าต่อปี(บาท) :</label>
-                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_year" name="data[V_Electric_per_year]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_year']); ?>">
-                </div>
-                <div class="field half-width">
-                    <label for="V_Electric_per_month">ค่าใช้ไฟฟ้าต่อเดือน(บาท) :</label>
-                    <input type="number" step="any" placeholder="000.00" id="V_Electric_per_month" name="data[V_Electric_per_month]" value="<?php echo htmlspecialchars($row_edit['V_Electric_per_month']); ?>">
-                </div>
-            </div>
-
-            
+      
             <div class="row">
                 <div class="field full-width">
                     <label for="comment">หมายเหตุ :</label>

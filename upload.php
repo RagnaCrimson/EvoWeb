@@ -33,14 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $coord_name1 = htmlspecialchars($_POST['V_CoordName1']);
                     $coord_phone1 = htmlspecialchars($_POST['V_CoordPhone1']);
                     $coord_mail1 = htmlspecialchars($_POST['V_CoordMail1']);
-                    $coord_name2 = htmlspecialchars($_POST['V_CoordName2']);
-                    $coord_phone2 = htmlspecialchars($_POST['V_CoordPhone2']);
-                    $coord_mail2 = htmlspecialchars($_POST['V_CoordMail2']);
                     $sale = htmlspecialchars($_POST['V_Sale']);
                     $date = htmlspecialchars($_POST['V_Date']);
-                    $electric_per_year = htmlspecialchars($_POST['V_Electric_per_year']);
                     $electric_per_month = htmlspecialchars($_POST['V_Electric_per_month']);
-                    $vPeakYear = htmlspecialchars($_POST['V_Peak_year']);
                     $vPeakMonth = htmlspecialchars($_POST['V_Peak_month']);
                     $comment = htmlspecialchars($_POST['V_comment']);
                     $location = htmlspecialchars($_POST['V_location']);
@@ -48,16 +43,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Insert into view table
                     $sql_view = "INSERT INTO view (V_Name, V_Province, V_District, V_SubDistrict, V_ExecName, V_ExecPhone, V_ExecMail, 
-                                                    V_CoordName1, V_CoordPhone1, V_CoordMail1, V_CoordName2, V_CoordPhone2, V_CoordMail2, V_Sale, V_Date, 
-                                                    V_Electric_per_year, V_Electric_per_month, V_Peak_year, V_Peak_month, V_comment, V_location) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                V_CoordName1, V_CoordPhone1, V_CoordMail1, V_Sale, V_Date, 
+                                                V_Electric_per_year, V_Electric_per_month, V_Peak_year, V_Peak_month, V_comment, V_location) 
+                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_view = $objConnect->prepare($sql_view);
                     if ($stmt_view === false) {
                         throw new Exception("Error preparing statement for view table: " . $objConnect->error);
                     }
 
-                    $stmt_view->bind_param("sssssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
-                                            $coord_name1, $coord_phone1, $coord_mail1, $coord_name2, $coord_phone2, $coord_mail2, $sale, $date, 
+                    $stmt_view->bind_param("ssssssssssssssssss", $name, $province, $district, $sub_district, $exec_name, $exec_phone, $exec_mail, 
+                                            $coord_name1, $coord_phone1, $coord_mail1, $sale, $date, 
                                             $electric_per_year, $electric_per_month, $vPeakYear, $vPeakMonth, $comment, $location);
 
                     if ($stmt_view->execute()) {
