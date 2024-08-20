@@ -177,24 +177,38 @@ label{
     padding-left: 80px;
 }
 
-/* auto complete */
-.suggestions-container {
-    position: absolute;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-}
+        .suggestions-container {
+            position: absolute;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
 
-.suggestions-container li {
-    padding: 8px;
-    cursor: pointer;
-}
+        .field {
+            position: relative;
+        }
 
-.suggestions-container li:hover {
-    background-color: #f0f0f0;
-}
+        .suggestions-container li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestions-container li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .field input[type="text"] {
+            position: relative;
+            z-index: 2;
+        }
+
+        .suggestions-container {
+            top: 100%;
+            left: 0;
+            right: 0;
+        }

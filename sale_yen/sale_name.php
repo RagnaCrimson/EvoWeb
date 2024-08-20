@@ -11,6 +11,7 @@ include '../connect.php';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="../css/report.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/logout.js"></script>
 </head>
@@ -31,7 +32,7 @@ include '../connect.php';
                     <option value="คุณชนินทร์">คุณชนินทร์</option>
                     <option value="คุณเรืองยศ">คุณเรืองยศ</option>
                     <option value="คุณปริม">คุณปริม</option>
-                    <option value="ตา(สตึก)">ตา(สตึก)</option>
+                    <option value="คุณตา(สตึก)">คุณตา(สตึก)</option>
                     <option value="คุณอั๋น(สตึก)">คุณอั๋น(สตึก)</option>
                     <option value="คุณตา / อั๋น">คุณตา / อั๋น</option>
                 </select>

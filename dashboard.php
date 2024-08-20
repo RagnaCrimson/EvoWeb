@@ -89,10 +89,10 @@
                     text: 'สถานะงาน'
                 },
                 datalabels: {
-                    color: '#fff',
+                    color: '#000',
                     font: {
                         weight: 'bold',
-                        size: 14
+                        size: 16
                     },
                     textAlign: 'center',
                     textAnchor: 'middle'

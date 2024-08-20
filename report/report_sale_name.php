@@ -64,6 +64,7 @@ $total_rows = $result->num_rows;
             <thead>
                 <tr>
                     <th>ลำดับ</th>
+                    <th>ID</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
                     <th>ทีมฝ่ายขาย</th>
@@ -77,6 +78,7 @@ $total_rows = $result->num_rows;
                         ?>
                         <tr>
                             <td><?php echo $sequence++; ?></td>
+                            <td><?php echo htmlspecialchars($row["V_ID"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>

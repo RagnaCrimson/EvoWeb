@@ -20,11 +20,13 @@ if ($search) {
         AND (view.V_Sale = ? OR ? = '')
         AND (task.T_Status = ? OR ? = '')
         AND (view.V_Province = ? OR ? = '')";
+    
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
     if ($stmt_datastore_db === false) {
         die("Prepare failed: " . $objConnect->error);
     }
-    $stmt_datastore_db->bind_param("ssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
+
+    $stmt_datastore_db->bind_param("sssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 } else {
     $strSQL_datastore_db = "
         SELECT view.*, task.T_Status, files.filename 
@@ -34,10 +36,12 @@ if ($search) {
         WHERE (view.V_Sale = ? OR ? = '')
         AND (task.T_Status = ? OR ? = '')
         AND (view.V_Province = ? OR ? = '')";
+    
     $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
     if ($stmt_datastore_db === false) {
         die("Prepare failed: " . $objConnect->error);
     }
+
     $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
 }
 
@@ -51,46 +55,8 @@ if ($resultdatastore_db === false) {
     die("Getting result set failed: " . $stmt_datastore_db->error);
 }
 
-// SUM per year
-$strSQL_sum = "SELECT SUM(V_Electric_per_year) AS total_electric_per_year FROM view";
-$result_sum = $objConnect->query($strSQL_sum);
-
-if (!$result_sum) {
-    die("Query failed: " . $objConnect->error);
-}
-
-$row_sum = $result_sum->fetch_assoc();
-$total_electric_per_year = $row_sum['total_electric_per_year'];
-
-// SUM per month
-$strSQL_sum_month = "SELECT SUM(V_Electric_per_month) AS total_electric_per_month FROM view";
-$result_sum_month = $objConnect->query($strSQL_sum_month);
-if (!$result_sum_month) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_month = $result_sum_month->fetch_assoc();
-$total_electric_per_month = $row_sum_month['total_electric_per_month'];
-
-// SUM peak year
-$strSQL_sum_peak_year = "SELECT SUM(V_Peak_year) AS total_peak_per_year FROM view";
-$result_sum_peak_year = $objConnect->query($strSQL_sum_peak_year);
-if (!$result_sum_peak_year) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_peak_year = $result_sum_peak_year->fetch_assoc();
-$total_peak_per_year = $row_sum_peak_year['total_peak_per_year'];
-
-// SUM peak month
-$strSQL_sum_peak_month = "SELECT SUM(V_Peak_month) AS total_peak_per_month FROM view";
-$result_sum_peak_month = $objConnect->query($strSQL_sum_peak_month);
-if (!$result_sum_peak_month) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
-$total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
-
+$total_rows = $resultdatastore_db->num_rows;
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -102,16 +68,6 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <script>
-        $(document).ready(function() {
-            $('.view-btn').click(function() {
-                var viewId = $(this).data('id');
-                $('#modal-body').load('status/view_data.php', { view_id: viewId }, function() {
-                    $('#myModal').modal('show');
-                });
-            });
-        });
-    </script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -127,6 +83,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     </form>
                 </nav>
                 <tr>
+                    <strong>จำนวนทั้งหมด <?php echo $total_rows; ?> หน่วยงาน</strong>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
@@ -169,18 +126,6 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     echo "<tr><td colspan='11'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
-                <tr>
-                    <td colspan="3"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
-                    <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
-                    <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
-                    <td><strong><?php echo number_format($total_peak_per_year); ?></strong></td>
-                    <td><strong><?php echo number_format($total_peak_per_month); ?></strong></td>
-                    <td colspan="4"></td>
-                </tr>
-                <tr>
-                    <td colspan="7"><strong>Total Rows</strong></td>
-                    <td><strong><?php echo $total_rows; ?></strong></td>
-                </tr>
             </table>
         </div>
     </div>
@@ -204,3 +149,4 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
     <?php include 'back.html'; ?>
 </body>
 </html>
+

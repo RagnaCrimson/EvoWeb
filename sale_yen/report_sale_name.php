@@ -3,6 +3,10 @@ include '../connect.php';
 mysqli_query($objConnect, "SET NAMES utf8");
 
 $sales_team = isset($_POST['sales_team']) ? $objConnect->real_escape_string($_POST['sales_team']) : '';
+$province = isset($_POST['province']) ? $objConnect->real_escape_string($_POST['province']) : '';
+
+$provinceQuery = "SELECT DISTINCT V_Province FROM view ORDER BY V_Province";
+$provinceResult = $objConnect->query($provinceQuery);
 
 $strSQL = "
     SELECT view.*, task.T_Status, files.filename 
@@ -10,10 +14,11 @@ $strSQL = "
     LEFT JOIN task ON view.V_ID = task.T_ID
     LEFT JOIN files ON view.V_ID = files.id
     WHERE (view.V_Sale = ? OR ? = '')
+    AND (view.V_Province = ? OR ? = '')
 ";
 
 $stmt = $objConnect->prepare($strSQL);
-$stmt->bind_param("ss", $sales_team, $sales_team);
+$stmt->bind_param("ssss", $sales_team, $sales_team, $province, $province);
 
 $stmt->execute();
 $result = $stmt->get_result();
@@ -33,6 +38,7 @@ $total_rows = $result->num_rows;
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
     <style>
         @media print {
             table {
@@ -48,47 +54,79 @@ $total_rows = $result->num_rows;
                 page-break-inside: avoid;
                 page-break-after: auto;
             }
+            form {
+                display: none;
+            }
         }
     </style>
 </head>
-<body>
 <body class="bgcolor">
     <div class="container">
         <div id="View" class="tabcontent">
-        <div><h1>รายชื่อหน่วยงานของ <?php echo htmlspecialchars($sales_team); ?> </h1></div>
-        <tr>
-            <td col000span="7"><strong>จำนวนทั้งหมด</strong></td>
-            <td><strong><?php echo $total_rows; ?> หน่วยงาน</strong></td>
-        </tr>
-        <table id="data"  class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อหน่วยงาน</th>
-                    <th>จังหวัด</th>
-                    <th>ทีมฝ่ายขาย</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if ($result->num_rows > 0) {
-                    $sequence = 1;
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <tr>
-                            <td><?php echo $sequence++; ?></td>
-                            <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
-                            <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
-                            <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
-                        </tr>
+            <div>
+                <h1>รายชื่อหน่วยงานของ <?php echo htmlspecialchars($sales_team); ?></h1>
+            </div>
+
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label for="sales_team">Sales Team:</label>
+                    <input type="text" name="sales_team" id="sales_team" class="form-control" value="<?php echo htmlspecialchars($sales_team); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="province">Province:</label>
+                    <select name="province" id="province" class="form-control">
+                        <option value="">Select Province</option>
                         <?php
+                        if ($provinceResult->num_rows > 0) {
+                            while ($provinceRow = $provinceResult->fetch_assoc()) {
+                                $selected = ($provinceRow['V_Province'] == $province) ? 'selected' : '';
+                                echo '<option value="' . htmlspecialchars($provinceRow['V_Province']) . '" ' . $selected . '>' . htmlspecialchars($provinceRow['V_Province']) . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+
+            <tr>
+                <td colspan="7"><strong>จำนวนทั้งหมด</strong></td>
+                <td><strong><?php echo $total_rows; ?> หน่วยงาน</strong></td>
+            </tr>
+            <table id="data" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>ชื่อหน่วยงาน</th>
+                        <th>จังหวัด</th>
+                        <th>อำเภอ</th>
+                        <th>ตำบล</th>
+                        <th>ทีมฝ่ายขาย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        $sequence = 1;
+                        while ($row = $result->fetch_assoc()) {
+                            ?>
+                            <tr>
+                                <td><?php echo $sequence++; ?></td>
+                                <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
+                                <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
+                                <td><?php echo htmlspecialchars($row["V_District"]); ?></td>
+                                <td><?php echo htmlspecialchars($row["V_SubDistrict"]); ?></td>
+                                <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
+                            </tr>
+                            <?php
+                        }
+                    } else {
+                        echo "<tr><td colspan='6'>ไม่มีข้อมูลรายการ</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='6'>ไม่มีข้อมูลรายการ</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

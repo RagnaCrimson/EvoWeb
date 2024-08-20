@@ -36,7 +36,7 @@ $objConnect->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header Sale View</title>
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
@@ -54,6 +54,7 @@ $objConnect->close();
                     <li><a href="data_view-sale.php">ดูข้อมูลทั้งหมด</a></li>
                     <!-- <li><a href="list_view.php" target="_blank">รายชื่อหน่วยงาน</a></li> -->
                     <li><a href="sale_name.php">เลือกดูทีมฝ่ายขาย</a></li>
+                    <li><a href="Export.php">Excel File</a></li>
                 </ul>
             </li>
 
@@ -62,4 +63,3 @@ $objConnect->close();
     </nav>
 </body>
 </html>
-

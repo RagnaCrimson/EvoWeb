@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="js/script.js"></script>
 </head>
 <body class="bgcolor">
 <?php include 'header-sale.php'; ?>
@@ -17,7 +17,7 @@
         <div class="row">
             <div class="field">
                 <label for="V_Name">ชื่อหน่วยงาน :</label>
-                <input type="text" id="V_Name" name="V_Name" required>
+                <input type="text" id="V_Name" name="V_Name" autocomplete="off" required>
                 <div id="duplicateMessage" style="color: red; display: none;"></div>
                 <div id="suggestions" class="suggestions-container"></div>
             </div>
@@ -115,7 +115,7 @@
             </div>
             <div class="field">
                 <label for="V_Date">วันที่ได้รับเอกสาร :</label>
-                <input type="date" id="V_Date" name="V_Date">
+                <input type="date" id="V_Date" name="V_Date"  required>
             </div>
             <div class="field">
                 <label for="T_Status">สถานะ :</label>

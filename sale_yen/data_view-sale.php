@@ -101,6 +101,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
 </head>
 <body class="bgcolor">
     <?php include 'header-sale.php'; ?>
@@ -109,19 +110,13 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;"><h1>รายชื่อหน่วยงาน</h1></div>
             <table id="data" class="table table-striped">
-                <nav class="navbar navbar-light bg-light" style="text-align: center;">
-                    <form class="form-inline" method="GET" action="">
-                        <input type="text" style="text-align: center;" name="search" placeholder="พิมพ์เพื่อค้นหา" class="form-control">
-                        <button type="submit" class="btn btn-primary">ค้นหา</button>
-                    </form>
-                </nav>
                 <tr>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
-                    <th>ค่าไฟ/ปี</th>
+                    <th>อำเภอ</th>
+                    <th>ตำบล</th>
                     <th>ค่าไฟ/เดือน</th>
-                    <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
                     <th>ทีมฝ่ายขาย</th>
@@ -137,9 +132,9 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                             <td><?php echo $sequence++; ?></td>
                             <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
-                            <td><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?></td>
+                            <td><?php echo htmlspecialchars($row["V_District"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["V_SubDistrict"]); ?></td>
                             <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
-                            <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
                             <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
