@@ -56,6 +56,46 @@ if ($resultdatastore_db === false) {
 }
 
 $total_rows = $resultdatastore_db->num_rows;
+
+// Prepare for CSV export
+if (isset($_GET['act']) && $_GET['act'] == 'excel') {
+    header("Content-Type: text/csv; charset=utf-8");
+    header("Content-Disposition: attachment; filename=export.csv");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    // Open output stream
+    $output = fopen('php://output', 'w');
+
+    // Add BOM to indicate UTF-8 encoding
+    fprintf($output, "\xEF\xBB\xBF");
+
+    $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Electric_per_month, V_Sale FROM view";
+    $result = $objConnect->query($sql);
+
+    // Output the column headers
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ค่าไฟ 1 เดือน', 'ทีมฝ่ายขาย']);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            fputcsv($output, [
+                $row['V_ID'],
+                $row['V_Name'],
+                $row['V_Province'],
+                $row['V_District'],
+                $row['V_SubDistrict'],
+                $row['V_Electric_per_month'],
+                $row['V_Sale']
+            ]);
+        }
+    } else {
+        fputcsv($output, ['No data found']);
+    }
+
+    fclose($output);
+    $conn->close();
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -113,6 +153,7 @@ $total_rows = $resultdatastore_db->num_rows;
     <div class="container">
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;"><h1>รายการติดตามสถานะ</h1></div>
+            <p><a href="?act=excel" class="btn btn-primary">Export to Excel</a></p>
             <table id="data" class="table table-striped">
                 <nav class="navbar navbar-light bg-light" style="text-align: center;">
                     <form class="form-inline" method="GET" action="">

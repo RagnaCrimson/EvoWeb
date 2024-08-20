@@ -1,5 +1,12 @@
 <?php
 include '../connect.php';
+
+$provinceQuery = "SELECT DISTINCT V_Province FROM view ORDER BY V_Province";
+$provinceResult = mysqli_query($objConnect, $provinceQuery);
+
+if (!$provinceResult) {
+    die("Query failed: " . mysqli_error($objConnect));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +42,16 @@ include '../connect.php';
                     <option value="คุณตา(สตึก)">คุณตา(สตึก)</option>
                     <option value="คุณอั๋น(สตึก)">คุณอั๋น(สตึก)</option>
                     <option value="คุณตา / อั๋น">คุณตา / อั๋น</option>
+                </select>
+
+                <label for="province">จังหวัด</label>
+                <select id="province" name="province">
+                    <option value="">-- เลือก --</option>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($provinceResult)) {
+                        echo '<option value="' . $row['V_Province'] . '">' . $row['V_Province'] . '</option>';
+                    }
+                    ?>
                 </select>
                 <div class="radio-group">
                     <div class="button-group">

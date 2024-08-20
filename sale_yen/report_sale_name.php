@@ -5,9 +5,6 @@ mysqli_query($objConnect, "SET NAMES utf8");
 $sales_team = isset($_POST['sales_team']) ? $objConnect->real_escape_string($_POST['sales_team']) : '';
 $province = isset($_POST['province']) ? $objConnect->real_escape_string($_POST['province']) : '';
 
-$provinceQuery = "SELECT DISTINCT V_Province FROM view ORDER BY V_Province";
-$provinceResult = $objConnect->query($provinceQuery);
-
 $strSQL = "
     SELECT view.*, task.T_Status, files.filename 
     FROM view 
@@ -66,29 +63,6 @@ $total_rows = $result->num_rows;
             <div>
                 <h1>รายชื่อหน่วยงานของ <?php echo htmlspecialchars($sales_team); ?></h1>
             </div>
-
-            <form method="POST" action="">
-                <div class="form-group">
-                    <label for="sales_team">Sales Team:</label>
-                    <input type="text" name="sales_team" id="sales_team" class="form-control" value="<?php echo htmlspecialchars($sales_team); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="province">Province:</label>
-                    <select name="province" id="province" class="form-control">
-                        <option value="">Select Province</option>
-                        <?php
-                        if ($provinceResult->num_rows > 0) {
-                            while ($provinceRow = $provinceResult->fetch_assoc()) {
-                                $selected = ($provinceRow['V_Province'] == $province) ? 'selected' : '';
-                                echo '<option value="' . htmlspecialchars($provinceRow['V_Province']) . '" ' . $selected . '>' . htmlspecialchars($provinceRow['V_Province']) . '</option>';
-                            }
-                        }
-                        ?>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </form>
-
             <tr>
                 <td colspan="7"><strong>จำนวนทั้งหมด</strong></td>
                 <td><strong><?php echo $total_rows; ?> หน่วยงาน</strong></td>

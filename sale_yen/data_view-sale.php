@@ -1,45 +1,41 @@
 <?php
-include '../connect.php';
+include 'connect.php';
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-$search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
 $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
-$statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
 
-if ($search) {
-    $strSQL_datastore_db = "
-        SELECT view.*, task.T_Status, files.filename 
-        FROM view 
-        LEFT JOIN task ON view.V_ID = task.T_ID
-        LEFT JOIN files ON view.V_ID = files.id
-        WHERE (view.V_Name LIKE CONCAT('%', ?, '%') 
-        OR view.V_Province LIKE CONCAT('%', ?, '%') 
-        OR task.T_Status LIKE CONCAT('%', ?, '%'))
-        AND (view.V_Sale = ? OR ? = '')
-        AND (task.T_Status = ? OR ? = '')
-        AND (view.V_Province = ? OR ? = '')";
-    $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
-    if ($stmt_datastore_db === false) {
-        die("Prepare failed: " . $objConnect->error);
-    }
-    $stmt_datastore_db->bind_param("ssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
-} else {
-    $strSQL_datastore_db = "
-        SELECT view.*, task.T_Status, files.filename 
-        FROM view 
-        LEFT JOIN task ON view.V_ID = task.T_ID
-        LEFT JOIN files ON view.V_ID = files.id
-        WHERE (view.V_Sale = ? OR ? = '')
-        AND (task.T_Status = ? OR ? = '')
-        AND (view.V_Province = ? OR ? = '')";
-    $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
-    if ($stmt_datastore_db === false) {
-        die("Prepare failed: " . $objConnect->error);
-    }
-    $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
+// Fetch distinct provinces
+$sql_provinces = "SELECT DISTINCT V_Province FROM view";
+$result_provinces = $objConnect->query($sql_provinces);
+$provinces = [];
+while ($row = $result_provinces->fetch_assoc()) {
+    $provinces[] = $row['V_Province'];
 }
+
+// Fetch distinct sales
+$sql_sales = "SELECT DISTINCT V_Sale FROM view";
+$result_sales = $objConnect->query($sql_sales);
+$sales = [];
+while ($row = $result_sales->fetch_assoc()) {
+    $sales[] = $row['V_Sale'];
+}
+
+// Prepare the SQL query based on filters
+$strSQL_datastore_db = "
+    SELECT view.*, task.T_Status, files.filename 
+    FROM view 
+    LEFT JOIN task ON view.V_ID = task.T_ID
+    LEFT JOIN files ON view.V_ID = files.id
+    WHERE (view.V_Sale = ? OR ? = '')
+    AND (view.V_Province = ? OR ? = '')";
+
+$stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+if ($stmt_datastore_db === false) {
+    die("Prepare failed: " . $objConnect->error);
+}
+$stmt_datastore_db->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
 
 if (!$stmt_datastore_db->execute()) {
     die("Execute failed: " . $stmt_datastore_db->error);
@@ -124,7 +120,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     }
 
     fclose($output);
-    $conn->close();
+    $objConnect->close();
     exit;
 }
 ?>
@@ -146,8 +142,38 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
 
     <div class="container">
         <div id="View" class="tabcontent">
-            <div style="margin-bottom: 50px;"><h1>รายชื่อหน่วยงาน</h1></div>
-            <p><a href="?act=excel" class="btn btn-primary">Export to Excel</a></p>
+            <div style="margin-bottom: 50px;">
+                <h1>รายชื่อหน่วยงาน</h1>
+            </div>
+            
+            <!-- Filter Form -->
+            <form method="get" action="">
+                <div class="form-group">
+                    <label for="province">Province:</label>
+                    <select id="province" name="province" class="form-control">
+                        <option value="">All</option>
+                        <?php
+                        foreach ($provinces as $province) {
+                            echo "<option value=\"$province\"" . ($provinceFilter == $province ? ' selected' : '') . ">$province</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sale">Sale Team:</label>
+                    <select id="sale" name="sale" class="form-control">
+                        <option value="">All</option>
+                        <?php
+                        foreach ($sales as $sale) {
+                            echo "<option value=\"$sale\"" . ($saleFilter == $sale ? ' selected' : '') . ">$sale</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="?act=excel" class="btn btn-primary">Export to Excel</a>
+            </form>
+
             <table id="data" class="table table-striped">
                 <tr>
                     <th>ลำดับ</th>
@@ -189,7 +215,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                         <?php
                     }
                 } else {
-                    echo "<tr><td colspan='11'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='10'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
             </table>
