@@ -233,3 +233,7 @@ body {
   }
   
   /* =========================== */
+
+  th.sortable {
+    cursor: pointer;
+  }

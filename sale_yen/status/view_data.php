@@ -41,7 +41,6 @@ if ($viewId > 0) {
         echo "<h4><b>Status: " . htmlspecialchars($row['T_Status']) . "</b></h4>";
         echo "<p>Date-2: " . htmlspecialchars($row['T_Date2']) . "</p>";
 
-        // Form to update T_Status2
         ?>
         <form method="POST" action="status/update_task.php">
             <input type="hidden" name="view_id" value="<?php echo htmlspecialchars($viewId); ?>">

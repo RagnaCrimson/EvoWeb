@@ -54,10 +54,9 @@ $objConnect->close();
                     <li><a href="data_view-sale.php">ดูข้อมูลทั้งหมด</a></li>
                     <!-- <li><a href="list_view.php" target="_blank">รายชื่อหน่วยงาน</a></li> -->
                     <li><a href="sale_name.php">เลือกดูทีมฝ่ายขาย</a></li>
-                    <li><a href="Export.php">Excel File</a></li>
+                    <!-- <li><a href="Export">Excel File</a></li> -->
                 </ul>
             </li>
-
             <li><a onclick="confirmLogout()">ลงชื่ออก</a></li>
         </ul>
     </nav>

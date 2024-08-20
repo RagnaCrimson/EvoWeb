@@ -68,6 +68,44 @@ $total_rows = $resultdatastore_db->num_rows;
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        th.sortable {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // View button functionality
+            $('.view-btn').click(function() {
+                var viewId = $(this).data('id');
+                $('#modal-body').load('status/view_data.php', { view_id: viewId }, function() {
+                    $('#myModal').modal('show');
+                });
+            });
+
+            // Sort functionality
+            var sortOrder = 'asc'; // Default sort order
+            $('#sortSale').click(function() {
+                var table = $('#data');
+                var rows = table.find('tr:gt(1)').toArray().sort(compareRows);
+                if (sortOrder === 'asc') {
+                    rows = rows.reverse();
+                    sortOrder = 'desc';
+                } else {
+                    sortOrder = 'asc';
+                }
+                $.each(rows, function(index, row) {
+                    table.append(row);
+                });
+            });
+
+            function compareRows(a, b) {
+                var valA = $(a).find('td').eq(8).text().toUpperCase();
+                var valB = $(b).find('td').eq(8).text().toUpperCase();
+                return valA.localeCompare(valB);
+            }
+        });
+    </script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -92,9 +130,10 @@ $total_rows = $resultdatastore_db->num_rows;
                     <th>การใช้ไฟ/ปี</th>
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
-                    <th>ทีมฝ่ายขาย</th>
+                    <th class="sortable" id="sortSale">ทีมฝ่ายขาย</th>
                     <th>ดูรายละเอียด</th>
                 </tr>
+                
                 <?php  
                 $total_rows = 0; 
                 if ($resultdatastore_db->num_rows > 0) {

@@ -89,6 +89,44 @@ if (!$result_sum_peak_month) {
 $row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
 $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
 
+// Prepare for CSV export
+if (isset($_GET['act']) && $_GET['act'] == 'excel') {
+    header("Content-Type: text/csv; charset=utf-8");
+    header("Content-Disposition: attachment; filename=export.csv");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    // Open output stream
+    $output = fopen('php://output', 'w');
+
+    // Add BOM to indicate UTF-8 encoding
+    fprintf($output, "\xEF\xBB\xBF");
+
+    $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale FROM view";
+    $result = $objConnect->query($sql);
+
+    // Output the column headers
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย']);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            fputcsv($output, [
+                $row['V_ID'],
+                $row['V_Name'],
+                $row['V_Province'],
+                $row['V_District'],
+                $row['V_SubDistrict'],
+                $row['V_Sale']
+            ]);
+        }
+    } else {
+        fputcsv($output, ['No data found']);
+    }
+
+    fclose($output);
+    $conn->close();
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -109,6 +147,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
     <div class="container">
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;"><h1>รายชื่อหน่วยงาน</h1></div>
+            <p><a href="?act=excel" class="btn btn-primary">Export to Excel</a></p>
             <table id="data" class="table table-striped">
                 <tr>
                     <th>ลำดับ</th>
@@ -120,6 +159,7 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     <th>การใช้ไฟ/เดือน</th>
                     <th>File PDF</th>
                     <th>ทีมฝ่ายขาย</th>
+                    <th>อัปเดตสถานะ</th>
                 </tr>
                 <?php  
                 $total_rows = 0; 
@@ -138,12 +178,13 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                             <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
-                                    <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
+                                    <a href="../uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
                                 <?php else: ?>
                                     No file
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
+                            <td><button class="btn btn-info btn-lg view-btn" data-id="<?php echo urlencode($row['V_ID']); ?>">View</button></td>
                         </tr>
                         <?php
                     }
@@ -151,18 +192,6 @@ $total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
                     echo "<tr><td colspan='11'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
-                <tr>
-                    <td colspan="3"><strong>รวมยอดค่าใช้จ่ายทั้งหมด</strong></td>
-                    <td><strong><?php echo number_format($total_electric_per_year); ?></strong></td>
-                    <td><strong><?php echo number_format($total_electric_per_month); ?></strong></td>
-                    <td><strong><?php echo number_format($total_peak_per_year); ?></strong></td>
-                    <td><strong><?php echo number_format($total_peak_per_month); ?></strong></td>
-                    <td colspan="4"></td>
-                </tr>
-                <tr>
-                    <td colspan="7"><strong>Total Rows</strong></td>
-                    <td><strong><?php echo $total_rows; ?></strong></td>
-                </tr>
             </table>
         </div>
     </div>
