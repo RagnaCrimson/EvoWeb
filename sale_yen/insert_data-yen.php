@@ -111,11 +111,11 @@
         <div class="row">
             <div class="field">
                 <label for="V_Sale">ทีมฝ่ายขาย :</label>
-                <input type="text" id="V_Sale" name="V_Sale">
+                <input type="text" id="V_Sale" name="V_Sale" required>
             </div>
             <div class="field">
                 <label for="V_Date">วันที่ได้รับเอกสาร :</label>
-                <input type="date" id="V_Date" name="V_Date"  required>
+                <input type="date" id="V_Date" name="V_Date" required>
             </div>
             <div class="field">
                 <label for="T_Status">สถานะ :</label>

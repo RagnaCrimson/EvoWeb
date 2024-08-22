@@ -177,7 +177,6 @@ label{
     padding-left: 80px;
 }
 
-/* auto complete */
 .suggestions-container {
     position: absolute;
     border: 1px solid #ddd;
@@ -190,6 +189,10 @@ label{
     display: none;
 }
 
+.field {
+    position: relative;
+}
+
 .suggestions-container li {
     padding: 8px;
     cursor: pointer;
@@ -197,4 +200,15 @@ label{
 
 .suggestions-container li:hover {
     background-color: #f0f0f0;
+}
+
+.field input[type="text"] {
+    position: relative;
+    z-index: 2;
+}
+
+.suggestions-container {
+    top: 100%;
+    left: 0;
+    right: 0;
 }

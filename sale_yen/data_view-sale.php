@@ -147,7 +147,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
             </div>
             
             <!-- Filter Form -->
-            <form method="get" action="">
+            <form method="get" action="" class="filter-form">
                 <div class="form-group">
                     <label for="province">Province:</label>
                     <select id="province" name="province" class="form-control">
@@ -170,8 +170,10 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                         ?>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="?act=excel" class="btn btn-primary">Export to Excel</a>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="?act=excel" class="btn btn-primary">Export to Excel</a>
+                </div>
             </form>
 
             <table id="data" class="table table-striped">

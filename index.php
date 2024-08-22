@@ -17,7 +17,7 @@
         <div class="row">
             <div class="field">
                 <label for="V_Name">ชื่อหน่วยงาน :</label>
-                <input type="text" id="V_Name" name="V_Name" required>
+                <input type="text" id="V_Name" name="V_Name" autocomplete="off" required>
                 <div id="duplicateMessage" style="color: red; display: none;"></div>
                 <div id="suggestions" class="suggestions-container"></div>
             </div>
