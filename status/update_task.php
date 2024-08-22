@@ -8,7 +8,7 @@ if ($viewId > 0 && !empty($status2)) {
     $strSQL = "
         UPDATE task 
         SET T_Status = ?, T_Date2 = NOW() 
-        WHERE V_ID = ? 
+        WHERE T_ID = ? 
         ORDER BY T_Date DESC 
         LIMIT 1";
     

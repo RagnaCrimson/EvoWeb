@@ -1,0 +1,80 @@
+/* color 
+    #555273    ม่วง
+    #65799b    ฟ้า
+    #b6d5e1    ฟ้าอ่อน
+    #e2eff1    ฟ้าอ่อน อมเขียว เกือบขาว
+*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    background-color: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.card-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 24px;
+}
+.card-body {
+    display: flex;
+    padding: 15px;
+    font-size: 18px;
+}
+.card-body .left, .card-body .right {
+    flex: 1;
+    padding: 10px;
+}
+.card-body .right {
+    padding-left: 20px;
+}
+.card-body p {
+    margin: 5px 0;
+}
+.card-body .btn {
+    margin-top: 10px;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.pagination li a {
+    color: #4CAF50;
+}
+.pagination .active a {
+    background-color: #4CAF50;
+    color: white;
+}
+.card-body p {
+    line-height: 1.6;
+}
+
+.chart-container {
+    grid-column: span 2;
+    background-color: white;
+}
+
+.git-center {
+    display: grid;
+    place-items: center;
+    gap: 20px;
+    padding: 40px;
+}

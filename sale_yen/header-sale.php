@@ -52,7 +52,7 @@ $objConnect->close();
             <li><a href="#">รายการ &dtrif;</a>
                 <ul class="dropdown">
                     <li><a href="data_view-sale.php">ดูข้อมูลทั้งหมด</a></li>
-                    <!-- <li><a href="list_view.php" target="_blank">รายชื่อหน่วยงาน</a></li> -->
+                    <li><a href="list_view.php">รายละเอียดหน่วยงาน</a></li>
                     <li><a href="sale_name.php">เลือกดูทีมฝ่ายขาย</a></li>
                     <!-- <li><a href="Export">Excel File</a></li> -->
                 </ul>

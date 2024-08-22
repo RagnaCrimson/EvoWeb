@@ -49,6 +49,7 @@ if ($viewId > 0) {
                 <label for="status2">Update Status:</label>
                 <select id="status2" name="status2" class="form-control" required>
                     <option value="">เลือกสถานะ</option>
+                    <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
                     <option value="แก้ไขเอกสาร">แก้ไขเอกสาร</option>
                     <option value="ออกแบบ">ออกแบบ</option>
                     <option value="สำรวจ">สำรวจ</option>
