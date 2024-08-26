@@ -124,13 +124,14 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 <h1>รายชื่อหน่วยงาน</h1>
             </div>
             
-            <!-- Filter Form -->
-            <form method="get" action="" class="filter-form">
+             <!-- Filter Form -->
+             <form method="get" action="" class="filter-form">
                 <div class="form-group">
-                    <label for="province">Province:</label>
+                    <label for="province">จังหวัด :</label>
                     <select id="province" name="province" class="form-control">
-                        <option value="">All</option>
+                        <option value="">ทั้งหมด</option>
                         <?php
+                        sort($provinces);
                         foreach ($provinces as $province) {
                             echo "<option value=\"$province\"" . ($provinceFilter == $province ? ' selected' : '') . ">$province</option>";
                         }
@@ -138,10 +139,11 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="sale">Sale Team:</label>
+                    <label for="sale">ทีมฝ่าบขาย :</label>
                     <select id="sale" name="sale" class="form-control">
-                        <option value="">All</option>
+                        <option value="">ทั้งหมด</option>
                         <?php
+                        sort($sales);
                         foreach ($sales as $sale) {
                             echo "<option value=\"$sale\"" . ($saleFilter == $sale ? ' selected' : '') . ">$sale</option>";
                         }

@@ -10,13 +10,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ======== filter form ============= */
+
 .filter-form {
-  max-width: 600px; /* Set the maximum width for the form */
-  margin: 0 auto; /* Center the form horizontally */
+  max-width: 600px;
+  margin: 0 auto;
   padding: 15px;
-  background-color: #fff; /* Optional: add background color for better visibility */
-  border-radius: 8px; /* Optional: add rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
@@ -39,7 +41,7 @@ body {
 
 .filter-form .form-buttons {
   display: flex;
-  justify-content: space-between; /* Space out buttons */
+  justify-content: space-between;
 }
 
 .filter-form .btn {
@@ -58,6 +60,8 @@ body {
 .filter-form .btn-primary:hover {
   background-color: #00b36b; /* Primary button hover color */
 }
+
+/* ==================================== */
 
 .con {
   display: flex;

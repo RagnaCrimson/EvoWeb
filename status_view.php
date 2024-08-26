@@ -109,7 +109,6 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,7 +165,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     <div class="container">
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;">
-                <h1>Status View</h1>
+                <h1>ติดตามสถานะ</h1>
             </div>
             
              <!-- Filter Form -->
@@ -176,6 +175,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     <select id="province" name="province" class="form-control">
                         <option value="">ทั้งหมด</option>
                         <?php
+                        sort($provinces);
                         foreach ($provinces as $province) {
                             echo "<option value=\"$province\"" . ($provinceFilter == $province ? ' selected' : '') . ">$province</option>";
                         }
@@ -187,6 +187,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     <select id="sale" name="sale" class="form-control">
                         <option value="">ทั้งหมด</option>
                         <?php
+                        sort($sales);
                         foreach ($sales as $sale) {
                             echo "<option value=\"$sale\"" . ($saleFilter == $sale ? ' selected' : '') . ">$sale</option>";
                         }
@@ -243,6 +244,25 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 }
                 ?>
             </table>
+        </div>
+    </div>
+
+    <!-- Popup -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">View Data</h4>
+                </div>
+                <div id="modal-body" class="modal-body">
+                    <!-- Content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
