@@ -3,47 +3,41 @@ include 'connect.php';
 
 mysqli_query($objConnect, "SET NAMES utf8");
 
-$search = isset($_GET['search']) ? $objConnect->real_escape_string($_GET['search']) : '';
 $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
-$statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
+$statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 
-if ($search) {
-    $strSQL_datastore_db = "
-        SELECT view.*, task.T_Status, files.filename 
-        FROM view 
-        LEFT JOIN task ON view.V_ID = task.T_ID
-        LEFT JOIN files ON view.V_ID = files.id
-        WHERE (view.V_Name LIKE CONCAT('%', ?, '%') 
-        OR view.V_Province LIKE CONCAT('%', ?, '%') 
-        OR task.T_Status LIKE CONCAT('%', ?, '%'))
-        AND (view.V_Sale = ? OR ? = '')
-        AND (task.T_Status = ? OR ? = '')
-        AND (view.V_Province = ? OR ? = '')";
-    
-    $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
-    if ($stmt_datastore_db === false) {
-        die("Prepare failed: " . $objConnect->error);
-    }
-
-    $stmt_datastore_db->bind_param("sssssssss", $search, $search, $search, $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
-} else {
-    $strSQL_datastore_db = "
-        SELECT view.*, task.T_Status, files.filename 
-        FROM view 
-        LEFT JOIN task ON view.V_ID = task.T_ID
-        LEFT JOIN files ON view.V_ID = files.id
-        WHERE (view.V_Sale = ? OR ? = '')
-        AND (task.T_Status = ? OR ? = '')
-        AND (view.V_Province = ? OR ? = '')";
-    
-    $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
-    if ($stmt_datastore_db === false) {
-        die("Prepare failed: " . $objConnect->error);
-    }
-
-    $stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $statusFilter, $statusFilter, $provinceFilter, $provinceFilter);
+// Fetch distinct provinces
+$sql_provinces = "SELECT DISTINCT V_Province FROM view";
+$result_provinces = $objConnect->query($sql_provinces);
+$provinces = [];
+while ($row = $result_provinces->fetch_assoc()) {
+    $provinces[] = $row['V_Province'];
 }
+
+// Fetch distinct sales
+$sql_sales = "SELECT DISTINCT V_Sale FROM view";
+$result_sales = $objConnect->query($sql_sales);
+$sales = [];
+while ($row = $result_sales->fetch_assoc()) {
+    $sales[] = $row['V_Sale'];
+}
+
+// Prepare the SQL query based on filters
+$strSQL_datastore_db = "
+    SELECT view.*, task.T_Status, files.filename 
+    FROM view 
+    LEFT JOIN task ON view.V_ID = task.T_ID
+    LEFT JOIN files ON view.V_ID = files.id
+    WHERE (view.V_Sale = ? OR ? = '')
+    AND (view.V_Province = ? OR ? = '')
+    AND (task.T_Status = ? OR ? = '')";
+
+$stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
+if ($stmt_datastore_db === false) {
+    die("Prepare failed: " . $objConnect->error);
+}
+$stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
 
 if (!$stmt_datastore_db->execute()) {
     die("Execute failed: " . $stmt_datastore_db->error);
@@ -57,7 +51,6 @@ if ($resultdatastore_db === false) {
 
 $total_rows = $resultdatastore_db->num_rows;
 
-// Prepare for CSV export
 if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     header("Content-Type: text/csv; charset=utf-8");
     header("Content-Disposition: attachment; filename=export.csv");
@@ -67,14 +60,31 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     // Open output stream
     $output = fopen('php://output', 'w');
 
-    // Add BOM to indicate UTF-8 encoding
     fprintf($output, "\xEF\xBB\xBF");
 
-    $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Electric_per_month, V_Sale FROM view";
-    $result = $objConnect->query($sql);
+    // Capture filter values
+    $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
+    $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
+    $statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 
-    // Output the column headers
-    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ค่าไฟ 1 เดือน', 'ทีมฝ่ายขาย']);
+    // Prepare the SQL query based on filters
+    $sql = "
+        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale, T_Status 
+        FROM view 
+        LEFT JOIN task ON view.V_ID = task.T_ID
+        WHERE (view.V_Sale = ? OR ? = '')
+        AND (view.V_Province = ? OR ? = '')
+        AND (task.T_Status = ? OR ? = '')";
+
+    $stmt = $objConnect->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $objConnect->error);
+    }
+    $stmt->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย', 'สถานะ']);
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -84,8 +94,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 $row['V_Province'],
                 $row['V_District'],
                 $row['V_SubDistrict'],
-                $row['V_Electric_per_month'],
-                $row['V_Sale']
+                $row['V_Sale'],
+                $row['T_Status']
             ]);
         }
     } else {
@@ -93,21 +103,24 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     }
 
     fclose($output);
-    $conn->close();
+    $stmt->close();
+    $objConnect->close();
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
+    <title>Status View</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/jpg" href="img/logo-eet.jpg">
     <style>
         th.sortable {
             cursor: pointer;
@@ -152,29 +165,53 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
 
     <div class="container">
         <div id="View" class="tabcontent">
-            <div style="margin-bottom: 50px;"><h1>รายการติดตามสถานะ</h1></div>
-            <p><a href="?act=excel" class="btn btn-primary">Export to Excel</a></p>
+            <div style="margin-bottom: 50px;">
+                <h1>Status View</h1>
+            </div>
+            
+             <!-- Filter Form -->
+             <form method="get" action="" class="filter-form">
+                <div class="form-group">
+                    <label for="province">จังหวัด :</label>
+                    <select id="province" name="province" class="form-control">
+                        <option value="">ทั้งหมด</option>
+                        <?php
+                        foreach ($provinces as $province) {
+                            echo "<option value=\"$province\"" . ($provinceFilter == $province ? ' selected' : '') . ">$province</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sale">ทีมฝ่าบขาย :</label>
+                    <select id="sale" name="sale" class="form-control">
+                        <option value="">ทั้งหมด</option>
+                        <?php
+                        foreach ($sales as $sale) {
+                            echo "<option value=\"$sale\"" . ($saleFilter == $sale ? ' selected' : '') . ">$sale</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>" class="btn btn-primary">Export to Excel</a>
+                </div>
+            </form>
+
             <table id="data" class="table table-striped">
-                <nav class="navbar navbar-light bg-light" style="text-align: center;">
-                    <form class="form-inline" method="GET" action="">
-                        <input type="text" style="text-align: center;" name="search" placeholder="พิมพ์เพื่อค้นหา" class="form-control">
-                        <button type="submit" class="btn btn-primary">ค้นหา</button>
-                    </form>
-                </nav>
                 <tr>
                     <strong>จำนวนทั้งหมด <?php echo $total_rows; ?> หน่วยงาน</strong>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
-                    <th>ค่าไฟ/ปี</th>
-                    <th>ค่าไฟ/เดือน</th>
-                    <th>การใช้ไฟ/ปี</th>
-                    <th>การใช้ไฟ/เดือน</th>
+                    <th>อำเภอ</th>
+                    <th>ตำบล</th>
+                    <th>สถานะ</th>
                     <th>File PDF</th>
-                    <th class="sortable" id="sortSale">ทีมฝ่ายขาย</th>
-                    <th>ดูรายละเอียด</th>
+                    <th>ทีมฝ่ายขาย</th>
+                    <th>อัปเดตสถานะ</th>
                 </tr>
-                
                 <?php  
                 $total_rows = 0; 
                 if ($resultdatastore_db->num_rows > 0) {
@@ -182,17 +219,16 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     while ($row = $resultdatastore_db->fetch_assoc()) {
                         $total_rows++; 
                         ?>
-                        <tr>     
+                        <tr> 
                             <td><?php echo $sequence++; ?></td>
                             <td><?php echo htmlspecialchars($row["V_Name"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
-                            <td><?php echo ($row["V_Electric_per_year"] == 0) ? 'N/A' : number_format($row["V_Electric_per_year"], 2); ?></td>
-                            <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
-                            <td><?php echo ($row["V_Peak_year"] == 0) ? 'N/A' : number_format($row["V_Peak_year"], 2); ?></td>
-                            <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
+                            <td><?php echo htmlspecialchars($row["V_District"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["V_SubDistrict"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
-                                    <a href="uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
+                                    <a href="../uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
                                 <?php else: ?>
                                     No file
                                 <?php endif; ?>
@@ -203,25 +239,10 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                         <?php
                     }
                 } else {
-                    echo "<tr><td colspan='11'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='9'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
             </table>
-        </div>
-    </div>
-
-    <!-- Popup -->
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title center">ข้อมูลสถานะ</h4>
-                </div>
-                <div id="modal-body" class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 

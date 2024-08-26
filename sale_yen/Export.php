@@ -1,16 +1,9 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "datastore_db";
+include 'connect.php';
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$conn->set_charset("utf8");
+// Capture filter values from the URL parameters
+$saleFilter = isset($_GET['sale']) ? $conn->real_escape_string($_GET['sale']) : '';
+$provinceFilter = isset($_GET['province']) ? $conn->real_escape_string($_GET['province']) : '';
 
 // Prepare for CSV export
 if (isset($_GET['act']) && $_GET['act'] == 'excel') {
@@ -22,13 +15,27 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     // Open output stream
     $output = fopen('php://output', 'w');
 
-    // Add BOM to indicate UTF-8 encoding
     fprintf($output, "\xEF\xBB\xBF");
 
-    $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale FROM view";
-    $result = $conn->query($sql);
+    // Capture filter values
+    $saleFilter = isset($_GET['sale']) ? $conn->real_escape_string($_GET['sale']) : '';
+    $provinceFilter = isset($_GET['province']) ? $conn->real_escape_string($_GET['province']) : '';
 
-    // Output the column headers
+    // Prepare the SQL query based on filters
+    $sql = "
+        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+        FROM view 
+        WHERE (V_Sale = ? OR ? = '')
+        AND (V_Province = ? OR ? = '')";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+    $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย']);
 
     if ($result->num_rows > 0) {
@@ -47,16 +54,19 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     }
 
     fclose($output);
+    $stmt->close();
     $conn->close();
     exit;
 }
+
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>devbanban</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>Filtered Export to Excel</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -70,7 +80,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 <br /><br /><br />
                 
                 <p>
-                    <a href="?act=excel" class="btn btn-primary">Export to Excel</a>
+                    <!-- Pass current filters to the export link -->
+                    <a href="?act=excel&sale=<?= htmlspecialchars($saleFilter) ?>&province=<?= htmlspecialchars($provinceFilter) ?>" class="btn btn-primary">Export to Excel</a>
                 </p>
                 
                 <table border="1" class="table table-hover">
@@ -86,9 +97,20 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     </thead>
                     <tbody>
                         <?php
-                        // Fetch data for HTML table
-                        $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale FROM view";
-                        $result = $conn->query($sql);
+                        // Prepare the SQL query based on filters for displaying in the table
+                        $sql = "
+                            SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+                            FROM view 
+                            WHERE (V_Sale = ? OR ? = '')
+                            AND (V_Province = ? OR ? = '')";
+
+                        $stmt = $conn->prepare($sql);
+                        if (!$stmt) {
+                            die("Prepare failed: " . $conn->error);
+                        }
+                        $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
 
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
@@ -102,9 +124,10 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='4'>No data found</td></tr>";
+                            echo "<tr><td colspan='6'>No data found</td></tr>";
                         }
 
+                        $stmt->close();
                         $conn->close();
                         ?>
                     </tbody>

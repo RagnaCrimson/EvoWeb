@@ -47,45 +47,8 @@ if ($resultdatastore_db === false) {
     die("Getting result set failed: " . $stmt_datastore_db->error);
 }
 
-// SUM per year
-$strSQL_sum = "SELECT SUM(V_Electric_per_year) AS total_electric_per_year FROM view";
-$result_sum = $objConnect->query($strSQL_sum);
+$total_rows = $resultdatastore_db->num_rows;
 
-if (!$result_sum) {
-    die("Query failed: " . $objConnect->error);
-}
-
-$row_sum = $result_sum->fetch_assoc();
-$total_electric_per_year = $row_sum['total_electric_per_year'];
-
-// SUM per month
-$strSQL_sum_month = "SELECT SUM(V_Electric_per_month) AS total_electric_per_month FROM view";
-$result_sum_month = $objConnect->query($strSQL_sum_month);
-if (!$result_sum_month) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_month = $result_sum_month->fetch_assoc();
-$total_electric_per_month = $row_sum_month['total_electric_per_month'];
-
-// SUM peak year
-$strSQL_sum_peak_year = "SELECT SUM(V_Peak_year) AS total_peak_per_year FROM view";
-$result_sum_peak_year = $objConnect->query($strSQL_sum_peak_year);
-if (!$result_sum_peak_year) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_peak_year = $result_sum_peak_year->fetch_assoc();
-$total_peak_per_year = $row_sum_peak_year['total_peak_per_year'];
-
-// SUM peak month
-$strSQL_sum_peak_month = "SELECT SUM(V_Peak_month) AS total_peak_per_month FROM view";
-$result_sum_peak_month = $objConnect->query($strSQL_sum_peak_month);
-if (!$result_sum_peak_month) {
-    die("Query failed: " . $objConnect->error);
-}
-$row_sum_peak_month = $result_sum_peak_month->fetch_assoc();
-$total_peak_per_month = $row_sum_peak_month['total_peak_per_month'];
-
-// Prepare for CSV export
 if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     header("Content-Type: text/csv; charset=utf-8");
     header("Content-Disposition: attachment; filename=export.csv");
@@ -95,13 +58,27 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     // Open output stream
     $output = fopen('php://output', 'w');
 
-    // Add BOM to indicate UTF-8 encoding
     fprintf($output, "\xEF\xBB\xBF");
 
-    $sql = "SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale FROM view";
-    $result = $objConnect->query($sql);
+    // Capture filter values
+    $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
+    $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
 
-    // Output the column headers
+    // Prepare the SQL query based on filters
+    $sql = "
+        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+        FROM view 
+        WHERE (V_Sale = ? OR ? = '')
+        AND (V_Province = ? OR ? = '')";
+
+    $stmt = $objConnect->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $objConnect->error);
+    }
+    $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย']);
 
     if ($result->num_rows > 0) {
@@ -120,6 +97,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     }
 
     fclose($output);
+    $stmt->close();
     $objConnect->close();
     exit;
 }
@@ -172,12 +150,13 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="?act=excel" class="btn btn-primary">Export to Excel</a>
+                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>" class="btn btn-primary">Export to Excel</a>
                 </div>
             </form>
 
             <table id="data" class="table table-striped">
                 <tr>
+                    <strong>จำนวนทั้งหมด <?php echo $total_rows; ?> หน่วยงาน</strong>
                     <th>ลำดับ</th>
                     <th>ชื่อหน่วยงาน</th>
                     <th>จังหวัด</th>
