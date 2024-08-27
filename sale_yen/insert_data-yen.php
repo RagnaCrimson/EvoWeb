@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sale</title>
     <link rel="stylesheet" href="css/sale-form.css">
+    <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -27,7 +28,7 @@
             </div>
             <div class="field">
                 <label for="V_District">อำเภอ :</label>
-                <input type="text" id="V_District" name="V_District">
+                <input type="text" id="V_District" name="V_District" required>
             </div>
             <div class="field">
                 <label for="V_SubDistrict">ตำบล :</label>
@@ -77,7 +78,7 @@
         </div>
         <div class="row">
             <div class="field">
-                <label for="serial_number">รหัสการไฟฟ้า :</label>
+                <label for="serial_number">รหัสเครื่องวัด :</label>
                 <input type="text"id="serial_number" name="serial_number" maxlength="10">
             </div>
             <div class="field">
@@ -92,12 +93,12 @@
                 <input type="date" id="B_M12" name="B_M12" class="form-control">
             </div>     
             <div class="field"> 
-                <label class="h-label" for="V_Peak_month">ค่าไฟ :</label>
-                <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="V_Peak_month" class="form-control">
+                <label class="h-label" for="V_Electric_per_month">ค่าไฟ :</label>
+                <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="V_Electric_per_month" class="form-control">
             </div>
             <div class="field"> 
-                <label class="h-label" for="V_Electric_per_month">peak :</label>
-                <input type="number" step="any" placeholder="ค่า Peak 000.00" id="V_Electric_per_month" name="V_Electric_per_month" class="form-control">
+                <label class="h-label" for="V_Peak_month">peak :</label>
+                <input type="number" step="any" placeholder="ค่าไฟ 000.00" id="V_Peak_month" name="V_Peak_month" class="form-control">
             </div>
         </div>
         </div><br><br>

@@ -35,6 +35,9 @@ if ($viewId > 0) {
         ?>
         <form method="POST" action="status/update_task.php">
             <input type="hidden" name="view_id" value="<?php echo htmlspecialchars($viewId); ?>">
+            <input type="hidden" name="sale" value="<?php echo isset($_GET['sale']) ? htmlspecialchars($_GET['sale']) : ''; ?>">
+            <input type="hidden" name="province" value="<?php echo isset($_GET['province']) ? htmlspecialchars($_GET['province']) : ''; ?>">
+            <input type="hidden" name="status_filter" value="<?php echo isset($_GET['status']) ? htmlspecialchars($_GET['status']) : ''; ?>">
             <div class="form-group">
                 <label for="status">Update Status:</label>
                 <select id="status" name="status" class="form-control" required>
