@@ -4,6 +4,7 @@ include 'connect.php';
 // Capture filter values from the URL parameters
 $saleFilter = isset($_GET['sale']) ? $conn->real_escape_string($_GET['sale']) : '';
 $provinceFilter = isset($_GET['province']) ? $conn->real_escape_string($_GET['province']) : '';
+$statusFilter = isset($_GET['status']) ? $conn->real_escape_string($_GET['status']) : '';
 
 // Prepare for CSV export
 if (isset($_GET['act']) && $_GET['act'] == 'excel') {
@@ -15,28 +16,27 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     // Open output stream
     $output = fopen('php://output', 'w');
 
-    fprintf($output, "\xEF\xBB\xBF");
-
-    // Capture filter values
-    $saleFilter = isset($_GET['sale']) ? $conn->real_escape_string($_GET['sale']) : '';
-    $provinceFilter = isset($_GET['province']) ? $conn->real_escape_string($_GET['province']) : '';
+    fprintf($output, "\xEF\xBB\xBF"); // Add BOM for UTF-8 compatibility in Excel
 
     // Prepare the SQL query based on filters
     $sql = "
-        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+        SELECT view.V_ID, view.V_Name, view.V_Province, view.V_District, view.V_SubDistrict, view.V_Sale, task.T_Status 
         FROM view 
-        WHERE (V_Sale = ? OR ? = '')
-        AND (V_Province = ? OR ? = '')";
+        LEFT JOIN task ON view.V_ID = task.T_ID
+        WHERE (view.V_Sale = ? OR ? = '')
+        AND (view.V_Province = ? OR ? = '')
+        AND (task.T_Status = ? OR ? = '')";
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+    $stmt->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย']);
+    // Add CSV header row
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย', 'สถานะ']);
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -46,7 +46,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 $row['V_Province'],
                 $row['V_District'],
                 $row['V_SubDistrict'],
-                $row['V_Sale']
+                $row['V_Sale'],
+                $row['T_Status']
             ]);
         }
     } else {
@@ -58,7 +59,6 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     $conn->close();
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +81,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 
                 <p>
                     <!-- Pass current filters to the export link -->
-                    <a href="?act=excel&sale=<?= htmlspecialchars($saleFilter) ?>&province=<?= htmlspecialchars($provinceFilter) ?>" class="btn btn-primary">Export to Excel</a>
+                    <a href="?act=excel&sale=<?= htmlspecialchars($saleFilter) ?>&province=<?= htmlspecialchars($provinceFilter) ?>&status=<?= htmlspecialchars($statusFilter) ?>" class="btn btn-primary">Export to Excel</a>
                 </p>
                 
                 <table border="1" class="table table-hover">
@@ -93,22 +93,25 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                             <th>อำเภอ</th>
                             <th>ตำบล</th>
                             <th>ทีมฝ่ายขาย</th>
+                            <th>สถานะ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         // Prepare the SQL query based on filters for displaying in the table
                         $sql = "
-                            SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+                            SELECT view.V_ID, view.V_Name, view.V_Province, view.V_District, view.V_SubDistrict, view.V_Sale, task.T_Status 
                             FROM view 
-                            WHERE (V_Sale = ? OR ? = '')
-                            AND (V_Province = ? OR ? = '')";
+                            LEFT JOIN task ON view.V_ID = task.T_ID
+                            WHERE (view.V_Sale = ? OR ? = '')
+                            AND (view.V_Province = ? OR ? = '')
+                            AND (task.T_Status = ? OR ? = '')";
 
                         $stmt = $conn->prepare($sql);
                         if (!$stmt) {
                             die("Prepare failed: " . $conn->error);
                         }
-                        $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+                        $stmt->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
                         $stmt->execute();
                         $result = $stmt->get_result();
 
@@ -121,10 +124,11 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                                 echo "<td>" . htmlspecialchars($row['V_District']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['V_SubDistrict']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['V_Sale']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['T_Status']) . "</td>";
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6'>No data found</td></tr>";
+                            echo "<tr><td colspan='7'>No data found</td></tr>";
                         }
 
                         $stmt->close();

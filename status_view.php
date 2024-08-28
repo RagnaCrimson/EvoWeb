@@ -23,6 +23,15 @@ while ($row = $result_sales->fetch_assoc()) {
     $sales[] = $row['V_Sale'];
 }
 
+// Fetch distinct statuses
+$sql_status = "SELECT DISTINCT T_Status FROM task";
+$result_status = $objConnect->query($sql_status);
+$statuses = [];
+while ($row = $result_status->fetch_assoc()) {
+    $statuses[] = $row['T_Status'];
+}
+
+
 // Prepare the SQL query based on filters
 $strSQL_datastore_db = "
     SELECT view.*, task.T_Status, files.filename 
@@ -62,14 +71,9 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
 
     fprintf($output, "\xEF\xBB\xBF");
 
-    // Capture filter values
-    $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
-    $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
-    $statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
-
     // Prepare the SQL query based on filters
     $sql = "
-        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale, T_Status 
+        SELECT view.*, task.T_Status
         FROM view 
         LEFT JOIN task ON view.V_ID = task.T_ID
         WHERE (view.V_Sale = ? OR ? = '')
@@ -84,7 +88,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย', 'สถานะ']);
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ค่าไฟ', 'ทีมฝ่ายขาย', 'สถานะ']);
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -94,6 +98,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 $row['V_Province'],
                 $row['V_District'],
                 $row['V_SubDistrict'],
+                $row['V_Electric_per_month'],
                 $row['V_Sale'],
                 $row['T_Status']
             ]);
@@ -168,8 +173,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 <h1>ติดตามสถานะ</h1>
             </div>
             
-             <!-- Filter Form -->
-             <form method="get" action="" class="filter-form">
+            <!-- Filter Form -->
+            <form method="get" action="" class="filter-form">
                 <div class="form-group">
                     <label for="province">จังหวัด :</label>
                     <select id="province" name="province" class="form-control">
@@ -194,6 +199,18 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                         ?>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="status">สถานะ :</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="">ทั้งหมด</option>
+                        <?php
+                        sort($statuses);
+                        foreach ($statuses as $status) {
+                            echo "<option value=\"$status\"" . ($statusFilter == $status ? ' selected' : '') . ">$status</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>" class="btn btn-primary">Export to Excel</a>
@@ -208,9 +225,10 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     <th>จังหวัด</th>
                     <th>อำเภอ</th>
                     <th>ตำบล</th>
-                    <th>สถานะ</th>
+                    <th>ค่าไฟ</th>
                     <th>File PDF</th>
                     <th>ทีมฝ่ายขาย</th>
+                    <th>สถานะ</th>
                     <th>อัปเดตสถานะ</th>
                 </tr>
                 <?php  
@@ -226,7 +244,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                             <td><?php echo htmlspecialchars($row["V_Province"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_District"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_SubDistrict"]); ?></td>
-                            <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
+                            <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
                                     <a href="../uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
@@ -235,6 +253,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
                             <td><button class="btn btn-info btn-lg view-btn" data-id="<?php echo urlencode($row['V_ID']); ?>">View</button></td>
                         </tr>
                         <?php

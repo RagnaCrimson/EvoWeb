@@ -22,6 +22,15 @@ while ($row = $result_sales->fetch_assoc()) {
     $sales[] = $row['V_Sale'];
 }
 
+// Fetch distinct statuses
+$sql_status = "SELECT DISTINCT T_Status FROM task";
+$result_status = $objConnect->query($sql_status);
+$statuses = [];
+while ($row = $result_status->fetch_assoc()) {
+    $statuses[] = $row['T_Status'];
+}
+
+
 // Prepare the SQL query based on filters
 $strSQL_datastore_db = "
     SELECT view.*, task.T_Status, files.filename 
@@ -146,6 +155,18 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                         sort($sales);
                         foreach ($sales as $sale) {
                             echo "<option value=\"$sale\"" . ($saleFilter == $sale ? ' selected' : '') . ">$sale</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status">สถานะ :</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="">ทั้งหมด</option>
+                        <?php
+                        sort($statuses);
+                        foreach ($statuses as $status) {
+                            echo "<option value=\"$status\"" . ($statusFilter == $status ? ' selected' : '') . ">$status</option>";
                         }
                         ?>
                     </select>
