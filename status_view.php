@@ -124,45 +124,13 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
     <link rel="icon" type="image/jpg" href="img/logo-eet.jpg">
     <style>
         th.sortable {
             cursor: pointer;
         }
     </style>
-    <script>
-        $(document).ready(function() {
-            // View button functionality
-            $('.view-btn').click(function() {
-                var viewId = $(this).data('id');
-                $('#modal-body').load('status/view_data.php', { view_id: viewId }, function() {
-                    $('#myModal').modal('show');
-                });
-            });
-
-            // Sort functionality
-            var sortOrder = 'asc'; // Default sort order
-            $('#sortSale').click(function() {
-                var table = $('#data');
-                var rows = table.find('tr:gt(1)').toArray().sort(compareRows);
-                if (sortOrder === 'asc') {
-                    rows = rows.reverse();
-                    sortOrder = 'desc';
-                } else {
-                    sortOrder = 'asc';
-                }
-                $.each(rows, function(index, row) {
-                    table.append(row);
-                });
-            });
-
-            function compareRows(a, b) {
-                var valA = $(a).find('td').eq(8).text().toUpperCase();
-                var valB = $(b).find('td').eq(8).text().toUpperCase();
-                return valA.localeCompare(valB);
-            }
-        });
-    </script>
 </head>
 <body class="bgcolor">
     <?php include 'header.php'; ?>
@@ -172,7 +140,6 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
             <div style="margin-bottom: 50px;">
                 <h1>ติดตามสถานะ</h1>
             </div>
-            
             <!-- Filter Form -->
             <form method="get" action="" class="filter-form">
                 <div class="form-group">
@@ -213,7 +180,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>" class="btn btn-primary">Export to Excel</a>
+                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>&status=<?php echo urlencode($statusFilter); ?>" class="btn btn-primary">Export to Excel</a>
                 </div>
             </form>
 
@@ -289,4 +256,3 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     <?php include 'back.html'; ?>
 </body>
 </html>
-
