@@ -50,6 +50,9 @@
             <div class="chart-container">
                 <canvas id="electric-month-chart" class="doughnut-chart"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="region-pie-chart" class="doughnut-chart"></canvas>
+            </div>
 
         </div>
     </div>
@@ -328,6 +331,54 @@
         }
     });
 
+    const regionLabels = <?php echo $region_labels_json; ?>;
+    const regionCounts = <?php echo $region_counts_json; ?>;
+    
+    const ctxRegionPie = document.getElementById('region-pie-chart').getContext('2d');
+    const regionPieChart = new Chart(ctxRegionPie, {
+        type: 'doughnut',
+        data: {
+            labels: regionLabels,
+            datasets: [{
+                label: 'Regions',
+                data: regionCounts,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#FF5733', '#C70039', '#900C3F'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const segmentIndex = elements[0].index;
+                    const label = regionPieChart.data.labels[segmentIndex];
+                    window.location.href = `details/details_region.php?region=${encodeURIComponent(label)}`;
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ภูมิภาค'
+                },
+                datalabels: {
+                    display: (context) => {
+                        return context.dataset.data[context.dataIndex] > 20;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    anchor: 'center',
+                    align: 'center',
+                    padding: {
+                        bottom: 5
+                    }
+                },
+            }
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
     fetch('total_count.php')

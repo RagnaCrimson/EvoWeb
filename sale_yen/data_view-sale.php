@@ -69,26 +69,24 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
 
     fprintf($output, "\xEF\xBB\xBF");
 
-    // Capture filter values
-    $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
-    $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
-
     // Prepare the SQL query based on filters
     $sql = "
-        SELECT V_ID, V_Name, V_Province, V_District, V_SubDistrict, V_Sale 
+        SELECT view.*, task.T_Status
         FROM view 
-        WHERE (V_Sale = ? OR ? = '')
-        AND (V_Province = ? OR ? = '')";
+        LEFT JOIN task ON view.V_ID = task.T_ID
+        WHERE (view.V_Sale = ? OR ? = '')
+        AND (view.V_Province = ? OR ? = '')
+        AND (task.T_Status = ? OR ? = '')";
 
     $stmt = $objConnect->prepare($sql);
     if (!$stmt) {
         die("Prepare failed: " . $objConnect->error);
     }
-    $stmt->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+    $stmt->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ทีมฝ่ายขาย']);
+    fputcsv($output, ['ID', 'ชื่อหน่วยงาน', 'จังหวัด', 'อำเภอ', 'ตำบล', 'ค่าไฟ', 'ทีมฝ่ายขาย', 'สถานะ']);
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -98,7 +96,9 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 $row['V_Province'],
                 $row['V_District'],
                 $row['V_SubDistrict'],
-                $row['V_Sale']
+                $row['V_Electric_per_month'],
+                $row['V_Sale'],
+                $row['T_Status']
             ]);
         }
     } else {
@@ -133,8 +133,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 <h1>รายชื่อหน่วยงาน</h1>
             </div>
             
-             <!-- Filter Form -->
-             <form method="get" action="" class="filter-form">
+            <!-- Filter Form -->
+            <form method="get" action="" class="filter-form">
                 <div class="form-group">
                     <label for="province">จังหวัด :</label>
                     <select id="province" name="province" class="form-control">
@@ -173,7 +173,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>" class="btn btn-primary">Export to Excel</a>
+                    <a href="?act=excel&sale=<?php echo urlencode($saleFilter); ?>&province=<?php echo urlencode($provinceFilter); ?>&status=<?php echo urlencode($statusFilter); ?>" class="btn btn-primary">Export to Excel</a>
                 </div>
             </form>
 

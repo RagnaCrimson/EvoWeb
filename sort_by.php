@@ -42,6 +42,23 @@ if (!$result_sum_month) {
 $row_sum_month = $result_sum_month->fetch_assoc();
 $total_electric_per_month = $row_sum_month['total_electric_per_month'];
 
+$strSQL_region = "SELECT V_Region, COUNT(*) as region_count FROM view GROUP BY V_Region";
+$result_region = $objConnect->query($strSQL_region);
+
+$region_labels = [];
+$region_counts = [];
+
+if ($result_region) {
+    while ($row_region = $result_region->fetch_assoc()) {
+        $region_labels[] = $row_region['V_Region'];
+        $region_counts[] = $row_region['region_count'];
+    }
+}
+
+// Convert PHP arrays to JSON for use in JavaScript
+$region_labels_json = json_encode($region_labels, JSON_UNESCAPED_UNICODE);
+$region_counts_json = json_encode($region_counts);
+
 // Get count of total_peak_per_month in range 0
 $strSQL_count_0 = "SELECT COUNT(*) AS count_0 FROM view WHERE V_Peak_month = 0";
 $result_count_0 = $objConnect->query($strSQL_count_0);
