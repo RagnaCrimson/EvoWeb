@@ -8,14 +8,13 @@ if (empty($region)) {
     die("Invalid region specified.");
 }
 
-// Prepare the SQL query with sorting
 $strSQL_datastore_db = "
     SELECT view.*, task.T_Status, files.filename 
     FROM view 
     LEFT JOIN task ON view.V_ID = task.T_ID
     LEFT JOIN files ON view.V_ID = files.id
     WHERE view.V_Region = ?
-    ORDER BY view.V_Province";  // Add ORDER BY clause here
+    ORDER BY view.V_Province";
 
 $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
 

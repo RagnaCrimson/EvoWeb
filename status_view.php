@@ -31,7 +31,6 @@ while ($row = $result_status->fetch_assoc()) {
     $statuses[] = $row['T_Status'];
 }
 
-
 // Prepare the SQL query based on filters
 $strSQL_datastore_db = "
     SELECT view.*, task.T_Status, files.filename 
@@ -106,7 +105,6 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     } else {
         fputcsv($output, ['No data found']);
     }
-
     fclose($output);
     $stmt->close();
     $objConnect->close();

@@ -5,6 +5,7 @@ mysqli_query($objConnect, "SET NAMES utf8");
 
 $saleFilter = isset($_GET['sale']) ? $objConnect->real_escape_string($_GET['sale']) : '';
 $provinceFilter = isset($_GET['province']) ? $objConnect->real_escape_string($_GET['province']) : '';
+$statusFilter = isset($_GET['status']) ? $objConnect->real_escape_string($_GET['status']) : '';
 
 // Fetch distinct provinces
 $sql_provinces = "SELECT DISTINCT V_Province FROM view";
@@ -38,13 +39,14 @@ $strSQL_datastore_db = "
     LEFT JOIN task ON view.V_ID = task.T_ID
     LEFT JOIN files ON view.V_ID = files.id
     WHERE (view.V_Sale = ? OR ? = '')
-    AND (view.V_Province = ? OR ? = '')";
+    AND (view.V_Province = ? OR ? = '')
+    AND (task.T_Status = ? OR ? = '')";
 
 $stmt_datastore_db = $objConnect->prepare($strSQL_datastore_db);
 if ($stmt_datastore_db === false) {
     die("Prepare failed: " . $objConnect->error);
 }
-$stmt_datastore_db->bind_param("ssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter);
+$stmt_datastore_db->bind_param("ssssss", $saleFilter, $saleFilter, $provinceFilter, $provinceFilter, $statusFilter, $statusFilter);
 
 if (!$stmt_datastore_db->execute()) {
     die("Execute failed: " . $stmt_datastore_db->error);
@@ -111,16 +113,16 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sale View</title>
+    <title>Status View</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/jpg" href="../img/logo-eet.jpg">
 </head>
@@ -130,9 +132,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
     <div class="container">
         <div id="View" class="tabcontent">
             <div style="margin-bottom: 50px;">
-                <h1>รายชื่อหน่วยงาน</h1>
+                <h1>ติดตามสถานะ</h1>
             </div>
-            
             <!-- Filter Form -->
             <form method="get" action="" class="filter-form">
                 <div class="form-group">
@@ -185,10 +186,10 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                     <th>จังหวัด</th>
                     <th>อำเภอ</th>
                     <th>ตำบล</th>
-                    <th>ค่าไฟ/เดือน</th>
-                    <th>การใช้ไฟ/เดือน</th>
+                    <th>ค่าไฟ</th>
                     <th>File PDF</th>
                     <th>ทีมฝ่ายขาย</th>
+                    <th>สถานะ</th>
                     <th>อัปเดตสถานะ</th>
                 </tr>
                 <?php  
@@ -205,7 +206,6 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                             <td><?php echo htmlspecialchars($row["V_District"]); ?></td>
                             <td><?php echo htmlspecialchars($row["V_SubDistrict"]); ?></td>
                             <td><?php echo ($row["V_Electric_per_month"] == 0) ? 'N/A' : number_format($row["V_Electric_per_month"], 2); ?></td>
-                            <td><?php echo ($row["V_Peak_month"] == 0) ? 'N/A' : number_format($row["V_Peak_month"], 2); ?></td>
                             <td>
                                 <?php if (!empty($row["filename"])): ?>
                                     <a href="../uploads/<?php echo htmlspecialchars($row["filename"]); ?>" target="_blank"><?php echo htmlspecialchars($row["filename"]); ?></a>
@@ -214,12 +214,37 @@ if (isset($_GET['act']) && $_GET['act'] == 'excel') {
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row["V_Sale"]); ?></td>
-                            <td><button class="btn btn-info btn-lg view-btn" data-id="<?php echo urlencode($row['V_ID']); ?>">View</button></td>
+                            <td><?php echo htmlspecialchars($row["T_Status"]); ?></td>
+                            <td>
+                                <!-- Dropdown for updating status -->
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton<?php echo htmlspecialchars($row['V_ID']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Update Status
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo htmlspecialchars($row['V_ID']); ?>">
+                                        <form method="POST" action="status/update_task.php">
+                                            <input type="hidden" name="view_id" value="<?php echo htmlspecialchars($row['V_ID']); ?>">
+                                            <div class="form-group">
+                                                <label for="status<?php echo htmlspecialchars($row['V_ID']); ?>">Update Status:</label>
+                                                <select id="status<?php echo htmlspecialchars($row['V_ID']); ?>" name="status" class="form-control" required>
+                                                    <option value="">เลือกสถานะ</option>
+                                                    <option value="นำส่งการไฟฟ้า">นำส่งการไฟฟ้า</option>
+                                                    <option value="แก้ไขเอกสาร">แก้ไขเอกสาร</option>
+                                                    <option value="ออกแบบ">ออกแบบ</option>
+                                                    <option value="สำรวจ">สำรวจ</option>
+                                                    <option value="ไม่ผ่าน">ไม่ผ่าน</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update Status</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                         <?php
                     }
                 } else {
-                    echo "<tr><td colspan='10'>ไม่มีข้อมูลรายการ</td></tr>";
+                    echo "<tr><td colspan='9'>ไม่มีข้อมูลรายการ</td></tr>";
                 }
                 ?>
             </table>

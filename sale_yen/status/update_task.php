@@ -2,13 +2,13 @@
 include '../connect.php';
 
 $viewId = isset($_POST['view_id']) ? intval($_POST['view_id']) : 0;
-$status2 = isset($_POST['status2']) ? $_POST['status2'] : '';
+$status = isset($_POST['status']) ? $_POST['status'] : '';
 
-if ($viewId > 0 && !empty($status2)) {
+if ($viewId > 0 && !empty($status)) {
     $strSQL = "
         UPDATE task 
-        SET T_Status = ?, T_Date2 = NOW() 
-        WHERE V_ID = ? 
+        SET T_Status = ?, T_Date = NOW() 
+        WHERE T_ID = ? 
         ORDER BY T_Date DESC 
         LIMIT 1";
     
@@ -18,10 +18,10 @@ if ($viewId > 0 && !empty($status2)) {
         die("Error preparing the SQL statement: " . $objConnect->error);
     }
 
-    $stmt->bind_param("si", $status2, $viewId);
+    $stmt->bind_param("si", $status, $viewId);
 
     if ($stmt->execute()) {
-        header("Location: ../status_view.php");
+        header("Location: ../data_view-sale.php");
         exit();
     } else {
         echo "Error updating status: " . $stmt->error;
