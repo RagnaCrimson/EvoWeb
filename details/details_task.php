@@ -144,6 +144,12 @@ if (!$result) {
                     <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Province']); ?></td>
                     <td><?php echo htmlspecialchars($row['V_Sale']); ?></td>
+                    <td>
+                        <!-- Display button only if status is 'สำรวจ' -->
+                        <?php if ($row['T_Status'] == 'สำรวจ'): ?>
+                            <a href="../Explore/Status_Explore.php?status=สำรวจ&province=<?php echo urlencode($row['V_Province']); ?>&sale=<?php echo urlencode($row['V_Sale']); ?>" class="btn btn-info">ดูสถานะสำรวจ</a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
