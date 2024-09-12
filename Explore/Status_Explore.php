@@ -1,16 +1,11 @@
 <?php
 include '../connect.php';
 
-$status = isset($_GET['status']) ? $_GET['status'] : '';
-$province = isset($_GET['province']) ? $_GET['province'] : '';
-$sale = isset($_GET['sale']) ? $_GET['sale'] : '';
-
 $query = "
-    SELECT view.*, task.T_Status, files.filename 
+    SELECT view.*, task.T_Status, files.filename
     FROM view 
     LEFT JOIN task ON view.V_ID = task.T_ID
     LEFT JOIN files ON view.V_ID = files.id
-    WHERE task.T_Status = ? AND view.V_Province = ? AND view.V_Sale = ?
 ";
 
 $stmt = $objConnect->prepare($query);
@@ -19,11 +14,17 @@ if (!$stmt) {
     die("Error preparing the query: " . $objConnect->error);
 }
 
-$stmt->bind_param("sss", $status, $province, $sale);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$data = $result->fetch_assoc();
+if (!$result) {
+    die("Query execution failed: " . $stmt->error);
+}
+
+if ($result->num_rows === 0) {
+    echo "No data found.";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -41,33 +42,42 @@ $data = $result->fetch_assoc();
 
     <div class="container content-color">
         <h2>รายละเอียดสถานะสำรวจ</h2>
-        
-        <?php if ($data): ?>
-            <p><strong>ชื่อหน่วยงาน:</strong> <?php echo htmlspecialchars($data['V_Name']); ?></p>
-            <p><strong>จังหวัด:</strong> <?php echo htmlspecialchars($data['V_Province']); ?></p>
-            <p><strong>ทีมฝ่ายขาย:</strong> <?php echo htmlspecialchars($data['V_Sale']); ?></p>
+        <img src="../Explore/file/QRCode.png" width="200" height="200" >
 
-            <?php if (!empty($data['filename'])): ?>
-                <p><strong>ไฟล์ที่แนบมา:</strong></p>
-                <img src="file/<?php echo htmlspecialchars($data['filename']); ?>" alt="Attached Image" class="img-responsive" style="max-width: 300px;">
-            <?php else: ?>
-                <p>ไม่มีไฟล์ที่แนบมา</p>
-            <?php endif; ?>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ชื่อ</th>
+                    <th>สถานะ</th>
+                    <th>ชื่อไฟล์</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $result->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['V_Name']); ?></td>
+                        <td><?php echo htmlspecialchars($row['T_Status']); ?></td>
+                        <td>
+                            <?php if ($row['filename']) { ?>
+                                <a href="../uploads/<?php echo htmlspecialchars($row['filename']); ?>" target="_blank">
+                                    <?php echo htmlspecialchars($row['filename']); ?>
+                                </a>
+                            <?php } else { ?>
+                                No file uploaded
+                            <?php } ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
 
-            <h3>อัพโหลดไฟล์ PDF หรือรูปภาพ</h3>
-            <form action="upload_file.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="V_ID" value="<?php echo $data['V_ID']; ?>">
-                <div class="form-group">
-                    <label for="file">เลือกไฟล์ (PDF หรือรูปภาพ):</label>
-                    <input type="file" name="file" id="file" class="form-control" accept=".pdf, .jpg, .jpeg, .png">
-                </div>
-                <button type="submit" class="btn btn-primary">อัพโหลด</button>
-            </form>
-        <?php else: ?>
-            <p>ไม่พบข้อมูลสำหรับสถานะนี้</p>
-        <?php endif; ?>
+        <h3>อัพโหลดไฟล์รูปภาพ</h3>
+        <form action="upload_file.php" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <input type="submit" value="Upload Image" class="btn btn-primary">
+        </form>
+
+        <?php include '../back.html'; ?>
     </div>
-
-    <?php include '../back.html'; ?>
 </body>
 </html>

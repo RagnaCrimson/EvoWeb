@@ -1,31 +1,49 @@
 <?php
 include '../connect.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $V_ID = $_POST['V_ID'];
-    $target_dir = "file/";
-    $file_name = basename($_FILES["file"]["name"]);
-    $target_file = $target_dir . $file_name;
-    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+function uploadImage($objConnect) {
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $targetDir = "file/";
+        
+        $fileName = basename($_FILES["image"]["name"]);
+        $targetFilePath = $targetDir . $fileName;
+        $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
 
-    if ($fileType == "pdf" || $fileType == "jpg" || $fileType == "jpeg" || $fileType == "png") {
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            $stmt = $objConnect->prepare("INSERT INTO uploads (V_ID, filename) VALUES (?, ?)");
-            if (!$stmt) {
-                die("Error preparing query: " . $objConnect->error);
-            }
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        if ($check === false) {
+            echo "File is not an image.";
+            return;
+        }
 
-            $stmt->bind_param("is", $V_ID, $file_name);
-            if ($stmt->execute()) {
-                echo "File uploaded and record saved successfully!";
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($imageFileType, $allowedTypes)) {
+            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            return;
+        }
+
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
+            $v_id = 1;
+            $stmt = $objConnect->prepare("INSERT INTO uploads (v_id, filename) VALUES (?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("is", $v_id, $fileName);
+                if ($stmt->execute()) {
+                    echo "The file " . htmlspecialchars($fileName) . " has been uploaded and saved.";
+                } else {
+                    echo "Error saving the file to the database.";
+                }
+                $stmt->close();
             } else {
-                echo "Error saving record: " . $stmt->error;
+                echo "Failed to prepare SQL statement.";
             }
         } else {
-            echo "Error uploading file.";
+            echo "Sorry, there was an error uploading your file.";
         }
-    } else {
-        echo "Invalid file format. Only PDF, JPG, JPEG, and PNG files are allowed.";
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    uploadImage($objConnect); 
+}
+
+$objConnect->close();
 ?>
