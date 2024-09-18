@@ -35,34 +35,40 @@ $v_name = $view_data['V_Name'];
 // Handle file upload
 $target_dir = "file/";
 
-if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-    $file_name = basename($_FILES['file']['name']);
-    $target_file = $target_dir . $file_name;
-    $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    if ($file_type !== 'pdf') {
-        $upload_error = "Only PDF files are allowed.";
-    } elseif (move_uploaded_file($_FILES['file']['tmp_name'], $target_file)) {
-        $stmt = $objConnect->prepare("INSERT INTO uploads (filename, V_ID) VALUES (?, ?)");
-        if (!$stmt) {
-            die("Prepare failed for uploads insert: " . $objConnect->error);
-        }
-        $stmt->bind_param("ss", $file_name, $id);
-        if ($stmt->execute()) {
-            $upload_success = "The file " . htmlspecialchars($file_name) . " has been uploaded successfully.";
+if (isset($_FILES['files']) && !empty($_FILES['files']['name'][0])) {
+    $upload_error = [];
+    $upload_success = [];
+    
+    foreach ($_FILES['files']['name'] as $key => $name) {
+        if ($_FILES['files']['error'][$key] === UPLOAD_ERR_OK) {
+            $file_name = basename($name);
+            $target_file = $target_dir . $file_name;
+            $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+            if ($file_type !== 'pdf') {
+                $upload_error[] = "Only PDF files are allowed for file: " . htmlspecialchars($file_name);
+            } elseif (move_uploaded_file($_FILES['files']['tmp_name'][$key], $target_file)) {
+                $stmt = $objConnect->prepare("INSERT INTO uploads (filename, V_ID) VALUES (?, ?)");
+                if (!$stmt) {
+                    die("Prepare failed for uploads insert: " . $objConnect->error);
+                }
+                $stmt->bind_param("ss", $file_name, $id);
+                if ($stmt->execute()) {
+                    $upload_success[] = "The file " . htmlspecialchars($file_name) . " has been uploaded successfully.";
+                } else {
+                    $upload_error[] = "Failed to store file information in the database for file: " . htmlspecialchars($file_name);
+                }
+            } else {
+                $upload_error[] = "Sorry, there was an error uploading file: " . htmlspecialchars($file_name);
+            }
         } else {
-            $upload_error = "Failed to store file information in the database.";
+            $upload_error[] = "Error during file upload for file: " . htmlspecialchars($name);
         }
-    } else {
-        $upload_error = "Sorry, there was an error uploading your file.";
     }
-} elseif (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-    $upload_error = "No file was uploaded or there was an error during the upload process.";
 }
 
-// Fetch the latest uploaded PDF for the specific V_ID
-$latest_file = '';
-$file_query = "SELECT filename FROM uploads WHERE V_ID = ? ORDER BY upload_date DESC LIMIT 1";
+// Fetch all uploaded PDFs for the specific V_ID
+$file_query = "SELECT filename FROM uploads WHERE V_ID = ? ORDER BY upload_date DESC";
 $stmt = $objConnect->prepare($file_query);
 if (!$stmt) {
     die("Prepare failed for file fetch: " . $objConnect->error);
@@ -70,8 +76,9 @@ if (!$stmt) {
 $stmt->bind_param("s", $id);
 $stmt->execute();
 $result = $stmt->get_result();
-if ($result && $row = $result->fetch_assoc()) {
-    $latest_file = $row['filename'];
+$files = [];
+while ($row = $result->fetch_assoc()) {
+    $files[] = $row['filename'];
 }
 ?>
 
@@ -80,7 +87,7 @@ if ($result && $row = $result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload and View PDF</title>
+    <title>Upload and View PDFs</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="../js/logout.js"></script>
@@ -93,15 +100,29 @@ if ($result && $row = $result->fetch_assoc()) {
 
         <h3>อัพโหลดเอกสารออกสำรวจ</h3>
         <form action="Status_Explore.php?status=<?php echo urlencode($status); ?>&id=<?php echo urlencode($id); ?>" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" id="file" accept="application/pdf" required>
+            <input type="file" name="files[]" id="files" accept="application/pdf" multiple required>
             <input type="submit" value="Submit" class="btn btn-primary">
         </form>
 
-        <?php if (!empty($latest_file)): ?>
+        <?php if (!empty($upload_success)): ?>
+            <?php foreach ($upload_success as $message): ?>
+                <p class="text-success"><?php echo htmlspecialchars($message); ?></p>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <?php if (!empty($upload_error)): ?>
+            <?php foreach ($upload_error as $message): ?>
+                <p class="text-danger"><?php echo htmlspecialchars($message); ?></p>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <?php if (!empty($files)): ?>
             <h3>ดูไฟล์เอกสาร</h3>
-            <iframe src="file/<?php echo htmlspecialchars($latest_file); ?>" style="width:100%; height:800px;" frameborder="0">
-                This browser does not support PDFs. Please download the PDF to view it: <a href="file/<?php echo htmlspecialchars($latest_file); ?>">Download PDF</a>.
-            </iframe>
+            <?php foreach ($files as $file): ?>
+                <iframe src="file/<?php echo htmlspecialchars($file); ?>" style="width:100%; height:800px;" frameborder="0">
+                    This browser does not support PDFs. Please download the PDF to view it: <a href="file/<?php echo htmlspecialchars($file); ?>">Download PDF</a>.
+                </iframe>
+            <?php endforeach; ?>
         <?php else: ?>
             <p>No PDF files have been uploaded yet.</p>
         <?php endif; ?>
