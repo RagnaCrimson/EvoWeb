@@ -147,7 +147,7 @@ if (!$result) {
                     <td>
                         <!-- Display button only if status is 'สำรวจ' -->
                         <?php if ($row['T_Status'] == 'สำรวจ'): ?>
-                            <a href="../Explore/Status_Explore.php?id=<?php echo urlencode($row['V_Name']); ?>" class="btn btn-info">ดูสถานะสำรวจ</a>
+                            <a href="../Explore/Status_Explore.php?status=<?php echo urlencode($row['T_Status']); ?>&id=<?php echo urlencode($row['V_ID']); ?>" class="btn btn-info">ดูสถานะสำรวจ</a>
                         <?php endif; ?>
                     </td>
                 </tr>
